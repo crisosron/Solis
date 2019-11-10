@@ -17,7 +17,7 @@ class GameMap extends Component {
 
   render() {
     const style = {
-      backgroundColor: "blue",
+      backgroundColor: "lightBlue",
       width: "70%",
       height: "80%"
     };

@@ -3,9 +3,10 @@ class SideBar extends Component {
   state = {};
   render() {
     const style = {
-      backgroundColor: "yellow",
+      backgroundColor: "salmon",
       width: "30%",
-      height: "60%"
+      height: "107.5%",
+      margin: "-60% 0 0 70%"
     };
     return <div style={style}></div>;
   }

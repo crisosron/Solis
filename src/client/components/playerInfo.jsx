@@ -3,7 +3,7 @@ class PlayerInfo extends Component {
   state = {};
   render() {
     const style = {
-      backgroundColor: "green",
+      backgroundColor: "lightGreen",
       width: "70%",
       height: "20%"
     };
