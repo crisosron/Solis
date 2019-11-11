@@ -1,3 +1,14 @@
-.subComponent {
+.subComponentCommon {
     margin: 0 auto;
+    text-align: center;
+}
+
+.subComponentSmaller {
+    border: 1px solid red;
+    flex: 1
+}
+
+.subComponentRegular {
+    border: 1px solid green;
+    flex: 2
 }
