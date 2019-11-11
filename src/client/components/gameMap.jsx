@@ -1,25 +1,13 @@
 import React, { Component } from "react";
-
-// Node components are rendered onto this component
 class GameMap extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      nodes: []
-    };
-  }
-
+  state = {};
   handleGameMapClicked = () => {
-    //TODO: Handle node clicking, then update NodeInfo component with node information
-    console.log("Gamemap clicked");
+    console.log("Game map clicked");
   };
-
   render() {
     const style = {
-      backgroundColor: "lightBlue",
-      width: "70%",
-      height: "80%"
+      backgroundColor: "lightYellow",
+      flex: "3"
     };
     return <div style={style} onClick={this.handleGameMapClicked}></div>;
   }

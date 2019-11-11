@@ -1,12 +1,16 @@
 import React, { Component } from "react";
+import RoundDiceIndicator from "./roundDiceIndicator";
+import NodeInfo from "./nodeInfo";
+import OtherPlayerInfo from "./otherPlayerInfo";
+import ChatWindow from "./chatWindow";
+import BuyMenu from "./buyMenu";
+
 class SideBar extends Component {
   state = {};
   render() {
     const style = {
       backgroundColor: "salmon",
-      width: "30%",
-      height: "107.5%",
-      margin: "-60% 0 0 70%"
+      flex: "1"
     };
     return <div style={style}></div>;
   }

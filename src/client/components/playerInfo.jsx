@@ -4,8 +4,7 @@ class PlayerInfo extends Component {
   render() {
     const style = {
       backgroundColor: "lightGreen",
-      width: "70%",
-      height: "20%"
+      flex: "1"
     };
     return <div style={style}></div>;
   }

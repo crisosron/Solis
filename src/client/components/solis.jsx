@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import GameMap from "./gameMap";
+import MainContainer from "./mainContainer";
 import PlayerInfo from "./playerInfo";
 import SideBar from "./sideBar";
 
@@ -30,13 +30,13 @@ class Solis extends Component {
     const style = {
       fontFamily: "Arial",
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
+      display: "flex"
     };
 
     return (
       <div style={style}>
-        <GameMap />
-        <PlayerInfo />
+        <MainContainer />
         <SideBar />
       </div>
     );
