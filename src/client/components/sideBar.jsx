@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import RoundDiceIndicator from "./roundDiceIndicator";
 import NodeInfo from "./nodeInfo";
-import OtherPlayerInfo from "./otherPlayerInfo"; //TODO: Add this as a child component of PlayerInfo
 import ChatWindow from "./chatWindow";
 import BuyMenu from "./buyMenu";
 import "./sideBarChildComponents.css";

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import GameMap from "./gameMap";
-import PlayerInfo from "./playerInfo";
+import PlayerInfo from "./bottomBar";
 
 // Node components are rendered onto this component
 class MainContainer extends Component {

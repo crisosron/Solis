@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import MainContainer from "./mainContainer";
-import PlayerInfo from "./playerInfo";
 import SideBar from "./sideBar";
 
 class Solis extends Component {

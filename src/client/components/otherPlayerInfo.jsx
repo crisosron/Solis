@@ -1,10 +1,18 @@
 import React, { Component } from "react";
 
-// Child component of SideBar
+// Child component of BottomBar
 class OtherPlayerInfo extends Component {
   state = {};
   render() {
-    return <h1> OtherPlayerInfo </h1>;
+    const style = {
+      backgroundColor: "lightBlue",
+      flex: "1"
+    };
+    return (
+      <div style={style}>
+        <h1>OtherPlayerInfo</h1>
+      </div>
+    );
   }
 }
 

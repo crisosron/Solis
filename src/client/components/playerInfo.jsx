@@ -3,10 +3,14 @@ class PlayerInfo extends Component {
   state = {};
   render() {
     const style = {
-      backgroundColor: "lightGreen",
+      backgroundColor: "teal",
       flex: "1"
     };
-    return <div style={style}></div>;
+    return (
+      <div style={style}>
+        <h1>PlayerInfo</h1>
+      </div>
+    );
   }
 }
 
