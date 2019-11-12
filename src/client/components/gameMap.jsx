@@ -17,7 +17,7 @@ class GameMap extends Component {
   // TODO: Temporary
   drawNode = canvasContext => {
     canvasContext.beginPath();
-    canvasContext.arc(100, 100, 5, 0, Math.PI * 2);
+    canvasContext.arc(100, 100, 3, 0, Math.PI * 2);
     canvasContext.fillStyle = "blue";
     canvasContext.fill();
   };
