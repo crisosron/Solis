@@ -1,37 +1,52 @@
 import React, { Component } from "react";
 class GameMap extends Component {
-  state = {};
+  state = {
+    containerRendered: false
+  };
+  
+  componentDidMount(){
 
-  componentDidMount() {
-    const canvas = this.refs.gameMapCanvas;
-    const canvasContext = canvas.getContext("2d");
-    //const gameMapCanvas = document.getElementById("gameMapCanvas");
-    //console.log(gameMapCanvas);
-    this.drawNode(canvasContext);
+    // TODO: Yes this feels like an antipattern since it causes the entire component to be re-rendered after its been rendered
+    // The whole point of this is to achieve the conditional rendering that happens in the render method
+    // Perhaps all of this can be improved if the dimensions of the gameMapContainer can be passed down as props to this component
+    // (therefore removing the need to re-render the component and the getting rid of the ugly code in the render method)
+    this.setState({
+      containerRendered: true
+    });
   }
 
   handleGameMapClicked = () => {
     console.log("Game map clicked");
+    const ctx = this.obtainCanvasContext();
+    ctx.moveTo(0,0);
+    ctx.lineTo(200, 200);
+    ctx.stroke();
   };
 
-  // TODO: Temporary
-  drawNode = canvasContext => {
-    canvasContext.beginPath();
-    canvasContext.arc(100, 100, 3, 0, Math.PI * 2);
-    canvasContext.fillStyle = "blue";
-    canvasContext.fill();
-  };
+  obtainCanvasContext = () => {
+    const canvas = document.getElementById("gameMapCanvas");
+    return canvas.getContext("2d");
+  }
 
   render() {
-    //const parentComponent = gameMap.parentNode();
-    //const computedStyles = window.getComputedStyle(gameMapCanvas);
-    //console.log(computedStyles);
-    const style = {
+    const style = { // Used only in the canvas container
       backgroundColor: "lightYellow",
       flex: "3"
     };
+
+    // First render the container, then once the container has been rendered, determine dimensions of canvas and render canvas as well
+    if(!this.state.containerRendered) return <div style={style} id="gameMapCanvasContainer"></div>
+
+    // Obtaining the dimensions of the canvas (very important that the dimensions of the canvas are inserted using js (see props of canvas) instead of css)
+    // to ensure that the elements rendered onto the canvas are as sharp as possible and are not affected by potential scaling issues
+    const gameMapCanvasContainer = document.getElementById("gameMapCanvasContainer");
+    const gameMapCanvasContainerCompStyles = window.getComputedStyle(gameMapCanvasContainer);
+    const canvasWidth = gameMapCanvasContainerCompStyles.width;
+    const canvasHeight = gameMapCanvasContainerCompStyles.height;
     return (
-      <canvas ref="gameMapCanvas" id="gameMapCanvas" style={style}></canvas>
+      <div style={style} id="gameMapCanvasContainer">
+        <canvas ref="gameMapCanvas" id="gameMapCanvas" width={canvasWidth} height={canvasHeight} style={style} onClick={this.handleGameMapClicked}></canvas>
+      </div>
     );
   }
 }
