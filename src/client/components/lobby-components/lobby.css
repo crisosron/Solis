@@ -1,0 +1,40 @@
+.solisLobby{
+    margin: 0 auto;
+    text-align: center;
+}
+
+.createGameButton{
+    background-color: green;
+}
+
+.createGameButton:hover{
+    background-color: #4CAF50;
+}
+
+.joinGameButton{
+    background-color: #d4af6a;
+}
+
+.joinGameButton:hover{
+    background-color: rgb(248,210,139);
+}
+
+html{
+    background-color: black;
+    color: white;
+}
+
+button{
+    margin: 0 auto;
+    width: 200px;
+    height: 100px;
+    font-size: 20px;
+    color: white;
+    border: none;
+    transition-duration: 0.4s;
+}
+
+h1{
+    margin-top: 20%;
+    font-size: 50px;
+}
