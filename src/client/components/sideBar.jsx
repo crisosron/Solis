@@ -9,24 +9,24 @@ class SideBar extends Component {
   state = {};
   render() {
     const style = {
-      backgroundColor: "salmon",
+      backgroundColor: "black",
       display: "flex",
       flexDirection: "column",
       flex: "1"
     };
     return (
       <div style={style}>
-        <div className="subComponentSmaller">
+        <div className="subComponentSmaller subComponentCommon">
           {/*Components are enclosed in divs so that the positioning is loosely coupled with the component */}
           <RoundDiceIndicator />
         </div>
-        <div className="subComponentRegular">
+        <div className="subComponentRegular subComponentCommon subComponentFlex">
           <ChatWindow />
         </div>
-        <div className="subComponentRegular">
+        <div className="subComponentRegular subComponentCommon">
           <BuyMenu />
         </div>
-        <div className="subComponentRegular">
+        <div className="subComponentRegular subComponentCommon">
           <NodeInfo />
         </div>
       </div>

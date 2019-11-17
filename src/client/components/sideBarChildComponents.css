@@ -1,14 +1,18 @@
 .subComponentCommon {
-    margin: 0 auto;
     text-align: center;
+    border: 1px solid white;
+    color: lightgray;
 }
 
 .subComponentSmaller {
-    border: 1px solid red;
     flex: 1
 }
 
 .subComponentRegular {
-    border: 1px solid green;
     flex: 2
+}
+
+.subComponentFlex {
+    display: flex;
+    flex-direction: column;
 }
