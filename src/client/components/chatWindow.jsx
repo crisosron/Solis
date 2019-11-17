@@ -9,7 +9,7 @@ export default class ChatWindow extends Component {
   }
 
   componentDidMount() {
-    
+
     // Adds a key listener for the chatting purposes
     document.addEventListener("keydown", this.sendMessage);
   }
@@ -18,7 +18,7 @@ export default class ChatWindow extends Component {
     const inputField = document.getElementById("chatInput");
 
     // First determine if the input field is focused, then determine if its an empty string, then determine if key pressed is Enter
-    if (document.activeElement === inputField && inputField.value !== "" &&this.ENTER_KEY === event.keyCode){
+    if (document.activeElement === inputField && inputField.value !== "" && this.ENTER_KEY === event.keyCode){
 
       //TODO: Send messages to server then process such that all clients will see the message onto their chatWindow
       console.log("Send message ", inputField.value);
@@ -46,7 +46,7 @@ export default class ChatWindow extends Component {
     return (
       <React.Fragment>
         <div id="chatDisplay" style={chatDisplayStyles} />
-        <input type="text" id="chatInput" style={chatInputStyles} />
+        <input type="text" id="chatInput" style={chatInputStyles} placeholder="Enter text to chat" />
       </React.Fragment>
     );
   }
