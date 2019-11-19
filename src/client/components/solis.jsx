@@ -1,45 +1,23 @@
-import React, { Component } from "react";
-import MainContainer from "./mainContainer";
-import SideBar from "./sideBar";
+import React from 'react';
+import Game from './game';
+import SolisLobby from './lobby-components/solisLobby';
+import GameCreationMenu from './lobby-components/gameCreationMenu';
+import JoinGameMenu from './lobby-components/joinGameMenu';
+import {BrowserRouter, Switch, Route} from 'react-router-dom';
 
-class Solis extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight
-    };
-  }
-
-  // When the component mounts onto the real DOM, update the window dimensions
-  componentDidMount = () => {
-    this.updateWindowDimensions();
-    window.addEventListener("resize", this.updateWindowDimensions);
-  };
-
-  // Updates the dimensions of the window - Used for resizability purposes
-  updateWindowDimensions = () => {
-    this.setState({
-      windowWidth: window.innerWidth,
-      windowHeight: window.innerHeight
-    });
-  };
-
-  render() {
-    const style = {
-      fontFamily: "Arial",
-      width: window.innerWidth,
-      height: window.innerHeight,
-      display: "flex"
-    };
-
-    return (
-      <div style={style}>
-        <MainContainer />
-        <SideBar />
-      </div>
-    );
-  }
+function Solis(){
+  return(
+    <React.Fragment>
+      <BrowserRouter>
+        <Switch>
+          <Route path="/" exact component={SolisLobby}/>
+          <Route path="/game" component={Game} />
+          <Route path="/createGameMenu" component={GameCreationMenu} />
+          <Route path="/joinGameMenu" component={JoinGameMenu} />
+        </Switch>
+      </BrowserRouter>
+    </React.Fragment>
+  );
 }
 
 export default Solis;

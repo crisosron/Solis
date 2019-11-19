@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-export default class GameCreation extends Component{
+export default class JoinGameMenu extends Component{
     constructor(props){
         super(props);
         this.state = {};
     }
     
     render(){
-        return();
+        return(<h1>JoinGameMenu</h1>);
     }
 }
