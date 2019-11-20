@@ -4,7 +4,10 @@ class Fleet{
     // Require methods be defined and construction target is NOT Fleet
     constructor(){
 
+        this.owner = null;
         this.size = 0;
+        this.sieging = false;
+        this.pillaging = false;
 
         // Check Target
         if(new.target === Fleet){
