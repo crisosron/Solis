@@ -57,8 +57,7 @@ export default class SolisLobby extends Component {
             className="joinGameButton"
             onClick={this.handleJoinGamePressed}
           >
-            {" "}
-            Join Game{" "}
+            Join Game
           </button>
         </Link>
       </div>

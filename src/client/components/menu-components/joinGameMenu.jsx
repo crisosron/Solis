@@ -16,18 +16,13 @@ export default class JoinGameMenu extends Component {
     return (
       <div className="centerStyle">
         <h1>Join Game</h1>
-        <input
-          type="text"
-          className="gameCodeInput"
-          placeholder="Enter game code"
-        />
+        <input type="text" placeholder="Enter game code" />
         <br />
         <Link to="/">
           <button className="returnButton">Return</button>
         </Link>
 
         <Link>
-          {" "}
           {/*TODO: Should link to the createGame page associated with the game code entered if the game code is valid*/}
           <button className="joinGameButton">Join Game</button>
         </Link>
