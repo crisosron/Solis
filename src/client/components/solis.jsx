@@ -1,8 +1,8 @@
 import React from "react";
-import Game from "./game";
-import SolisLobby from "./lobby-components/solisLobby";
-import GameCreationMenu from "./lobby-components/gameCreationMenu";
-import JoinGameMenu from "./lobby-components/joinGameMenu";
+import Game from "./game-components/game-ui-components/game";
+import SolisLobby from "./menu-components/solisLobby";
+import GameCreationMenu from "./menu-components/gameCreationMenu";
+import JoinGameMenu from "./menu-components/joinGameMenu";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 function Solis() {
@@ -12,8 +12,8 @@ function Solis() {
         <Switch>
           <Route path="/" exact component={SolisLobby} />
           <Route path="/game" component={Game} />
-          <Route path="/createGameMenu" component={GameCreationMenu} />
-          <Route path="/joinGameMenu" component={JoinGameMenu} />
+          <Route path="/create-game-menu" component={GameCreationMenu} />
+          <Route path="/join-game-menu" component={JoinGameMenu} />
         </Switch>
       </BrowserRouter>
     </React.Fragment>

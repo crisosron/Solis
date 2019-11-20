@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import "./lobby.css";
-import {Link} from 'react-router-dom';
+import "./menu-components.css";
+import { Link } from "react-router-dom";
 
+//TODO: Rename to SolisHome
 export default class SolisLobby extends Component {
-
   // Enum that represents the game creation status
   GameCreationStatus = {
     NONE: 0,
@@ -42,12 +42,24 @@ export default class SolisLobby extends Component {
         <h1>Solis Lobby</h1>
 
         {/*Uses Link from react-router-dom to make this button link to a route so that the component associated with the route can be rendered*/}
-        <Link to="/createGameMenu">
-          <button className="createGameButton" onClick={this.handleCreateGamePressed}> Create Game </button>
+        <Link to="/create-game-menu">
+          <button
+            className="createGameButton"
+            onClick={this.handleCreateGamePressed}
+          >
+            {" "}
+            Create Game{" "}
+          </button>
         </Link>
 
-        <Link to="joinGameMenu">
-          <button className="joinGameButton" onClick={this.handleJoinGamePressed}> Join Game </button>
+        <Link to="/join-game-menu">
+          <button
+            className="joinGameButton"
+            onClick={this.handleJoinGamePressed}
+          >
+            {" "}
+            Join Game{" "}
+          </button>
         </Link>
       </div>
     );
