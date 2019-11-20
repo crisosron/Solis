@@ -23,6 +23,12 @@ class Colony extends BuyableEntity{
         }
     }
 
+    // purchase a new colony
+    static purchase(){
+        //TODO
+        return new Colony();
+    }
+
 }
 
 export default Colony
