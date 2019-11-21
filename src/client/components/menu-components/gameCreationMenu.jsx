@@ -9,7 +9,8 @@ export default class GameCreationMenu extends Component {
 
     this.state = {
       confirmPressed: false,
-      currentUserName: ""
+      currentUserName: "",
+      registeredUserNames: []
     };
   }
 
@@ -29,6 +30,7 @@ export default class GameCreationMenu extends Component {
   };
 
   // Checks the name entered into the username input field and determines its validity
+  // TODO: Need to check against collection of registered users and their names and detect duplicates - Policy is first come first served
   validUserName = () => {
     const enteredUserName = this.userNameInputField.value;
     if (enteredUserName === "") {
@@ -75,20 +77,20 @@ export default class GameCreationMenu extends Component {
           <div id="attributeOptionsDiv">
             <input
               type="text"
-              className="attributeOptionsDivInputLabel"
+              className="optionsDivInputLabel"
               placeholder="Players connected: #/#"
               readOnly
             />
             <input
               type="text"
-              className="attributeOptionsDivInputLabel"
+              className="optionsDivInputLabel"
               placeholder={"Username: " + this.state.currentUserName}
               readOnly
             />
 
             <input
               type="text"
-              className="attributeOptionsDivSmallInputLabel"
+              className="optionsDivSmallInputLabel"
               placeholder="Max Players:"
               readOnly
             />
@@ -103,7 +105,7 @@ export default class GameCreationMenu extends Component {
 
             <input
               type="text"
-              className="attributeOptionsDivSmallInputLabel"
+              className="optionsDivSmallInputLabel"
               placeholder="Starting Resources:"
               readOnly
             />
@@ -111,7 +113,7 @@ export default class GameCreationMenu extends Component {
             <input
               type="number"
               id="startingResourcesInput"
-              className="attributeOptionsDivSmallInput"
+              className="optionsDivSmallInput"
               placeholder="Enter Value"
               defaultValue="300"
               min="50"
@@ -120,7 +122,7 @@ export default class GameCreationMenu extends Component {
 
             <input
               type="text"
-              className="attributeOptionsDivSmallInputLabel"
+              className="optionsDivSmallInputLabel"
               placeholder="Starting Fleet Size:"
               readOnly
             />
@@ -128,7 +130,7 @@ export default class GameCreationMenu extends Component {
             <input
               type="number"
               id="startingResourcesInput"
-              className="attributeOptionsDivSmallInput"
+              className="optionsDivSmallInput"
               placeholder="Enter Value"
               defaultValue="10"
               min="0"
@@ -146,6 +148,16 @@ export default class GameCreationMenu extends Component {
             </button>
           </div>
           <div id="colorSelectorDiv"></div>
+
+          {/*Subdivision of options div - Displays all registered user names - Names are colored by the user's selection*/}
+          <div id="registeredUsersDiv">
+            <input
+              type="text"
+              className="optionsDivInputLabel"
+              placeholder="Registered Users"
+              readOnly
+            />
+          </div>
         </div>
         <Link to="/">
           <button className="returnButton">Return</button>

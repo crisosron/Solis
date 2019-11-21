@@ -37,7 +37,7 @@
 }
 
 .optionsDiv {
-    width: 40%;
+    width: 60%;
     height: 300px;
     background-color: black;
     display: flex;
@@ -81,7 +81,8 @@ input[type="number"] {
     background-color: #18181c;
 }
 
-#attributeOptionsDiv>input {
+#attributeOptionsDiv>input,
+#registeredUsersDiv>input {
     font-size: 15px;
     margin-top: 5px;
     height: 20px;
@@ -101,16 +102,16 @@ select {
 }
 
 /*'Input labels are read only input elements. They are pretty must just a jury-rigged label'*/
-.attributeOptionsDivInputLabel {
+.optionsDivInputLabel {
     width: 100%;
 }
 
-.attributeOptionsDivSmallInputLabel {
+.optionsDivSmallInputLabel {
     width: 50%;
 }
 
 /*'Inputs' actually hold a value that can be manipulated*/
-.attributeOptionsDivSmallInput {
+.optionsDivSmallInput {
     width: 20%;
 }
 

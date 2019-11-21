@@ -39,7 +39,7 @@ export default class SolisLobby extends Component {
   render() {
     return (
       <div className="centerStyle">
-        <h1>Solis Lobby</h1>
+        <h1>Solis</h1>
 
         {/*Uses Link from react-router-dom to make this button link to a route so that the component associated with the route can be rendered*/}
         <Link to="/create-game-menu">
