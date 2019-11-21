@@ -4,12 +4,52 @@ import { Link } from "react-router-dom";
 export default class GameCreationMenu extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.ENTER_KEY = 13;
+    this.userNameInputField = null;
+
+    this.state = {
+      confirmPressed: false,
+      currentUserName: ""
+    };
   }
 
+  componentDidMount() {
+    document.addEventListener("keydown", this.registerUserName); // When the enter key is pressed, try to register the name
+    this.userNameInputField = document.getElementById("userNameInputField");
+    this.userNameInputField.addEventListener("blur", this.registerUserName); // When the input field is made out of focus, try to register name
+  }
+
+  registerUserName = e => {
+    if (e instanceof KeyboardEvent && e.keyCode !== this.ENTER_KEY) return;
+    if (this.validUserName()) {
+      this.setState({
+        currentUserName: document.getElementById("userNameInputField").value
+      });
+    }
+  };
+
+  // Checks the name entered into the username input field and determines its validity
+  validUserName = () => {
+    const enteredUserName = this.userNameInputField.value;
+    if (enteredUserName === "") {
+      this.userNameInputField.placeholder = "Please enter a username here!";
+      return false;
+    }
+    return true;
+  };
+
   handleConfirmSettingsPressed = () => {
-    // TODO: Should add the className "disabledButton" to confirm button
+    // First, check if the username is valid
+    if (!this.validUserName()) return;
+    const userNameInputField = document.getElementById("userNameInputField");
+    userNameInputField.readOnly = true; // Disables the user name input field
+
+    this.setState({
+      confirmPressed: true
+    });
+
     // TODO: Handle confirmation of settings through the server. Init the game to use the specified settings
+    // TODO: Once confirm is pressed, the game code should be activated
   };
 
   render() {
@@ -20,24 +60,29 @@ export default class GameCreationMenu extends Component {
         <input
           type="text"
           placeholder={"Some random code" /*TODO: Develop this*/}
-          className="inputPermanentFocus"
+          className="inputLabelHighlighted"
           readOnly
         />
         <br />
         {/*TODO: When this is out of focus, or if enter is pressed, register the current username */}
-        <input type="text" placeholder={"Enter username"} maxLength="15" />{" "}
+        <input
+          type="text"
+          id="userNameInputField"
+          placeholder={"Enter username"}
+          maxLength="15"
+        />{" "}
         <div className="centerStyle optionsDiv">
           <div id="attributeOptionsDiv">
             <input
               type="text"
               className="attributeOptionsDivInputLabel"
-              placeholder="# of Players connected: #/tot"
+              placeholder="Players connected: #/#"
               readOnly
             />
             <input
               type="text"
               className="attributeOptionsDivInputLabel"
-              placeholder="Username: username"
+              placeholder={"Username: " + this.state.currentUserName}
               readOnly
             />
 
@@ -92,7 +137,9 @@ export default class GameCreationMenu extends Component {
 
             <button
               id="confirmSettingsButton"
-              className="generalButton"
+              className={
+                this.state.confirmPressed ? "disabledButton" : "generalButton"
+              }
               onClick={this.handleConfirmSettingsPressed}
             >
               Confirm Settings

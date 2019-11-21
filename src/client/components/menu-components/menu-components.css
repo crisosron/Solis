@@ -13,18 +13,9 @@
 
 .generalButton {
     background-color: #d4af6a;
-
 }
 
 .generalButton:hover {
-    background-color: rgb(248, 210, 139);
-}
-
-.joinGameButton {
-    background-color: #d4af6a;
-}
-
-.joinGameButton:hover {
     background-color: rgb(248, 210, 139);
 }
 
@@ -42,6 +33,7 @@
 
 .disabledButton {
     background-color: grey;
+    color: #949496;
 }
 
 .optionsDiv {
@@ -85,7 +77,7 @@ input[type="number"] {
     color: #949496;
 }
 
-.inputPermanentFocus {
+.inputLabelHighlighted {
     background-color: #18181c;
 }
 
@@ -94,6 +86,7 @@ input[type="number"] {
     margin-top: 5px;
     height: 20px;
     margin-bottom: 5px;
+    background: none;
 }
 
 select {
@@ -102,6 +95,9 @@ select {
     color: #949496;
     font-size: 15px;
     border: none;
+
+    /*This makes the background color of the drop down options also have no background*/
+    background: none;
 }
 
 /*'Input labels are read only input elements. They are pretty must just a jury-rigged label'*/
