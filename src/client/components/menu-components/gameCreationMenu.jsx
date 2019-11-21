@@ -91,7 +91,8 @@ export default class GameCreationMenu extends Component {
             />
 
             <button
-              className="confirmSettingsButton"
+              id="confirmSettingsButton"
+              className="generalButton"
               onClick={this.handleConfirmSettingsPressed}
             >
               Confirm Settings
@@ -103,7 +104,7 @@ export default class GameCreationMenu extends Component {
           <button className="returnButton">Return</button>
         </Link>
         <Link to="/game">
-          <button className="createGameButton">Play</button>
+          <button className="affirmativeButton">Play</button>
         </Link>
       </div>
     );

@@ -3,14 +3,21 @@
     text-align: center;
 }
 
-/*TODO: Abstract the meaning of these buttons - Eg .createGameButton -> Affirmative button, .returnButton -> Cancel Button*/
-
-.createGameButton {
+.affirmativeButton {
     background-color: green;
 }
 
-.createGameButton:hover {
+.affirmativeButton:hover {
     background-color: #4CAF50;
+}
+
+.generalButton {
+    background-color: #d4af6a;
+
+}
+
+.generalButton:hover {
+    background-color: rgb(248, 210, 139);
 }
 
 .joinGameButton {
@@ -19,12 +26,6 @@
 
 .joinGameButton:hover {
     background-color: rgb(248, 210, 139);
-}
-
-.confirmSettingsButton {
-    margin-top: 20px;
-    height: 30%;
-    background-color: #AA6E39;
 }
 
 .confirmSettingsButton:hover {
@@ -139,4 +140,9 @@ h1 {
 
 #createGameTitle {
     margin-top: 5%;
+}
+
+#confirmSettingsButton {
+    margin-top: 20px;
+    height: 30%;
 }

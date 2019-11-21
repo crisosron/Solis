@@ -44,7 +44,7 @@ export default class SolisLobby extends Component {
         {/*Uses Link from react-router-dom to make this button link to a route so that the component associated with the route can be rendered*/}
         <Link to="/create-game-menu">
           <button
-            className="createGameButton"
+            className="affirmativeButton"
             onClick={this.handleCreateGamePressed}
           >
             {" "}
@@ -54,7 +54,7 @@ export default class SolisLobby extends Component {
 
         <Link to="/join-game-menu">
           <button
-            className="joinGameButton"
+            className="generalButton"
             onClick={this.handleJoinGamePressed}
           >
             Join Game
