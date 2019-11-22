@@ -75,6 +75,10 @@ export default class GameCreationMenu extends Component {
     // TODO: Once confirm is pressed, the game code should be activated
   };
 
+  colorOptionClicked = event => {
+    console.log("Color option clicked: ", event.target);
+  };
+
   render() {
     return (
       <div className="centerStyle">
@@ -172,26 +176,19 @@ export default class GameCreationMenu extends Component {
           <div id="colorSelectorDiv">
             <h3>Color Selection</h3>
             <div id="colorSelectorDivOptions">
-              {/*TODO: Render via loop*/}
-              <div className="colorOption" />
-              <div className="colorOption" />
-              <div className="colorOption" />
-              <div className="colorOption" />
-
-              <div className="colorOption" />
-              <div className="colorOption" />
-              <div className="colorOption" />
-              <div className="colorOption" />
-
-              <div className="colorOption" />
-              <div className="colorOption" />
-              <div className="colorOption" />
-              <div className="colorOption" />
-
-              <div className="colorOption" />
-              <div className="colorOption" />
-              <div className="colorOption" />
-              <div className="colorOption" />
+              {this.state.colorOptions.map(colorOption => {
+                const style = {
+                  backgroundColor: colorOption
+                };
+                return (
+                  <div
+                    className="colorOption"
+                    value={colorOption}
+                    style={style}
+                    onClick={this.colorOptionClicked}
+                  />
+                );
+              })}
             </div>
           </div>
 

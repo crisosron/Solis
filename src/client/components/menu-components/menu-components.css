@@ -161,5 +161,10 @@ h1 {
     display: inline-block;
     width: 20%;
     height: 20%;
-    border: 1px solid blue;
+    margin-right: 5px;
+    transition-duration: 0.4s;
+}
+
+.colorOption:hover {
+    border-radius: 20px;
 }
