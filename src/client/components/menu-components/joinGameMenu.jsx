@@ -22,7 +22,7 @@ export default class JoinGameMenu extends Component {
           <button className="returnButton">Return</button>
         </Link>
 
-        <Link>
+        <Link to="/">
           {/*TODO: Should link to the createGame page associated with the game code entered if the game code is valid*/}
           <button className="generalButton">Join Game</button>
         </Link>

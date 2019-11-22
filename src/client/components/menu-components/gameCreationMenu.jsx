@@ -22,6 +22,7 @@ export default class GameCreationMenu extends Component {
     // Populating a collection of randomly generated colors
     let randomlyGeneratedColors = [];
     for (let i = 0; i < this.NUM_COLORS_AVAILABLE; i++)
+      // TODO: Check if random color is already in the array of randomly generated colors
       randomlyGeneratedColors.push(this.createRandomColor());
     return randomlyGeneratedColors;
   };
@@ -173,6 +174,7 @@ export default class GameCreationMenu extends Component {
             </button>
           </div>
 
+          {/*Subdivision of options div - Displays all available colors for the user to select from */}
           <div id="colorSelectorDiv">
             <h3>Color Selection</h3>
             <div id="colorSelectorDivOptions">
@@ -186,6 +188,7 @@ export default class GameCreationMenu extends Component {
                     value={colorOption}
                     style={style}
                     onClick={this.colorOptionClicked}
+                    key={colorOption}
                   />
                 );
               })}
@@ -197,6 +200,8 @@ export default class GameCreationMenu extends Component {
             <h3>Registered Users</h3>
           </div>
         </div>
+
+        {/*Buttons to navigate away from this component*/}
         <Link to="/">
           <button className="returnButton">Return</button>
         </Link>
