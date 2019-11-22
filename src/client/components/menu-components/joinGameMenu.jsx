@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import "./menu-components.css";
+import "./menuComponents.css";
 
 export default class JoinGameMenu extends Component {
   constructor(props) {

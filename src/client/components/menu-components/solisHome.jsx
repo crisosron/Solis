@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./menu-components.css";
+import "./menuComponents.css";
 import { Link } from "react-router-dom";
 
 //TODO: Rename to SolisHome

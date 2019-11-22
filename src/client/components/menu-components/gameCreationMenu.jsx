@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./menu-components.css";
+import "./menuComponents.css";
 import { Link } from "react-router-dom";
 
 export default class GameCreationMenu extends Component {
@@ -19,11 +19,21 @@ export default class GameCreationMenu extends Component {
 
   // Generates some random colors that will be available for selection when the component is about to mount.
   generateRandomColors = () => {
+
     // Populating a collection of randomly generated colors
     let randomlyGeneratedColors = [];
-    for (let i = 0; i < this.NUM_COLORS_AVAILABLE; i++)
-      // TODO: Check if random color is already in the array of randomly generated colors
-      randomlyGeneratedColors.push(this.createRandomColor());
+    for (let i = 0; i < this.NUM_COLORS_AVAILABLE; i++){
+      let randomColor = this.createRandomColor();
+
+      // Check if random color is already in the array of randomly generated colors
+      if(randomlyGeneratedColors.includes(randomColor)){
+        i--;
+        continue;
+      }
+
+      randomlyGeneratedColors.push(randomColor);
+    }
+
     return randomlyGeneratedColors;
   };
 
@@ -77,7 +87,8 @@ export default class GameCreationMenu extends Component {
   };
 
   colorOptionClicked = event => {
-    console.log("Color option clicked: ", event.target);
+    const selectedColor = event.target.id;
+    
   };
 
   render() {
@@ -185,7 +196,7 @@ export default class GameCreationMenu extends Component {
                 return (
                   <div
                     className="colorOption"
-                    value={colorOption}
+                    id={colorOption}
                     style={style}
                     onClick={this.colorOptionClicked}
                     key={colorOption}
