@@ -13,7 +13,7 @@ export default class GameCreationMenu extends Component {
     this.state = {
       confirmPressed: false,
       currentUserName: "",
-      registeredUserNames: [],
+      connectedUsers: [],
       colorOptions: this.generateRandomColors()
     };
   }
@@ -37,6 +37,10 @@ export default class GameCreationMenu extends Component {
 
     return randomlyGeneratedColors;
   };
+
+  componentWillMount(){
+    
+  }
 
   // Creates and returns a single random color in hexadecimal form
   createRandomColor = () => {
@@ -122,13 +126,6 @@ export default class GameCreationMenu extends Component {
             />
             <input
               type="text"
-              className="optionsDivInputLabel"
-              placeholder={"Username: " + this.state.currentUserName}
-              readOnly
-            />
-
-            <input
-              type="text"
               className="optionsDivSmallInputLabel"
               placeholder="Max Players:"
               readOnly
@@ -199,7 +196,7 @@ export default class GameCreationMenu extends Component {
 
           {/*Subdivision of options div - Displays all registered user names - Names are colored by the user's selection*/}
           <div id="registeredUsersDiv">
-            <h3>Registered Users</h3>
+            <h3>Connected Players</h3>
           </div>
         </div>
 

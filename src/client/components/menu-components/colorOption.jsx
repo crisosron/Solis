@@ -19,11 +19,7 @@ export default class ColorOption extends Component{
     }
     
     render(){
-        const style = {
-            backgroundColor: this.props.colorValue,
-            // opacity: !this.state.selected ? "100%" : "20%" 
-        
-        }
+        const style = {backgroundColor: this.props.colorValue}
         return(<div className={this.state.classNames} id={this.props.colorValue} onClick={this.handleColorOptionClicked} style={style} />);
     }
 }
