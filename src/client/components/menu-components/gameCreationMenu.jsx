@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import "./menu-components.css";
 import { Link } from "react-router-dom";
-import { thisExpression } from "@babel/types";
 
 export default class GameCreationMenu extends Component {
   constructor(props) {
     super(props);
     this.ENTER_KEY = 13;
     this.userNameInputField = null;
-    this.NUM_COLORS_AVAILABLE = 20;
+    this.NUM_COLORS_AVAILABLE = 16;
 
     this.state = {
       confirmPressed: false,
@@ -88,7 +87,6 @@ export default class GameCreationMenu extends Component {
           readOnly
         />
         <br />
-        {/*TODO: When this is out of focus, or if enter is pressed, register the current username */}
         <input
           type="text"
           id="userNameInputField"
@@ -170,8 +168,31 @@ export default class GameCreationMenu extends Component {
               Confirm Settings
             </button>
           </div>
+
           <div id="colorSelectorDiv">
             <h3>Color Selection</h3>
+            <div id="colorSelectorDivOptions">
+              {/*TODO: Render via loop*/}
+              <div className="colorOption" />
+              <div className="colorOption" />
+              <div className="colorOption" />
+              <div className="colorOption" />
+
+              <div className="colorOption" />
+              <div className="colorOption" />
+              <div className="colorOption" />
+              <div className="colorOption" />
+
+              <div className="colorOption" />
+              <div className="colorOption" />
+              <div className="colorOption" />
+              <div className="colorOption" />
+
+              <div className="colorOption" />
+              <div className="colorOption" />
+              <div className="colorOption" />
+              <div className="colorOption" />
+            </div>
           </div>
 
           {/*Subdivision of options div - Displays all registered user names - Names are colored by the user's selection*/}

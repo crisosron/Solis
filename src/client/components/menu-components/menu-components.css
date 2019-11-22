@@ -144,7 +144,22 @@ h1 {
     height: 15%;
 }
 
-#colorSelectorDiv {
-    display: flex;
-    flex-direction: column;
+
+#colorSelectorDivTitle {
+    width: 100%;
+    height: 10%;
+    border: 1px solid red;
+}
+
+#colorSelectorDivOptions {
+    width: 100%;
+    height: 80%;
+}
+
+.colorOption {
+    /*Allows the elements of the same elements to be added side-by-side*/
+    display: inline-block;
+    width: 20%;
+    height: 20%;
+    border: 1px solid blue;
 }
