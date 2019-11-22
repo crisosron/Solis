@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./menuComponents.css";
+import ColorOption from './colorOption';
 import { Link } from "react-router-dom";
 
 export default class GameCreationMenu extends Component {
@@ -88,7 +89,8 @@ export default class GameCreationMenu extends Component {
 
   colorOptionClicked = event => {
     const selectedColor = event.target.id;
-    
+    const selectedColorDiv = document.getElementById(event.target.id);
+    selectedColorDiv.classList.add("disabledButton");
   };
 
   render() {
@@ -190,18 +192,7 @@ export default class GameCreationMenu extends Component {
             <h3>Color Selection</h3>
             <div id="colorSelectorDivOptions">
               {this.state.colorOptions.map(colorOption => {
-                const style = {
-                  backgroundColor: colorOption
-                };
-                return (
-                  <div
-                    className="colorOption"
-                    id={colorOption}
-                    style={style}
-                    onClick={this.colorOptionClicked}
-                    key={colorOption}
-                  />
-                );
+                return <ColorOption colorValue={colorOption} key={colorOption} id={`ColorOption ${colorOption}`}/>
               })}
             </div>
           </div>

@@ -17,8 +17,6 @@
 }
 
 .disabledButton {
-    /* background-color: grey;
-    color: #949496; */
     filter: brightness(50%);
 }
 
@@ -161,4 +159,12 @@ h1 {
 
 .colorOption:hover {
     border-radius: 20px;
+}
+
+.selectedColorOption{
+    opacity: 5%;
+}
+
+.selectedColorOption:hover{
+    border-radius: 0px;
 }
