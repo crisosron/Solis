@@ -1,18 +1,40 @@
 import React, { Component } from "react";
 import "./menu-components.css";
 import { Link } from "react-router-dom";
+import { thisExpression } from "@babel/types";
+
 export default class GameCreationMenu extends Component {
   constructor(props) {
     super(props);
     this.ENTER_KEY = 13;
     this.userNameInputField = null;
+    this.NUM_COLORS_AVAILABLE = 20;
 
     this.state = {
       confirmPressed: false,
       currentUserName: "",
-      registeredUserNames: []
+      registeredUserNames: [],
+      colorOptions: this.generateRandomColors()
     };
   }
+
+  // Generates some random colors that will be available for selection when the component is about to mount.
+  generateRandomColors = () => {
+    // Populating a collection of randomly generated colors
+    let randomlyGeneratedColors = [];
+    for (let i = 0; i < this.NUM_COLORS_AVAILABLE; i++)
+      randomlyGeneratedColors.push(this.createRandomColor());
+    return randomlyGeneratedColors;
+  };
+
+  // Creates and returns a single random color in hexadecimal form
+  createRandomColor = () => {
+    const characters = "0123456789ABCDEF";
+    let randomColor = "#";
+    for (let i = 0; i < 6; i++)
+      randomColor += characters[Math.floor(Math.random() * characters.length)];
+    return randomColor;
+  };
 
   componentDidMount() {
     document.addEventListener("keydown", this.registerUserName); // When the enter key is pressed, try to register the name
@@ -75,6 +97,7 @@ export default class GameCreationMenu extends Component {
         />{" "}
         <div className="centerStyle optionsDiv">
           <div id="attributeOptionsDiv">
+            <h3>Settings</h3>
             <input
               type="text"
               className="optionsDivInputLabel"
@@ -147,16 +170,13 @@ export default class GameCreationMenu extends Component {
               Confirm Settings
             </button>
           </div>
-          <div id="colorSelectorDiv"></div>
+          <div id="colorSelectorDiv">
+            <h3>Color Selection</h3>
+          </div>
 
           {/*Subdivision of options div - Displays all registered user names - Names are colored by the user's selection*/}
           <div id="registeredUsersDiv">
-            <input
-              type="text"
-              className="optionsDivInputLabel"
-              placeholder="Registered Users"
-              readOnly
-            />
+            <h3>Registered Users</h3>
           </div>
         </div>
         <Link to="/">

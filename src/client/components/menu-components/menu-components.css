@@ -140,6 +140,11 @@ h1 {
 }
 
 #confirmSettingsButton {
-    margin-top: 20px;
-    height: 30%;
+    margin-top: 15px;
+    height: 15%;
+}
+
+#colorSelectorDiv {
+    display: flex;
+    flex-direction: column;
 }
