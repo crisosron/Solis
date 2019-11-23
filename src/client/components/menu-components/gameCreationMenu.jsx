@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./menuComponents.css";
 import ColorOption from './colorOption';
 import { Link } from "react-router-dom";
+import socket from '../../../index.js';
 
 export default class GameCreationMenu extends Component {
   constructor(props) {
@@ -14,7 +15,8 @@ export default class GameCreationMenu extends Component {
       confirmPressed: false,
       currentUserName: "",
       connectedUsers: [],
-      colorOptions: this.generateRandomColors()
+      colorOptions: this.generateRandomColors(),
+      gameID: null
     };
   }
 
@@ -39,7 +41,16 @@ export default class GameCreationMenu extends Component {
   };
 
   componentWillMount(){
-    
+
+    //TODO: Investigate if its ok to have side effects in componentWillMount
+    // When the component is about to be mounted, the game id needs to be created in the server, and the server will send 
+    // it back here so that it can be displayed
+    socket.emit("create-game-id");
+    socket.on("game-id-delivery", (data) => {
+      this.setState({
+        gameID: data.gameID
+      });
+    });
   }
 
   // Creates and returns a single random color in hexadecimal form
@@ -104,7 +115,7 @@ export default class GameCreationMenu extends Component {
         <h3>Game Code</h3>
         <input
           type="text"
-          placeholder={"Some random code" /*TODO: Develop this*/}
+          placeholder={this.state.gameID}
           className="inputLabelHighlighted"
           readOnly
         />

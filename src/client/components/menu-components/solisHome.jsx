@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./menuComponents.css";
 import { Link } from "react-router-dom";
+import socket from '../../../index.js';
 
 //TODO: Rename to SolisHome
 export default class SolisLobby extends Component {
@@ -19,7 +20,6 @@ export default class SolisLobby extends Component {
   }
 
   handleCreateGamePressed = () => {
-    console.log("Create game pressed");
     this.setState({
       gameCreationStatus: this.GameCreationStatus.CREATE_GAME
     });
