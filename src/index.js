@@ -7,9 +7,6 @@ import openSocket from "socket.io-client";
 
 // Creating the socket to connect the client to the server
 const socket = openSocket(`http://localhost:8000`);
-socket.on('welcome', () => {
-    alert("Welcome To Solis?");
-});
 export default socket;
 
 ReactDOM.render(<Solis />, document.getElementById('root'));
