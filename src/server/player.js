@@ -2,8 +2,9 @@
 class Player {
 
     // Construct a Player, setting all fields to null / Empty arrays
-    constructor(){
+    constructor(randomPlayerID){
         this.color = null;
+        this.randomPlayerID = randomPlayerID;
         this.hand = new Array(0);
         this.eventHand = new Array(0);
         this.fleets = new Array(0);
@@ -14,8 +15,7 @@ class Player {
     addResourceCard(resourceType) {
         this.hand.push(resourceType);
     }
-
-
 }
 
-export default Player
+//export default Player
+module.exports = Player;
