@@ -16,7 +16,6 @@ export default class GameCreationMenu extends Component {
       currentUserName: "",
       connectedUsers: [],
       colorOptions: this.generateRandomColors(),
-      gameID: null
     };
   }
 
@@ -40,19 +39,6 @@ export default class GameCreationMenu extends Component {
     return randomlyGeneratedColors;
   };
 
-  componentWillMount(){
-
-    //TODO: Investigate if its ok to have side effects in componentWillMount
-    // When the component is about to be mounted, the game id needs to be created in the server, and the server will send 
-    // it back here so that it can be displayed
-    socket.emit("create-game-id");
-    socket.on("game-id-delivery", (data) => {
-      this.setState({
-        gameID: data.gameID
-      });
-    });
-  }
-
   // Creates and returns a single random color in hexadecimal form
   createRandomColor = () => {
     const characters = "0123456789ABCDEF";
@@ -66,6 +52,15 @@ export default class GameCreationMenu extends Component {
     document.addEventListener("keydown", this.registerUserName); // When the enter key is pressed, try to register the name
     this.userNameInputField = document.getElementById("userNameInputField");
     this.userNameInputField.addEventListener("blur", this.registerUserName); // When the input field is made out of focus, try to register name
+
+    // When the component is about to be mounted, the game id needs to be created in the server, and the server will send 
+    // it back here so that it can be displayed
+    socket.emit("create-game-id");
+    socket.on("game-id-delivery", (data) => {
+      this.setState({
+        gameID: data.gameID // TODO: GameID doesn't mutate throughout the life of this component. Maybe make it a field instead of encapsulating it within the state of the component?
+      });
+    });
   }
 
   registerUserName = e => {

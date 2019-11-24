@@ -1,6 +1,5 @@
 const io = require('socket.io')();
 const Player = require('./player');
-
 const PORT_NUM = 8000;
 let numClientsConnected = 0;
 
@@ -9,9 +8,10 @@ console.log("Listening for connections on port ", PORT_NUM);
 
 const GAME_ID_LEN = 24;
 
-// Array of game IDs that represent an active session
 let allUsers = [];
-let gameSessions = [];
+
+// Array of game IDs. Each game ID represents an active game session
+let gameIDs = [];
 
 io.on('connection', (client) => {
     numClientsConnected++;
@@ -26,7 +26,7 @@ io.on('connection', (client) => {
     // ---- Client requests ---- //
     client.on("create-game-id", () => {
         const gameID = generateGameID();
-        gameSessions.push(gameID);
+        gameIDs.push(gameID);
         client.emit("game-id-delivery", {gameID: gameID}); // Sends the generated game id back to the client that requested it
     });
 
@@ -50,7 +50,7 @@ const generatePlayerID = () => {
     for(let i = 0; i < GAME_ID_LEN; i++) {
         let randomNum = Math.floor(Math.random() * 10);
         
-        // If randomNumber is even, select a character, else insert the number into the player id
+        // If randomNumber is even, select a character, else insert the randomNumber into the player id
         if(randomNum % 2 === 0) playerID += alphabet[randomNum];
         else playerID +=  randomNum;
     }
