@@ -97,7 +97,7 @@ export default class GameCreationMenu extends Component {
     return (
       <div className="centerStyle">
         <h1 id="createGameTitle">Create Game</h1>
-        <h3>Game Code</h3>
+        <h3>Game ID</h3>
         <h2 className="backgroundHighlight">{this.state.confirmPressed ? this.state.gameID : "Confirm settings to generate game code"}</h2>
         <br />
         <input
