@@ -10,7 +10,6 @@ export default class ColorOption extends Component{
     }
 
     handleColorOptionClicked = () => {
-        console.log(this.props.id);
         if (this.state.selected) return;
         this.setState({
             selected: true,

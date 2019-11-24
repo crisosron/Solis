@@ -64,7 +64,6 @@ export default class GameCreationMenu extends Component {
   };
 
   // Checks the name entered into the username input field and determines its validity
-  // TODO: Need to check against collection of registered users and their names and detect duplicates - Policy is first come first served
   validUserName = () => {
     const enteredUserName = this.userNameInputField.value;
     if (enteredUserName === "") {
@@ -92,12 +91,6 @@ export default class GameCreationMenu extends Component {
 
     // TODO: Handle confirmation of settings through the server. Init the game to use the specified settings
     // TODO: Once confirm is pressed, the game code should be activated
-  };
-
-  colorOptionClicked = event => {
-    const selectedColor = event.target.id;
-    const selectedColorDiv = document.getElementById(event.target.id);
-    selectedColorDiv.classList.add("disabledButton");
   };
 
   render() {
