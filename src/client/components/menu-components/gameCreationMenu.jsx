@@ -52,15 +52,6 @@ export default class GameCreationMenu extends Component {
     document.addEventListener("keydown", this.registerUserName); // When the enter key is pressed, try to register the name
     this.userNameInputField = document.getElementById("userNameInputField");
     this.userNameInputField.addEventListener("blur", this.registerUserName); // When the input field is made out of focus, try to register name
-
-    // When the component is about to be mounted, the game id needs to be created in the server, and the server will send 
-    // it back here so that it can be displayed
-    socket.emit("create-game-id");
-    socket.on("game-id-delivery", (data) => {
-      this.setState({
-        gameID: data.gameID // TODO: GameID doesn't mutate throughout the life of this component. Maybe make it a field instead of encapsulating it within the state of the component?
-      });
-    });
   }
 
   registerUserName = e => {
@@ -89,8 +80,14 @@ export default class GameCreationMenu extends Component {
     const userNameInputField = document.getElementById("userNameInputField");
     userNameInputField.readOnly = true; // Disables the user name input field
 
-    this.setState({
-      confirmPressed: true
+    // When settings are confirmed, the game id needs to be created in the server, and the server will send 
+    // it back here so that it can be displayed in this component
+    socket.emit("create-game-id");
+    socket.on("game-id-delivery", (data) => {
+      this.setState({
+        confirmPressed: true,
+        gameID: data.gameID // TODO: GameID doesn't mutate throughout the life of this component. Maybe make it a field instead of encapsulating it within the state of the component?
+      });
     });
 
     // TODO: Handle confirmation of settings through the server. Init the game to use the specified settings
@@ -108,12 +105,7 @@ export default class GameCreationMenu extends Component {
       <div className="centerStyle">
         <h1 id="createGameTitle">Create Game</h1>
         <h3>Game Code</h3>
-        <input
-          type="text"
-          placeholder={this.state.gameID}
-          className="inputLabelHighlighted"
-          readOnly
-        />
+        <h2 className="backgroundHighlight">{this.state.confirmPressed ? this.state.gameID : "Confirm settings to generate game code"}</h2>
         <br />
         <input
           type="text"
