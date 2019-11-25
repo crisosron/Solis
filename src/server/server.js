@@ -26,8 +26,8 @@ io.on('connection', (client) => {
     allUsers.push(user);
 
     // ---- Client requests ---- //
-    client.on("create-game-id", () => {
-        createGameID(client);
+    client.on("create-game-id", data => {
+        createGameID(client, data);
     });
 
     client.on("store-game-attributes", (data) => {
@@ -51,14 +51,17 @@ io.on('connection', (client) => {
 });
 
 // --------------- CLIENT REQUEST HANDLING FUNCTIONS --------------- //
-const createGameID = clientSocket => {
+const createGameID = (clientSocket, data) => {
     const gameID = generateGameID();
     const player = getPlayerFromSocket(clientSocket);
+    player.userName = data.creatorUserName;
     let gameRoom = new GameRoom(gameID, player);
     gameRooms.push(gameRoom);
-    clientSocket.join(gameID); // Creates a room and subscribe the game generating player to that room
-    console.log(`GameRoom created: ${gameRoom.gameID}, num players in room: ${gameRoom.players.length}`);
+    clientSocket.join(gameID); // Creates a room and subscribes the game generating player to that room
     clientSocket.emit("game-id-delivery", {gameID: gameID}); // Sends the generated game id back to the client that requested it
+
+    // Triggers an event to all sockets in the newly created room (only the game generating player will be in it when this event is trigerred)
+    io.to(gameID).emit("player-joined", {joinedPlayer: player});
 }
 
 const storeGameAttributes = gameAttributes => {
