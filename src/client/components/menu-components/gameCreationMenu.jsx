@@ -83,15 +83,30 @@ export default class GameCreationMenu extends Component {
     // it back here so that it can be displayed in this component
     socket.emit("create-game-id");
     socket.on("game-id-delivery", (data) => {
+      this.sendSettingsToServer(data.gameID);
       this.setState({
         confirmPressed: true,
         gameID: data.gameID // TODO: GameID doesn't mutate throughout the life of this component. Maybe make it a field instead of encapsulating it within the state of the component?
       });
     });
-
-    // TODO: Handle confirmation of settings through the server. Init the game to use the specified settings
-    // TODO: Once confirm is pressed, the game code should be activated
   };
+
+  sendSettingsToServer(gameID){
+
+    // Obtain selected settings options
+    const maxPlayersSelectElem = document.getElementById("maxPlayersOptions");
+    const maxPlayers = maxPlayersSelectElem.options[maxPlayersSelectElem.selectedIndex].value
+    const startingResources =  document.getElementById("startingResourcesInput").value;
+    const startingFleetSize =  document.getElementById("startingFleetSizeInput").value;
+
+    // Sends the selected settings options to the server
+    socket.emit('store-game-settings', {
+      gameID: gameID,
+      maxPlayers: maxPlayers,
+      startingResources: startingResources,
+      startingFleetSize: startingFleetSize
+    });
+  }
 
   render() {
     return (
@@ -122,7 +137,7 @@ export default class GameCreationMenu extends Component {
               readOnly
             />
 
-            <select>
+            <select id="maxPlayersOptions">
               <option value="2">2</option>
               <option value="3">3</option>
               <option value="4">4</option>
@@ -156,7 +171,7 @@ export default class GameCreationMenu extends Component {
 
             <input
               type="number"
-              id="startingResourcesInput"
+              id="startingFleetSizeInput"
               className="optionsDivSmallInput"
               placeholder="Enter Value"
               defaultValue="10"

@@ -27,13 +27,11 @@ io.on('connection', (client) => {
 
     // ---- Client requests ---- //
     client.on("create-game-id", () => {
-        const gameID = generateGameID();
-        const player = getPlayerFromSocket(client);
-        let gameRoom = new GameRoom(gameID, player);
-        gameRooms.push(gameRoom);
-        client.join(gameID); // Creates a room and subscribe the game generating player to that room
-        console.log(`GameRoom created: ${gameRoom.gameID}, num players in room: ${gameRoom.players.length}`);
-        client.emit("game-id-delivery", {gameID: gameID}); // Sends the generated game id back to the client that requested it
+        createGameID(client);
+    });
+
+    client.on("store-game-settings", (data) => {
+        storeGameSettings(data);
     });
 
     // Leaving and joining rooms
@@ -42,18 +40,7 @@ io.on('connection', (client) => {
     });
 
     client.on("join-game-room", (data) => {
-        //if(inGameRoom(getPlayerFromSocket(client))) return; // Precondition that checks if the player is already in a room, cancel the operation
-
-        // Precondition that checks the validity of the gameID supplied to this request
-        if(!existingGameID(data.gameID)) {
-            client.emit("invalid-game-id-entered", {message: "Game ID of " + data.gameID + " does not exist!"});
-            return;
-        }
-        client.join(data.gameID);
-        console.log(`Joining room succesful`);
-        let joinedGameRoom = getGameRoomByGameID(data.gameID);
-        joinedGameRoom.addPlayer(getPlayerFromSocket(client));
-        console.log(`Joined GameRoom: ${joinedGameRoom.gameID}, num players in room: ${joinedGameRoom.players.length}`);
+        joinGameRoom(client, data);
     });
 
     // TODO: Use sockets join to add associate players to the same game lobby when they try to join a game
@@ -63,6 +50,40 @@ io.on('connection', (client) => {
     });
 });
 
+// --------------- CLIENT REQUEST HANDLING FUNCTIONS --------------- //
+const createGameID = clientSocket => {
+    const gameID = generateGameID();
+    const player = getPlayerFromSocket(clientSocket);
+    let gameRoom = new GameRoom(gameID, player);
+    gameRooms.push(gameRoom);
+    clientSocket.join(gameID); // Creates a room and subscribe the game generating player to that room
+    console.log(`GameRoom created: ${gameRoom.gameID}, num players in room: ${gameRoom.players.length}`);
+    clientSocket.emit("game-id-delivery", {gameID: gameID}); // Sends the generated game id back to the client that requested it
+}
+
+const storeGameSettings = gameSettings => {
+    console.log("Received request from client: `store-game-settings`");
+    console.log(gameSettings)
+}
+
+const joinGameRoom = (clientSocket, data) => {
+     //if(inGameRoom(getPlayerFromSocket(client))) return; // Precondition that checks if the player is already in a room, cancel the operation
+
+    // Precondition that checks the validity of the gameID supplied to this request
+    if(!existingGameID(data.gameID)) {
+        clientSocket.emit("invalid-game-id-entered", {message: "Game ID of " + data.gameID + " does not exist!"});
+        return;
+    }
+    clientSocket.join(data.gameID);
+    console.log(`Joining room succesful`);
+    let joinedGameRoom = getGameRoomByGameID(data.gameID);
+    joinedGameRoom.addPlayer(getPlayerFromSocket(clientSocket));
+    console.log(`Joined GameRoom: ${joinedGameRoom.gameID}, num players in room: ${joinedGameRoom.players.length}`);
+}
+
+
+
+// --------------- HELPER FUNCTIONS --------------- //
 const inGameRoom = player =>{
     for(let i = 0; i < gameRooms.length; i++ ){
         const gameRoom = gameRooms[i];
@@ -100,6 +121,7 @@ class GameRoom{
     constructor(gameID, gameCreator){
         this._gameID = gameID;
         this._players = [gameCreator];
+        this._gameSettings = null;
     }
 
     get gameID(){
