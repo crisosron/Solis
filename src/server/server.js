@@ -79,8 +79,8 @@ const joinGameRoom = (clientSocket, data) => {
     let joinedGameRoom = getGameRoomByGameID(data.gameID);
     joinedGameRoom.addPlayer(getPlayerFromSocket(clientSocket));
     console.log(`Joined GameRoom: ${joinedGameRoom.gameID}, num players in room: ${joinedGameRoom.players.length}`);
+    
 }
-
 
 
 // --------------- HELPER FUNCTIONS --------------- //
@@ -134,6 +134,10 @@ class GameRoom{
 
     get gameAttributes(){
         return this._gameAttributes;
+    }
+
+    set gameAttributes(gameAttributes){
+        this._gameAttributes = gameAttributes;
     }
 
     addPlayer(player){

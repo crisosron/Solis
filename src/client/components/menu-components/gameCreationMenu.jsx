@@ -16,6 +16,7 @@ export default class GameCreationMenu extends Component {
       currentUserName: "",
       connectedUsers: [],
       colorOptions: this.generateRandomColors(),
+      colorSelectionActive: false
     };
   }
 
@@ -74,10 +75,11 @@ export default class GameCreationMenu extends Component {
   };
 
   handleConfirmSettingsPressed = () => {
-    // First, check if the username is valid
-    if (!this.validUserName()) return;
-    const userNameInputField = document.getElementById("userNameInputField");
-    userNameInputField.readOnly = true; // Disables the user name input field
+
+    // Making input fields read only when settings have been confirmed
+    document.getElementById("maxPlayersOptions").setAttribute("disabled", '');
+    document.getElementById("startingResourcesInput").readOnly = true;
+    document.getElementById("startingFleetSizeInput").readOnly = true;
 
     // When settings are confirmed, the game id needs to be created in the server, and the server will send 
     // it back here so that it can be displayed in this component
@@ -86,6 +88,7 @@ export default class GameCreationMenu extends Component {
       this.sendSettingsToServer(data.gameID);
       this.setState({
         confirmPressed: true,
+        colorSelectionActive: true,
         gameID: data.gameID // TODO: GameID doesn't mutate throughout the life of this component. Maybe make it a field instead of encapsulating it within the state of the component?
       });
     });
@@ -95,9 +98,11 @@ export default class GameCreationMenu extends Component {
 
     // Obtain selected settings options
     const maxPlayersSelectElem = document.getElementById("maxPlayersOptions");
+    const startingResourcesInput = document.getElementById("startingResourcesInput");
+    const startingFleetSizeInput = document.getElementById("startingFleetSizeInput");
     const maxPlayers = maxPlayersSelectElem.options[maxPlayersSelectElem.selectedIndex].value
-    const startingResources =  document.getElementById("startingResourcesInput").value;
-    const startingFleetSize =  document.getElementById("startingFleetSizeInput").value;
+    const startingResources =  startingResourcesInput.value;
+    const startingFleetSize =  startingFleetSizeInput.value;
 
     // Sends the selected settings options to the server
     socket.emit('store-game-attributes', {
@@ -195,9 +200,11 @@ export default class GameCreationMenu extends Component {
           <div id="colorSelectorDiv">
             <h3>Color Selection</h3>
             <div id="colorSelectorDivOptions">
-              {this.state.colorOptions.map(colorOption => {
-                return <ColorOption colorValue={colorOption} key={colorOption} id={`ColorOption ${colorOption}`}/>
-              })}
+              {this.state.colorSelectionActive && // Only render color options if settings have been confirmed
+                this.state.colorOptions.map(colorOption => {
+                  return <ColorOption colorValue={colorOption} key={colorOption} id={`ColorOption ${colorOption}`}/>
+                })
+              }
             </div>
           </div>
 
