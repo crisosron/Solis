@@ -30,8 +30,8 @@ io.on('connection', (client) => {
         createGameID(client);
     });
 
-    client.on("store-game-settings", (data) => {
-        storeGameSettings(data);
+    client.on("store-game-attributes", (data) => {
+        storeGameAttributes(data);
     });
 
     // Leaving and joining rooms
@@ -61,9 +61,9 @@ const createGameID = clientSocket => {
     clientSocket.emit("game-id-delivery", {gameID: gameID}); // Sends the generated game id back to the client that requested it
 }
 
-const storeGameSettings = gameSettings => {
+const storeGameAttributes = gameAttributes => {
     console.log("Received request from client: `store-game-settings`");
-    console.log(gameSettings)
+    console.log(gameAttributes)
 }
 
 const joinGameRoom = (clientSocket, data) => {
@@ -121,7 +121,7 @@ class GameRoom{
     constructor(gameID, gameCreator){
         this._gameID = gameID;
         this._players = [gameCreator];
-        this._gameSettings = null;
+        this._gameAttributes = null;
     }
 
     get gameID(){
@@ -130,6 +130,10 @@ class GameRoom{
 
     get players(){
         return this._players;
+    }
+
+    get gameAttributes(){
+        return this._gameAttributes;
     }
 
     addPlayer(player){

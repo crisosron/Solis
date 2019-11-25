@@ -100,11 +100,12 @@ export default class GameCreationMenu extends Component {
     const startingFleetSize =  document.getElementById("startingFleetSizeInput").value;
 
     // Sends the selected settings options to the server
-    socket.emit('store-game-settings', {
+    socket.emit('store-game-attributes', {
       gameID: gameID,
       maxPlayers: maxPlayers,
       startingResources: startingResources,
-      startingFleetSize: startingFleetSize
+      startingFleetSize: startingFleetSize,
+      colorOptions: this.state.colorOptions
     });
   }
 
