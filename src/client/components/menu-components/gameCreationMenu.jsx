@@ -15,17 +15,17 @@ export default class GameCreationMenu extends Component {
     // Handles the event fired from server that indicates that a player has joined this game room
     socket.on("player-joined", data => {
       //console.log("A new player has joined the lobby!: ", data.joinedPlayer);
-      let connectedPlayers = this.state.connectedPlayers;
-      connectedPlayers.push(data.joinedPlayer);
+      let connectedPlayersUserNames = this.state.connectedPlayersUserNames;
+      connectedPlayersUserNames.push(data.joinedPlayerUserName);
       this.setState({
-        connectedPlayers: connectedPlayers
+        connectedPlayersUserNames: connectedPlayersUserNames
       });
     });
 
     this.state = {
       confirmPressed: false,
       currentUserName: "", // Displayed for 'this' client only 
-      connectedPlayers: [],
+      connectedPlayersUserNames: [],
       colorOptions: this.generateRandomColors(),
       colorSelectionActive: false,
       creatorUserName: null
@@ -223,11 +223,10 @@ export default class GameCreationMenu extends Component {
           {/*Subdivision of options div - Displays all registered user names - Names are colored by the user's selection*/}
           <div id="registeredUsersDiv">
             <h3>Connected Players</h3>
-            {this.state.connectedPlayers.length !== 0 &&
-              this.state.connectedPlayers.map( player => {
-                console.log(player);
-                //console.log("In gameCreationMenu: ", player.printInPlayer());
-                return <UserName playerName={player.userName} playerColor={player.color} key={player.userName + " " + player.color}/>
+            {this.state.connectedPlayersUserNames.length !== 0 &&
+              this.state.connectedPlayersUserNames.map( playerUserName => {
+                console.log(playerUserName);
+                return <UserName playerName={playerUserName} playerColor="#ffffff" key={playerUserName + " #ffffff"}/>
               })
             }
           </div>

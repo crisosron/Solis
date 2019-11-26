@@ -31,7 +31,6 @@ class Player {
     }
 
     set color(color){
-        if(color === "") this._userName = this.DEFAULT_COLOR;
         this._color = color;
     }
 
@@ -40,8 +39,11 @@ class Player {
     }
 
     set userName(userName){
-        if(userName === "" ) this._userName = this.DEFAULT_USER_NAME // Makes sure default user name is Anon
-        else this._userName = userName;
+        this._userName = userName;
+    }
+
+    someMethodInPlayer(){
+        console.log("Called some method in player");
     }
 }
 

@@ -15,7 +15,6 @@ let allPlayers = [];
 let gameRooms = [];
 
 io.on('connection', (client) => {
-    console.log(client.id);
     numClientsConnected++;
     console.log('Number of clients connected so far: ', numClientsConnected);
 
@@ -56,8 +55,9 @@ const createGameID = (clientSocket, data) => {
     clientSocket.join(gameID); // Creates a room and subscribes the game generating player to that room
     clientSocket.emit("game-id-delivery", {gameID: gameID}); // Sends the generated game id back to the client that requested it
 
+    console.log("player.userName: ", player.userName);
     // Triggers an event to all sockets in the newly created room (only the game generating player will be in it when this event is trigerred)
-    io.to(gameID).emit("player-joined", {joinedPlayer: player});
+    io.to(gameID).emit("player-joined", {joinedPlayerUserName: player.userName});
 }
 
 const storeGameAttributes = gameAttributes => {
