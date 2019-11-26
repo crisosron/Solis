@@ -2,10 +2,10 @@ import React from 'react';
 
 export default function UserName(props){
     const style = {
-        color: props.playerColor
+        color: props.playerColor,
+        fontSize: "23px"
     }
-    console.log(props.playerName);
     return(
-    <h1 style={style}>{props.playerName}</h1>
+        <h1 style={style}>{props.playerName}</h1>
     );
 }

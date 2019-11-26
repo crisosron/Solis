@@ -138,7 +138,7 @@ export default class GameCreationMenu extends Component {
           id="userNameInputField"
           placeholder={"Enter username"}
           maxLength="15"
-        />{" "}
+        />
         <div className="centerStyle optionsDiv">
           <div id="attributeOptionsDiv">
             <h3>Settings</h3>
@@ -225,7 +225,6 @@ export default class GameCreationMenu extends Component {
             <h3>Connected Players</h3>
             {this.state.connectedPlayersUserNames.length !== 0 &&
               this.state.connectedPlayersUserNames.map( playerUserName => {
-                console.log(playerUserName);
                 return <UserName playerName={playerUserName} playerColor="#ffffff" key={playerUserName + " #ffffff"}/>
               })
             }

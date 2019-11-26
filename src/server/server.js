@@ -6,8 +6,13 @@ let numClientsConnected = 0;
 
 io.listen(PORT_NUM);
 console.log("Listening for connections on port ", PORT_NUM);
-
 const GAME_ID_LEN = 24;
+
+const GAME_ROOM_EVENTS = {
+    PLAYER_JOINED: 1,
+    PLAYER_CHANGED_USER_NAME: 2,
+    PLAYER_CHANGED_COLOR: 3
+}
 
 let allPlayers = [];
 
@@ -55,9 +60,8 @@ const createGameID = (clientSocket, data) => {
     clientSocket.join(gameID); // Creates a room and subscribes the game generating player to that room
     clientSocket.emit("game-id-delivery", {gameID: gameID}); // Sends the generated game id back to the client that requested it
 
-    console.log("player.userName: ", player.userName);
     // Triggers an event to all sockets in the newly created room (only the game generating player will be in it when this event is trigerred)
-    io.to(gameID).emit("player-joined", {joinedPlayerUserName: player.userName});
+    emitToGameRoom(gameID, GAME_ROOM_EVENTS.PLAYER_JOINED, {joinedPlayerUserName: player.userName});
 }
 
 const storeGameAttributes = gameAttributes => {
@@ -72,16 +76,34 @@ const joinGameRoom = (clientSocket, data) => {
         clientSocket.emit("invalid-game-id-entered", {message: "Game ID of " + data.gameID + " does not exist!"});
         return;
     }
+
     clientSocket.join(data.gameID);
-    console.log(`Joining room succesful`);
     let joinedGameRoom = getGameRoomByGameID(data.gameID);
-    joinedGameRoom.addPlayer(new Player(clientSocket.id));
-    console.log(`Joined GameRoom: ${joinedGameRoom.gameID}, num players in room: ${joinedGameRoom.players.length}`);
-    
+    let joiningPlayer = new Player(clientSocket.id);
+    joinedGameRoom.addPlayer(joiningPlayer);
+    console.log(`A player joined a GameRoom: ${joinedGameRoom.gameID}, num players in room: ${joinedGameRoom.players.length}`);
+
+    emitToGameRoom(data.gameID, GAME_ROOM_EVENTS.PLAYER_JOINED, {joinedPlayerUserName: joiningPlayer.userName});
 }
 
 
 // --------------- HELPER FUNCTIONS --------------- //
+const emitToGameRoom = (gameID, event, dataToSend) => {
+    switch (event){
+        case GAME_ROOM_EVENTS.PLAYER_JOINED:
+            io.to(gameID).emit("player-joined", dataToSend);
+            break;
+        case GAME_ROOM_EVENTS.PLAYER_CHANGED_USER_NAME:
+            io.to(gameID).emit("player-changed-user-name", dataToSend);
+            break;
+        case GAME_ROOM_EVENTS.PLAYER_CHANGED_COLOR:
+            io.to(gameID).emit("player-changed-color", dataToSend); 
+            break;
+        default: 
+            throw new Error("GAME_ROOM_EVENT " + event + " not found" );
+    }
+}
+
 const inGameRoom = player =>{
     for(let i = 0; i < gameRooms.length; i++ ){
         const gameRoom = gameRooms[i];

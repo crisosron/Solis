@@ -1,12 +1,6 @@
 // Represents a player within the game
 class Player {
-
-    // TODO: Appearing as SyntaxError
-    // static DEFAULT_COLOR = "#ffffff"
-    // static DEFAULT_USER_NAME = "Anon"
-
     constructor(socketID, userName = "Anon"){
-        console.log("INSIDE CONSTRUCTOR OF PLAYER: userName = ", userName);
         this._color = "#ffffff";
         this._socketID = socketID;
         this._hand = new Array(0);
@@ -40,10 +34,6 @@ class Player {
 
     set userName(userName){
         this._userName = userName;
-    }
-
-    someMethodInPlayer(){
-        console.log("Called some method in player");
     }
 }
 
