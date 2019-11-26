@@ -16,7 +16,7 @@ const GAME_ROOM_EVENTS = {
 
 let allPlayers = [];
 
-// A single GameRoom represents the current sessions that exist within the root namespace
+// A single GameRoom represents the current sessions that exist within the root namespa ce
 let gameRooms = [];
 
 io.on('connection', (client) => {
@@ -83,6 +83,7 @@ const joinGameRoom = (clientSocket, data) => {
     joinedGameRoom.addPlayer(joiningPlayer);
     console.log(`A player joined a GameRoom: ${joinedGameRoom.gameID}, num players in room: ${joinedGameRoom.players.length}`);
 
+    // TODO: Explore if theres a way to make a template of the data argument required
     emitToGameRoom(data.gameID, GAME_ROOM_EVENTS.PLAYER_JOINED, {joinedPlayerUserName: joiningPlayer.userName});
 }
 
