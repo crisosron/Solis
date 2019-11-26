@@ -1,4 +1,14 @@
+/**
+ * Represents a socket room, where the member sockets are the sockets of Player instances in the same game. 
+ * 
+*/
 class GameRoom{
+
+    /** 
+    * @constructor
+    * @param {string} gameID - A string of randomly generated numbers that identifies this GameRoom
+    * @param {Player} gameCreator - Player instance that created a game to generate this GameRoom instance
+    */
     constructor(gameID, gameCreator){
         this._gameID = gameID;
         this._players = [gameCreator];
@@ -22,11 +32,14 @@ class GameRoom{
     }
 
     addPlayer(player){
+        console.log("Inside addPlayer method in gameRoom. ", player);
         this._players.push(player);
     }
 
     // TODO: Executing this function leads to undefined for some reason. Fix it.
     printDetails(){
-        console.log(`gameID: ${this._gameID}, # of players in room: ${this._players.length}`);
+        console.log("Inside printDetails!");
     }
 }
+
+module.exports = GameRoom;

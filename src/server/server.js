@@ -1,6 +1,6 @@
 const io = require('socket.io')();
-const Player = require('./player.js');
-const GameRoom = require('./gameRoom.js');
+let Player = require('./player.js');
+let GameRoom = require('./gameRoom.js');
 const PORT_NUM = 8000;
 let numClientsConnected = 0;
 
@@ -9,7 +9,7 @@ console.log("Listening for connections on port ", PORT_NUM);
 
 const GAME_ID_LEN = 24;
 
-let allUsers = [];
+let allPlayers = [];
 
 // A single GameRoom represents the current sessions that exist within the root namespace
 let gameRooms = [];
@@ -18,13 +18,6 @@ io.on('connection', (client) => {
     console.log(client.id);
     numClientsConnected++;
     console.log('Number of clients connected so far: ', numClientsConnected);
-
-    // A single user is a mapping from a user's socket and their player object
-    const user = {
-        clientSocket: client,
-        player: new Player(client.id)
-    }
-    allUsers.push(user);
 
     // ---- Client requests ---- //
     client.on("create-game-id", data => {
@@ -54,8 +47,10 @@ io.on('connection', (client) => {
 // --------------- CLIENT REQUEST HANDLING FUNCTIONS --------------- //
 const createGameID = (clientSocket, data) => {
     const gameID = generateGameID();
-    const player = getPlayerFromSocket(clientSocket);
-    player.userName = data.creatorUserName;
+    let creatorUserName = data.creatorUserName == null || data.creatorUserName === "" ? "Anon" : data.creatorUserName;
+    let player = new Player(clientSocket.id, creatorUserName);
+    allPlayers.push(player);
+
     let gameRoom = new GameRoom(gameID, player);
     gameRooms.push(gameRoom);
     clientSocket.join(gameID); // Creates a room and subscribes the game generating player to that room
@@ -67,7 +62,6 @@ const createGameID = (clientSocket, data) => {
 
 const storeGameAttributes = gameAttributes => {
     console.log("Received request from client: `store-game-settings`");
-    console.log(gameAttributes)
 }
 
 const joinGameRoom = (clientSocket, data) => {
@@ -81,7 +75,7 @@ const joinGameRoom = (clientSocket, data) => {
     clientSocket.join(data.gameID);
     console.log(`Joining room succesful`);
     let joinedGameRoom = getGameRoomByGameID(data.gameID);
-    joinedGameRoom.addPlayer(getPlayerFromSocket(clientSocket));
+    joinedGameRoom.addPlayer(new Player(clientSocket.id));
     console.log(`Joined GameRoom: ${joinedGameRoom.gameID}, num players in room: ${joinedGameRoom.players.length}`);
     
 }
@@ -104,8 +98,8 @@ const existingGameID = gameID => {
 }
 
 const getPlayerFromSocket = playerSocket => {
-    for(let i = 0; i < allUsers.length; i++){
-        if(allUsers[i].clientSocket === playerSocket) return allUsers[i].player;
+    for(let i = 0; i < allPlayers.length; i++){
+        if(allPlayers[i].socketID === playerSocket.id) return allPlayers[i];
     }
 }
 

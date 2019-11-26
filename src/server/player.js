@@ -5,15 +5,15 @@ class Player {
     // static DEFAULT_COLOR = "#ffffff"
     // static DEFAULT_USER_NAME = "Anon"
 
-    // Construct a Player, setting all fields to null / Empty arrays
-    constructor(randomPlayerID){
-        this._color = "#ffffff"
-        this._randomPlayerID = randomPlayerID;
+    constructor(socketID, userName = "Anon"){
+        console.log("INSIDE CONSTRUCTOR OF PLAYER: userName = ", userName);
+        this._color = "#ffffff";
+        this._socketID = socketID;
         this._hand = new Array(0);
         this._eventHand = new Array(0);
         this._fleets = new Array(0);
         this._ownedNodes = new Array(0);
-        this._userName = "Anon"
+        this._userName = userName;
     }
 
     // Add a resource card to the players hand
@@ -21,7 +21,11 @@ class Player {
         this.hand.push(resourceType);
     }
 
-    // TODO: Investigate why using get syntax for es6 returns undefined
+    get socketID(){
+        return this._socketID;
+    }
+
+    // TODO: Investigate why using get syntax for es6 returns undefined - See Issue #2
     get color(){
         return this._color;
     }
@@ -41,5 +45,4 @@ class Player {
     }
 }
 
-//export default Player
 module.exports = Player;

@@ -11,7 +11,7 @@ export default class GameCreationMenu extends Component {
     this.ENTER_KEY = 13;
     this.userNameInputField = null;
     this.NUM_COLORS_AVAILABLE = 16;
-
+    
     // Handles the event fired from server that indicates that a player has joined this game room
     socket.on("player-joined", data => {
       //console.log("A new player has joined the lobby!: ", data.joinedPlayer);
@@ -225,7 +225,8 @@ export default class GameCreationMenu extends Component {
             <h3>Connected Players</h3>
             {this.state.connectedPlayers.length !== 0 &&
               this.state.connectedPlayers.map( player => {
-                console.log("In gameCreationMenu: ", player._userName);
+                console.log(player);
+                //console.log("In gameCreationMenu: ", player.printInPlayer());
                 return <UserName playerName={player.userName} playerColor={player.color} key={player.userName + " " + player.color}/>
               })
             }
