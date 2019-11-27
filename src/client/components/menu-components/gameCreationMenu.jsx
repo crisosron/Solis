@@ -89,6 +89,8 @@ export default class GameCreationMenu extends Component {
 
   handleConfirmSettingsPressed = () => {
     if (this.state.confirmPressed) return;
+    if (!this.validUserName()) return;
+
     // Making input fields read only when settings have been confirmed
     document.getElementById("maxPlayersOptions").setAttribute("disabled", "");
     document.getElementById("startingResourcesInput").readOnly = true;
@@ -244,9 +246,12 @@ export default class GameCreationMenu extends Component {
               this.state.connectedPlayersUserNames.map(playerUserName => {
                 return (
                   <UserName
-                    playerName={playerUserName}
+                    playerName={
+                      playerUserName + (this.thisUserName ? "(You)" : "")
+                    }
                     playerColor="#ffffff"
                     key={playerUserName + " #ffffff"}
+                    thisPlayer={this}
                   />
                 );
               })}

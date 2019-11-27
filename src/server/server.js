@@ -65,7 +65,7 @@ const createGameID = (clientSocket, data) => {
 
     // Triggers an event to all sockets in the newly created room (only the game generating player will be in it when this event is trigerred)
     io.to(gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, {
-        joinedPlayerUserName: player.userName
+        joinedPlayerUserName: player.userName,
     });
 
 }
@@ -74,6 +74,11 @@ const storeGameAttributes = gameAttributes => {
     console.log("Received request from client: `store-game-settings`");
 }
 
+/**
+ * Function that processes the logic behind a player joining a game room
+ * @param {object} clientSocket - The socket of the joining player
+ * @param {object} data - Data received by the servver to be processed. Data in this case should contain gameID to join, and userName of the joining player
+ */
 const joinGameRoom = (clientSocket, data) => {
     //if(inGameRoom(getPlayerFromSocket(client))) return; // Precondition that checks if the player is already in a room, cancel the operation
 
@@ -87,13 +92,15 @@ const joinGameRoom = (clientSocket, data) => {
 
     clientSocket.join(data.gameID);
     let joinedGameRoom = getGameRoomByGameID(data.gameID);
-    let joiningPlayer = new Player(clientSocket.id);
+
+    // TODO: Loop through the players of joinedGameRoom and find duplicate names against data.gameID! If so, fire invalid name event to client (this is strictly for players in JoinGameMenu)
+    let joiningPlayer = new Player(clientSocket.id, data.userName);
     joinedGameRoom.addPlayer(joiningPlayer);
     console.log(`A player joined a GameRoom: ${joinedGameRoom.gameID}, num players in room: ${joinedGameRoom.players.length}`);
 
     // TODO: Explore if theres a way to make a template of the data argument required
     io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, {
-        joinedPlayerUserName: joiningPlayer.userName
+        joinedPlayerUserName: joiningPlayer.userName,
     });
 }
 

@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import "./menuComponents.css";
 import { Link } from "react-router-dom";
-import socket from '../../../index.js';
+import socket from "../../../index.js";
 
 //TODO: Rename to SolisHome
+// TODO: Make this into a functional stateless component
 export default class SolisLobby extends Component {
   // Enum that represents the game creation status
   GameCreationStatus = {
@@ -23,8 +24,6 @@ export default class SolisLobby extends Component {
     this.setState({
       gameCreationStatus: this.GameCreationStatus.CREATE_GAME
     });
-
-    // TODO: Do server processing
   };
 
   handleJoinGamePressed = () => {
@@ -32,8 +31,6 @@ export default class SolisLobby extends Component {
     this.setState({
       gameCreationStatus: this.GameCreationStatus.JOIN_GAME
     });
-
-    // TODO: Do server processing
   };
 
   render() {
