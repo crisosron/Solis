@@ -16,8 +16,7 @@ export default class GameCreationMenu extends Component {
     this.NUM_COLORS_AVAILABLE = 16;
 
     // Handles the event fired from server that indicates that a player has joined this game room
-    socket.on(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED.eventMessage, data => {
-      console.log("New player joining");
+    socket.on(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, data => {
       let connectedPlayersUserNames = this.state.connectedPlayersUserNames;
       connectedPlayersUserNames.push(data.joinedPlayerUserName);
       this.setState({
@@ -97,11 +96,11 @@ export default class GameCreationMenu extends Component {
 
     // When settings are confirmed, the game id needs to be created in the server, and the server will send
     // it back here so that it can be displayed in this component
-    socket.emit(CLIENT_REQUESTS.CREATE_GAME_ID.eventMessage, {
+    socket.emit(CLIENT_REQUESTS.CREATE_GAME_ID, {
       creatorUserName: this.userNameInputField.value
     });
 
-    socket.on(SERVER_RESPONSES.GAME_ID_DELIVERY.eventMessage, data => {
+    socket.on(SERVER_RESPONSES.GAME_ID_DELIVERY, data => {
       this.sendSettingsToServer(data.gameID);
       this.setState({
         confirmPressed: true,

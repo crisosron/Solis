@@ -1,11 +1,6 @@
 let SERVER_RESPONSES = {
-    GAME_ID_DELIVERY: {
-        eventMessage: "game-id-delivery",
-    },
-
-    INVALID_GAME_ID_ENTERED: {
-        eventMessage: "invalid-game-id-entered",
-    },
+    GAME_ID_DELIVERY: 1,
+    INVALID_GAME_ID_ENTERED: 2
 }
 
 module.exports = SERVER_RESPONSES;

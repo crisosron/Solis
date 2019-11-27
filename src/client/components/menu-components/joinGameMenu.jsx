@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import "./menuComponents.css";
 import CLIENT_REQUESTS from "../../../clientRequests";
-import SERVER_RESPONSES from "../../../serverResponses";
+import GAME_ROOM_EVENTS from "../../../gameRoomEvents";
 import socket from "../../../index.js";
 
 export default class JoinGameMenu extends Component {
@@ -17,10 +17,9 @@ export default class JoinGameMenu extends Component {
   }
 
   handleJoinGameClicked = () => {
-    socket.emit(
-      CLIENT_REQUESTS.GAME_ROOM_EVENT_REQUEST.JOIN_GAME_ROOM.eventMessage,
-      { gameID: document.getElementById("gameIDInput").value }
-    );
+    socket.emit(GAME_ROOM_EVENTS.REQUESTS.JOIN_GAME_ROOM, {
+      gameID: document.getElementById("gameIDInput").value
+    });
   };
 
   render() {

@@ -1,11 +1,6 @@
 let CLIENT_REQUESTS = {
-    CREATE_GAME_ID: {
-        eventMessage: "create-game-id"
-    },
-
-    STORE_GAME_ATTRIBUTES: {
-        eventMessage: "create-game"
-    },
+    CREATE_GAME_ID: 1,
+    STORE_GAME_ATTRIBUTES: 2
 }
 
 module.exports = CLIENT_REQUESTS;
