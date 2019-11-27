@@ -1,20 +1,19 @@
 const io = require('socket.io')();
 let Player = require('./player.js');
 let GameRoom = require('./gameRoom.js');
+
+// Event Modules - These are essentially just enums in a nested object structure with eventMessage strings
+let CLIENT_REQUESTS = require("../clientRequests");
+let SERVER_RESPONSES = require("../serverResponses");
+let GAME_ROOM_EVENTS = require("../gameRoomEvents");
+
 const PORT_NUM = 8000;
+const GAME_ID_LEN = 24;
 let numClientsConnected = 0;
+let allPlayers = [];
 
 io.listen(PORT_NUM);
 console.log("Listening for connections on port ", PORT_NUM);
-const GAME_ID_LEN = 24;
-
-const GAME_ROOM_EVENTS = {
-    PLAYER_JOINED: 1,
-    PLAYER_CHANGED_USER_NAME: 2,
-    PLAYER_CHANGED_COLOR: 3
-}
-
-let allPlayers = [];
 
 // A single GameRoom represents the current sessions that exist within the root namespa ce
 let gameRooms = [];
@@ -24,20 +23,20 @@ io.on('connection', (client) => {
     console.log('Number of clients connected so far: ', numClientsConnected);
 
     // ---- Client requests ---- //
-    client.on("create-game-id", data => {
+    client.on(CLIENT_REQUESTS.CREATE_GAME_ID.eventMessage, data => {
         createGameID(client, data);
     });
 
-    client.on("store-game-attributes", (data) => {
+    client.on(CLIENT_REQUESTS.STORE_GAME_ATTRIBUTES.eventMessage, (data) => {
         storeGameAttributes(data);
     });
 
     // Leaving and joining rooms
-    client.on("leave-game-room", (data) => {
+    client.on(GAME_ROOM_EVENTS.REQUESTS.LEAVE_GAME_ROOM.eventMessage, (data) => {
         client.leave(data.gameID);
     });
 
-    client.on("join-game-room", (data) => {
+    client.on(GAME_ROOM_EVENTS.REQUESTS.JOIN_GAME_ROOM.eventMessage, (data) => {
         joinGameRoom(client, data);
     });
 
@@ -58,10 +57,17 @@ const createGameID = (clientSocket, data) => {
     let gameRoom = new GameRoom(gameID, player);
     gameRooms.push(gameRoom);
     clientSocket.join(gameID); // Creates a room and subscribes the game generating player to that room
-    clientSocket.emit("game-id-delivery", {gameID: gameID}); // Sends the generated game id back to the client that requested it
+
+    // Sends the generated game id back to the client that requested it
+    clientSocket.emit(SERVER_RESPONSES.GAME_ID_DELIVERY.eventMessage, {
+        gameID: gameID
+    });
 
     // Triggers an event to all sockets in the newly created room (only the game generating player will be in it when this event is trigerred)
-    emitToGameRoom(gameID, GAME_ROOM_EVENTS.PLAYER_JOINED, {joinedPlayerUserName: player.userName});
+    io.to(gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED.eventMessage, {
+        joinedPlayerUserName: player.userName
+    });
+
 }
 
 const storeGameAttributes = gameAttributes => {
@@ -69,11 +75,13 @@ const storeGameAttributes = gameAttributes => {
 }
 
 const joinGameRoom = (clientSocket, data) => {
-     //if(inGameRoom(getPlayerFromSocket(client))) return; // Precondition that checks if the player is already in a room, cancel the operation
+    //if(inGameRoom(getPlayerFromSocket(client))) return; // Precondition that checks if the player is already in a room, cancel the operation
 
     // Precondition that checks the validity of the gameID supplied to this request
-    if(!existingGameID(data.gameID)) {
-        clientSocket.emit("invalid-game-id-entered", {message: "Game ID of " + data.gameID + " does not exist!"});
+    if (!existingGameID(data.gameID)) {
+        clientSocket.emit(SERVER_RESPONSES.INVALID_GAME_ID_ENTERED.eventMessage, {
+            message: "Game ID of " + data.gameID + " does not exist!"
+        });
         return;
     }
 
@@ -84,56 +92,41 @@ const joinGameRoom = (clientSocket, data) => {
     console.log(`A player joined a GameRoom: ${joinedGameRoom.gameID}, num players in room: ${joinedGameRoom.players.length}`);
 
     // TODO: Explore if theres a way to make a template of the data argument required
-    emitToGameRoom(data.gameID, GAME_ROOM_EVENTS.PLAYER_JOINED, {joinedPlayerUserName: joiningPlayer.userName});
+    io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED.eventMessage, {
+        joinedPlayerUserName: joiningPlayer.userName
+    });
 }
-
 
 // --------------- HELPER FUNCTIONS --------------- //
-const emitToGameRoom = (gameID, event, dataToSend) => {
-    switch (event){
-        case GAME_ROOM_EVENTS.PLAYER_JOINED:
-            io.to(gameID).emit("player-joined", dataToSend);
-            break;
-        case GAME_ROOM_EVENTS.PLAYER_CHANGED_USER_NAME:
-            io.to(gameID).emit("player-changed-user-name", dataToSend);
-            break;
-        case GAME_ROOM_EVENTS.PLAYER_CHANGED_COLOR:
-            io.to(gameID).emit("player-changed-color", dataToSend); 
-            break;
-        default: 
-            throw new Error("GAME_ROOM_EVENT " + event + " not found" );
-    }
-}
-
-const inGameRoom = player =>{
-    for(let i = 0; i < gameRooms.length; i++ ){
+const inGameRoom = player => {
+    for (let i = 0; i < gameRooms.length; i++) {
         const gameRoom = gameRooms[i];
-        if(gameRoom.players.includes(player)) return true;
+        if (gameRoom.players.includes(player)) return true;
     }
     return false;
 }
 
 const existingGameID = gameID => {
-    for(let i = 0; i < gameRooms.length; i++){
-        if(gameRooms[i].gameID === gameID) return true;
+    for (let i = 0; i < gameRooms.length; i++) {
+        if (gameRooms[i].gameID === gameID) return true;
     }
     return false;
 }
 
 const getPlayerFromSocket = playerSocket => {
-    for(let i = 0; i < allPlayers.length; i++){
-        if(allPlayers[i].socketID === playerSocket.id) return allPlayers[i];
+    for (let i = 0; i < allPlayers.length; i++) {
+        if (allPlayers[i].socketID === playerSocket.id) return allPlayers[i];
     }
 }
 
 const getGameRoomByGameID = gameID => {
-    for(let i = 0; i < gameRooms.length; i++){
-        if(gameRooms[i].gameID === gameID) return gameRooms[i];
+    for (let i = 0; i < gameRooms.length; i++) {
+        if (gameRooms[i].gameID === gameID) return gameRooms[i];
     }
 }
 
 const generateGameID = () => {
     let gameID = "";
-    for(let i = 0; i < GAME_ID_LEN; i++) gameID += Math.floor(Math.random() * 10);
+    for (let i = 0; i < GAME_ID_LEN; i++) gameID += Math.floor(Math.random() * 10);
     return gameID;
 }

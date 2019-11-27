@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import "./menuComponents.css";
-import ColorOption from './colorOption';
-import UserName from './userName';
+import ColorOption from "./colorOption";
+import UserName from "./userName";
 import { Link } from "react-router-dom";
-import socket from '../../../index.js';
+import CLIENT_REQUESTS from "../../../clientRequests";
+import SERVER_RESPONSES from "../../../serverResponses";
+import GAME_ROOM_EVENTS from "../../../gameRoomEvents";
+import socket from "../../../index.js";
 
 export default class GameCreationMenu extends Component {
   constructor(props) {
@@ -11,10 +14,10 @@ export default class GameCreationMenu extends Component {
     this.ENTER_KEY = 13;
     this.userNameInputField = null;
     this.NUM_COLORS_AVAILABLE = 16;
-    
+
     // Handles the event fired from server that indicates that a player has joined this game room
-    socket.on("player-joined", data => {
-      //console.log("A new player has joined the lobby!: ", data.joinedPlayer);
+    socket.on(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED.eventMessage, data => {
+      console.log("New player joining");
       let connectedPlayersUserNames = this.state.connectedPlayersUserNames;
       connectedPlayersUserNames.push(data.joinedPlayerUserName);
       this.setState({
@@ -24,7 +27,7 @@ export default class GameCreationMenu extends Component {
 
     this.state = {
       confirmPressed: false,
-      currentUserName: "", // Displayed for 'this' client only 
+      currentUserName: "", // Displayed for 'this' client only
       connectedPlayersUserNames: [],
       colorOptions: this.generateRandomColors(),
       colorSelectionActive: false,
@@ -34,14 +37,13 @@ export default class GameCreationMenu extends Component {
 
   // Generates some random colors that will be available for selection when the component is about to mount.
   generateRandomColors = () => {
-
     // Populating a collection of randomly generated colors
     let randomlyGeneratedColors = [];
-    for (let i = 0; i < this.NUM_COLORS_AVAILABLE; i++){
+    for (let i = 0; i < this.NUM_COLORS_AVAILABLE; i++) {
       let randomColor = this.createRandomColor();
 
       // Check if random color is already in the array of randomly generated colors
-      if(randomlyGeneratedColors.includes(randomColor)){
+      if (randomlyGeneratedColors.includes(randomColor)) {
         i--;
         continue;
       }
@@ -87,16 +89,19 @@ export default class GameCreationMenu extends Component {
   };
 
   handleConfirmSettingsPressed = () => {
-    if(this.state.confirmPressed) return;
+    if (this.state.confirmPressed) return;
     // Making input fields read only when settings have been confirmed
-    document.getElementById("maxPlayersOptions").setAttribute("disabled", '');
+    document.getElementById("maxPlayersOptions").setAttribute("disabled", "");
     document.getElementById("startingResourcesInput").readOnly = true;
     document.getElementById("startingFleetSizeInput").readOnly = true;
 
-    // When settings are confirmed, the game id needs to be created in the server, and the server will send 
+    // When settings are confirmed, the game id needs to be created in the server, and the server will send
     // it back here so that it can be displayed in this component
-    socket.emit("create-game-id", {creatorUserName: this.userNameInputField.value}); // Note the entered user name is allowed to be empty
-    socket.on("game-id-delivery", (data) => {
+    socket.emit(CLIENT_REQUESTS.CREATE_GAME_ID.eventMessage, {
+      creatorUserName: this.userNameInputField.value
+    });
+
+    socket.on(SERVER_RESPONSES.GAME_ID_DELIVERY.eventMessage, data => {
       this.sendSettingsToServer(data.gameID);
       this.setState({
         confirmPressed: true,
@@ -106,18 +111,22 @@ export default class GameCreationMenu extends Component {
     });
   };
 
-  sendSettingsToServer(gameID){
-
+  sendSettingsToServer(gameID) {
     // Obtain selected settings options
     const maxPlayersSelectElem = document.getElementById("maxPlayersOptions");
-    const startingResourcesInput = document.getElementById("startingResourcesInput");
-    const startingFleetSizeInput = document.getElementById("startingFleetSizeInput");
-    const maxPlayers = maxPlayersSelectElem.options[maxPlayersSelectElem.selectedIndex].value
-    const startingResources =  startingResourcesInput.value;
-    const startingFleetSize =  startingFleetSizeInput.value;
+    const startingResourcesInput = document.getElementById(
+      "startingResourcesInput"
+    );
+    const startingFleetSizeInput = document.getElementById(
+      "startingFleetSizeInput"
+    );
+    const maxPlayers =
+      maxPlayersSelectElem.options[maxPlayersSelectElem.selectedIndex].value;
+    const startingResources = startingResourcesInput.value;
+    const startingFleetSize = startingFleetSizeInput.value;
 
     // Sends the selected settings options to the server
-    socket.emit('store-game-attributes', {
+    socket.emit("store-game-attributes", {
       gameID: gameID,
       maxPlayers: maxPlayers,
       startingResources: startingResources,
@@ -131,7 +140,11 @@ export default class GameCreationMenu extends Component {
       <div className="centerStyle">
         <h1 id="createGameTitle">Create Game</h1>
         <h3>Game ID</h3>
-        <h2 className="backgroundHighlight">{this.state.confirmPressed ? this.state.gameID : "Confirm settings to generate game code"}</h2>
+        <h2 className="backgroundHighlight">
+          {this.state.confirmPressed
+            ? this.state.gameID
+            : "Confirm settings to generate game code"}
+        </h2>
         <br />
         <input
           type="text"
@@ -214,9 +227,14 @@ export default class GameCreationMenu extends Component {
             <div id="colorSelectorDivOptions">
               {this.state.colorSelectionActive && // Only render color options if settings have been confirmed
                 this.state.colorOptions.map(colorOption => {
-                  return <ColorOption colorValue={colorOption} key={colorOption} id={`ColorOption ${colorOption}`}/>
-                })
-              }
+                  return (
+                    <ColorOption
+                      colorValue={colorOption}
+                      key={colorOption}
+                      id={`ColorOption ${colorOption}`}
+                    />
+                  );
+                })}
             </div>
           </div>
 
@@ -224,10 +242,15 @@ export default class GameCreationMenu extends Component {
           <div id="registeredUsersDiv">
             <h3>Connected Players</h3>
             {this.state.connectedPlayersUserNames.length !== 0 &&
-              this.state.connectedPlayersUserNames.map( playerUserName => {
-                return <UserName playerName={playerUserName} playerColor="#ffffff" key={playerUserName + " #ffffff"}/>
-              })
-            }
+              this.state.connectedPlayersUserNames.map(playerUserName => {
+                return (
+                  <UserName
+                    playerName={playerUserName}
+                    playerColor="#ffffff"
+                    key={playerUserName + " #ffffff"}
+                  />
+                );
+              })}
           </div>
         </div>
 
