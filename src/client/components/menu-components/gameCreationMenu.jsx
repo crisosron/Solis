@@ -15,14 +15,7 @@ export default class GameCreationMenu extends Component {
     this.userNameInputField = null;
     this.NUM_COLORS_AVAILABLE = 16;
 
-    // Handles the event fired from server that indicates that a player has joined this game room
-    socket.on(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, data => {
-      let connectedPlayersUserNames = this.state.connectedPlayersUserNames;
-      connectedPlayersUserNames.push(data.joinedPlayerUserName);
-      this.setState({
-        connectedPlayersUserNames: connectedPlayersUserNames
-      });
-    });
+    this.initServerResponseListening();
 
     this.state = {
       confirmPressed: false,
@@ -32,6 +25,20 @@ export default class GameCreationMenu extends Component {
       colorSelectionActive: false,
       creatorUserName: null
     };
+  }
+
+  initServerResponseListening(){
+    
+    // Handles the event fired from server that indicates that a player has joined this game room
+    socket.on(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, data => {
+      let connectedPlayersUserNames = this.state.connectedPlayersUserNames;
+      connectedPlayersUserNames.push(data.joinedPlayerUserName);
+      this.setState({
+        connectedPlayersUserNames: connectedPlayersUserNames
+      });
+    });
+
+
   }
 
   // Generates some random colors that will be available for selection when the component is about to mount.
@@ -150,7 +157,7 @@ export default class GameCreationMenu extends Component {
         <input
           type="text"
           id="userNameInputField"
-          placeholder={"Enter username"}
+          placeholder="Enter username"
           maxLength="15"
         />
         <div className="centerStyle optionsDiv">
@@ -246,9 +253,7 @@ export default class GameCreationMenu extends Component {
               this.state.connectedPlayersUserNames.map(playerUserName => {
                 return (
                   <UserName
-                    playerName={
-                      playerUserName + (this.thisUserName ? "(You)" : "")
-                    }
+                    playerName={playerUserName}
                     playerColor="#ffffff"
                     key={playerUserName + " #ffffff"}
                     thisPlayer={this}

@@ -81,7 +81,7 @@ const storeGameAttributes = gameAttributes => {
  */
 const joinGameRoom = (clientSocket, data) => {
     //if(inGameRoom(getPlayerFromSocket(client))) return; // Precondition that checks if the player is already in a room, cancel the operation
-
+    console.log("Attempting to join game room");
     // Precondition that checks the validity of the gameID supplied to this request
     if (!existingGameID(data.gameID)) {
         clientSocket.emit(SERVER_RESPONSES.INVALID_GAME_ID_ENTERED, {
@@ -90,10 +90,18 @@ const joinGameRoom = (clientSocket, data) => {
         return;
     }
 
-    clientSocket.join(data.gameID);
     let joinedGameRoom = getGameRoomByGameID(data.gameID);
 
-    // TODO: Loop through the players of joinedGameRoom and find duplicate names against data.gameID! If so, fire invalid name event to client (this is strictly for players in JoinGameMenu)
+    // Checks if the userName supplied by the joining player is already in use by another player inside the game room being joined
+    if(joinedGameRoom.hasDuplicateUserName(data.userName)){
+        console.log("=============================== DUPLICATE USERNAME FOUND ====================================");
+        clientSocket.emit(SERVER_RESPONSES.DUPLICATE_USER_NAME, {message: `${data.userName} has already been claimed by another player in the game room!`});
+        return;
+    }
+    console.log("Duplicate check passed")
+
+    // Subscribes the joining client to the room with the supplied gameID
+    clientSocket.join(data.gameID);
     let joiningPlayer = new Player(clientSocket.id, data.userName);
     joinedGameRoom.addPlayer(joiningPlayer);
     console.log(`A player joined a GameRoom: ${joinedGameRoom.gameID}, num players in room: ${joinedGameRoom.players.length}`);
@@ -102,6 +110,8 @@ const joinGameRoom = (clientSocket, data) => {
     io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, {
         joinedPlayerUserName: joiningPlayer.userName,
     });
+
+    clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED);
 }
 
 // --------------- HELPER FUNCTIONS --------------- //

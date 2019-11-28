@@ -36,9 +36,13 @@ class GameRoom{
         this._players.push(player);
     }
 
-    // TODO: Executing this function leads to undefined for some reason. Fix it.
-    printDetails(){
-        console.log("Inside printDetails!");
+    hasDuplicateUserName(userName){
+        console.log("Checking for duplicates");
+        for(let i = 0; i < this._players.length; i++){
+            let player = this._players[i];
+            if(player.userName === userName) return true;
+        }
+        return false;
     }
 }
 
