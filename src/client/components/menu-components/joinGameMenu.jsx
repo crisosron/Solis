@@ -20,7 +20,6 @@ export default class JoinGameMenu extends Component {
 
     // Handling event when the request to join the game room has been accepted
     socket.on(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED, () => {
-      console.log("");
       console.log("Join game request has been accepted");
       this.setState({redirectToGame: true});
     });
@@ -35,11 +34,11 @@ export default class JoinGameMenu extends Component {
 
     // TODO: Find out why this is being invoked even when duplicate check in server side passes
     // Listening for event when the entered username is already in use by a player in the game room being joined
-    socket.on(SERVER_RESPONSES.DUPLICATE_USER_NAME, data => {
-      alert("Duplicate Username ", data.message);
-      document.getElementById("userNameInputField").value = "";
-      this.setState({joinGameActive: false})
-    });
+    // socket.on(SERVER_RESPONSES.DUPLICATE_USER_NAME, data => {
+    //   alert("Duplicate Username ", data.message);
+    //   document.getElementById("userNameInputField").value = "";
+    //   this.setState({joinGameActive: false})
+    // });
 
   }
 
@@ -101,10 +100,6 @@ export default class JoinGameMenu extends Component {
   };
 
   render() {
-	
-	// Ensures that the rendered button only has the wrapping Link react-router element when the button becomes active
-  // (activation of button depends on valdity of input fields)
-  
     // If condition is true, instead of rendering this component, redirect to the desired component 
     // (Note, this is a better solution than wrapping the join game button in a Link element since 
     //    1. Less LOC and more intuitive code wise

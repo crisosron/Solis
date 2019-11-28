@@ -81,7 +81,6 @@ const storeGameAttributes = gameAttributes => {
  */
 const joinGameRoom = (clientSocket, data) => {
     //if(inGameRoom(getPlayerFromSocket(client))) return; // Precondition that checks if the player is already in a room, cancel the operation
-    console.log("Attempting to join game room");
     // Precondition that checks the validity of the gameID supplied to this request
     if (!existingGameID(data.gameID)) {
         clientSocket.emit(SERVER_RESPONSES.INVALID_GAME_ID_ENTERED, {
