@@ -17,8 +17,15 @@ export default class JoinGameMenu extends Component {
   }
 
   initServerResponseListening(){
-    // TODO: Do something fancier, instead of just an alert
 
+    // Handling event when the request to join the game room has been accepted
+    socket.on(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED, () => {
+      console.log("");
+      console.log("Join game request has been accepted");
+      this.setState({redirectToGame: true});
+    });
+
+    // TODO: Do something fancier, instead of just an alert
     // Listening for event when entered game id is not found by the server
     socket.on(SERVER_RESPONSES.INVALID_GAME_ID_ENTERED, data => {
       alert("Invalid Game-ID: ", data.message);
@@ -26,18 +33,12 @@ export default class JoinGameMenu extends Component {
       this.setState({joinGameActive: false});
     });
 
+    // TODO: Find out why this is being invoked even when duplicate check in server side passes
     // Listening for event when the entered username is already in use by a player in the game room being joined
     socket.on(SERVER_RESPONSES.DUPLICATE_USER_NAME, data => {
-      console.log("Recevied event DUPLICATE_USER_NAME");
       alert("Duplicate Username ", data.message);
       document.getElementById("userNameInputField").value = "";
       this.setState({joinGameActive: false})
-    });
-
-    // Handling event when the request to join the game room has been accepted
-    socket.on(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED, () => {
-      console.log("Join game request has been accepted");
-      this.setState({redirectToGame: true});
     });
 
   }
@@ -92,7 +93,7 @@ export default class JoinGameMenu extends Component {
 
   handleJoinGameClicked = () => {
     if(!this.state.joinGameActive) return;
-    console.log("inside handleJoinGameClicked");
+
     socket.emit(GAME_ROOM_EVENTS.REQUESTS.JOIN_GAME_ROOM, {
       gameID: document.getElementById("gameIDInputField").value,
       userName: document.getElementById("userNameInputField").value
@@ -102,11 +103,13 @@ export default class JoinGameMenu extends Component {
   render() {
 	
 	// Ensures that the rendered button only has the wrapping Link react-router element when the button becomes active
-	// (activation of button depends on valdity of input fields)
-    // const joinGameButton = (<button className={this.state.joinGameActive ? "generalButton" : "disabledButton"} onClick={this.handleJoinGameClicked}>Join Game</button>);
-    // let joinGameButtonRender = joinGameButton;
-    // if (this.state.joinGameActive)
-    //   joinGameButtonRender = <Link to="/">{joinGameButton}</Link>;
+  // (activation of button depends on valdity of input fields)
+  
+    // If condition is true, instead of rendering this component, redirect to the desired component 
+    // (Note, this is a better solution than wrapping the join game button in a Link element since 
+    //    1. Less LOC and more intuitive code wise
+    //    2. Makes the error alert messages render on this component. Previously, the alert would appear on the linked page
+    //      since clicking the join game button would instantly link to the desired component before the alert could be processed)
     if(this.state.redirectToGame) return <Redirect push to="/" />
 
     return (
