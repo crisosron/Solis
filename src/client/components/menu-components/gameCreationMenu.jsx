@@ -13,7 +13,6 @@ export default class GameCreationMenu extends Component {
     super(props);
     this.ENTER_KEY = 13;
     this.userNameInputField = null;
-    this.NUM_COLORS_AVAILABLE = 16;
 
     this.initServerResponseListening();
 
@@ -21,7 +20,7 @@ export default class GameCreationMenu extends Component {
       confirmPressed: false,
       currentUserName: "", // Displayed for 'this' client only
       connectedPlayersUserNames: [],
-      colorOptions: this.generateRandomColors(),
+      colorOptions: null, // Set to an array with request SERVER_RESPONSES.GAME_ID_DELIVERY
       colorSelectionActive: false,
       creatorUserName: null
     };
@@ -38,36 +37,7 @@ export default class GameCreationMenu extends Component {
       });
     });
 
-
   }
-
-  // Generates some random colors that will be available for selection when the component is about to mount.
-  generateRandomColors = () => {
-    // Populating a collection of randomly generated colors
-    let randomlyGeneratedColors = [];
-    for (let i = 0; i < this.NUM_COLORS_AVAILABLE; i++) {
-      let randomColor = this.createRandomColor();
-
-      // Check if random color is already in the array of randomly generated colors
-      if (randomlyGeneratedColors.includes(randomColor)) {
-        i--;
-        continue;
-      }
-
-      randomlyGeneratedColors.push(randomColor);
-    }
-
-    return randomlyGeneratedColors;
-  };
-
-  // Creates and returns a single random color in hexadecimal form
-  createRandomColor = () => {
-    const characters = "0123456789ABCDEF";
-    let randomColor = "#";
-    for (let i = 0; i < 6; i++)
-      randomColor += characters[Math.floor(Math.random() * characters.length)];
-    return randomColor;
-  };
 
   componentDidMount() {
     document.addEventListener("keydown", this.registerUserName); // When the enter key is pressed, try to register the name
@@ -114,7 +84,8 @@ export default class GameCreationMenu extends Component {
       this.setState({
         confirmPressed: true,
         colorSelectionActive: true,
-        gameID: data.gameID // TODO: GameID doesn't mutate throughout the life of this component. Maybe make it a field instead of encapsulating it within the state of the component?
+        gameID: data.gameID, // TODO: GameID doesn't mutate throughout the life of this component. Maybe make it a field instead of encapsulating it within the state of the component?
+        colorOptions: data.colorOptions
       });
     });
   };
@@ -249,7 +220,7 @@ export default class GameCreationMenu extends Component {
           {/*Subdivision of options div - Displays all registered user names - Names are colored by the user's selection*/}
           <div id="registeredUsersDiv">
             <h3>Connected Players</h3>
-            {this.state.connectedPlayersUserNames.length !== 0 &&
+            {this.state.connectedPlayersUserNames.length !== 0 && // cond && statement makes it so that the map array function only executes if there are connected users at all!
               this.state.connectedPlayersUserNames.map(playerUserName => {
                 return (
                   <UserName

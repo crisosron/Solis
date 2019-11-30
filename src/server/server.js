@@ -57,10 +57,12 @@ const createGameID = (clientSocket, data) => {
     let gameRoom = new GameRoom(gameID, player);
     gameRooms.push(gameRoom);
     clientSocket.join(gameID); // Creates a room and subscribes the game generating player to that room
+    //console.log(gameRoom.colorOptions);
 
     // Sends the generated game id back to the client that requested it
     clientSocket.emit(SERVER_RESPONSES.GAME_ID_DELIVERY, {
-        gameID: gameID
+        gameID: gameID,
+        colorOptions: gameRoom.playerColorOptions
     });
 
     // Triggers an event to all sockets in the newly created room (only the game generating player will be in it when this event is trigerred)

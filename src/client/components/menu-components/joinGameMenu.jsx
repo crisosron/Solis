@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import "./menuComponents.css";
 import SERVER_RESPONSES from "../../../serverResponses";
 import GAME_ROOM_EVENTS from "../../../gameRoomEvents";
 import socket from "../../../index.js";
-import {Redirect} from "react-router-dom";
 
 export default class JoinGameMenu extends Component {
   constructor(props) {
