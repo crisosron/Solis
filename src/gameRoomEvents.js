@@ -1,13 +1,13 @@
 let GAME_ROOM_EVENTS = {
     REQUESTS: {
-        LEAVE_GAME_ROOM: 1,
-        JOIN_GAME_ROOM: 2
+        LEAVE_GAME_ROOM: "leave-game-room",
+        JOIN_GAME_ROOM: "join-game-room"
     },
 
     RESPONSES: {
-        PLAYER_JOINED: 3,
-        PLAYER_CHANGED_USER_NAME: 4,
-        PLAYER_CHANGED_COLOR: 5
+        PLAYER_JOINED: "player-joined",
+        PLAYER_CHANGED_USER_NAME: "player-changed-user-name",
+        PLAYER_CHANGED_COLOR: "player-changed-color"
     }
 }
 

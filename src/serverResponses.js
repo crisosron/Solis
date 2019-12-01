@@ -1,8 +1,8 @@
 let SERVER_RESPONSES = {
-    GAME_ID_DELIVERY: 1,
-    INVALID_GAME_ID_ENTERED: 2,
-    DUPLICATE_USER_NAME: 3,
-    JOIN_GAME_REQUEST_ACCEPTED: 4
+    GAME_ID_DELIVERY: "game-id-delivery",
+    INVALID_GAME_ID_ENTERED: "invalid-game-id-entered",
+    DUPLICATE_USER_NAME: "duplicate-user-name",
+    JOIN_GAME_REQUEST_ACCEPTED: "join-game-request-accepted"
 }
 
 module.exports = SERVER_RESPONSES;

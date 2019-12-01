@@ -27,16 +27,16 @@ io.on('connection', (client) => {
         createGameID(client, data);
     });
 
-    client.on(CLIENT_REQUESTS.STORE_GAME_ATTRIBUTES, (data) => {
-        storeGameAttributes(data);
+    client.on(CLIENT_REQUESTS.STORE_GAME_ATTRIBUTES, data => {
+        storeGameAttributes(data.gameID, data);
     });
 
     // Leaving and joining rooms
-    client.on(GAME_ROOM_EVENTS.REQUESTS.LEAVE_GAME_ROOM, (data) => {
+    client.on(GAME_ROOM_EVENTS.REQUESTS.LEAVE_GAME_ROOM, data => {
         client.leave(data.gameID);
     });
 
-    client.on(GAME_ROOM_EVENTS.REQUESTS.JOIN_GAME_ROOM, (data) => {
+    client.on(GAME_ROOM_EVENTS.REQUESTS.JOIN_GAME_ROOM, data => {
         joinGameRoom(client, data);
     });
 
@@ -72,14 +72,15 @@ const createGameID = (clientSocket, data) => {
 
 }
 
-const storeGameAttributes = gameAttributes => {
-    console.log("Received request from client: `store-game-settings`");
+const storeGameAttributes = (gameID, gameAttributes) => {
+    let gameRoom = getGameRoomByGameID(gameID);
+    gameRoom.gameAttributes = gameAttributes;
 }
 
 /**
  * Function that processes the logic behind a player joining a game room
  * @param {object} clientSocket - The socket of the joining player
- * @param {object} data - Data received by the servver to be processed. Data in this case should contain gameID to join, and userName of the joining player
+ * @param {object} data - Data received by the server to be processed. Data in this case should contain gameID to join, and userName of the joining player
  */
 const joinGameRoom = (clientSocket, data) => {
     //if(inGameRoom(getPlayerFromSocket(client))) return; // Precondition that checks if the player is already in a room, cancel the operation
