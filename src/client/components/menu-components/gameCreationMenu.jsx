@@ -110,7 +110,6 @@ export default class GameCreationMenu extends Component {
       maxPlayers: maxPlayers,
       startingResources: startingResources,
       startingFleetSize: startingFleetSize,
-      //colorOptions: this.state.colorOptions
     });
   }
 

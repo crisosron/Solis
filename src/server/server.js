@@ -96,11 +96,9 @@ const joinGameRoom = (clientSocket, data) => {
 
     // Checks if the userName supplied by the joining player is already in use by another player inside the game room being joined
     if(joinedGameRoom.hasDuplicateUserName(data.userName)){
-        console.log("=============================== DUPLICATE USERNAME FOUND ====================================");
         clientSocket.emit(SERVER_RESPONSES.DUPLICATE_USER_NAME, {message: `${data.userName} has already been claimed by another player in the game room!`});
         return;
     }
-    console.log("Duplicate check passed")
 
     // Subscribes the joining client to the room with the supplied gameID
     clientSocket.join(data.gameID);

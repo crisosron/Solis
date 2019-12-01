@@ -31,13 +31,12 @@ export default class JoinGameMenu extends Component {
       this.setState({joinGameActive: false});
     });
 
-    // TODO: Find out why this is being invoked even when duplicate check in server side passes
     // Listening for event when the entered username is already in use by a player in the game room being joined
-    // socket.on(SERVER_RESPONSES.DUPLICATE_USER_NAME, data => {
-    //   alert("Duplicate Username ", data.message);
-    //   document.getElementById("userNameInputField").value = "";
-    //   this.setState({joinGameActive: false})
-    // });
+    socket.on(SERVER_RESPONSES.DUPLICATE_USER_NAME, data => {
+      alert("Duplicate Username ", data.message);
+      document.getElementById("userNameInputField").value = "";
+      this.setState({joinGameActive: false})
+    });
 
   }
 
