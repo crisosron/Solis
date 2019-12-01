@@ -4,6 +4,7 @@ import "./menuComponents.css";
 import SERVER_RESPONSES from "../../../serverResponses";
 import GAME_ROOM_EVENTS from "../../../gameRoomEvents";
 import socket from "../../../index.js";
+import { type } from "os";
 
 export default class JoinGameMenu extends Component {
   constructor(props) {
@@ -41,51 +42,22 @@ export default class JoinGameMenu extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener("keydown", e => {
-      if (e.keyCode === 13 && this.areInputsValid()) {
-        this.setState({
-          joinGameActive: true
-        });
-      }
-    });
+    let userNameInputField = document.getElementById("userNameInputField");
+    let gameIDInputField= document.getElementById("gameIDInputField");
 
-    //TODO: Can be made cleaner by placing if statement in common function
-    document
-      .getElementById("userNameInputField")
-      .addEventListener("blur", () => {
-        if (this.areInputsValid()) {
-          this.setState({
-            joinGameActive: true
-          });
-        }
-      });
+    userNameInputField.addEventListener("keydown", this.areInputsValid);
+    gameIDInputField.addEventListener("keydown", this.areInputsValid);
 
-    document.getElementById("gameIDInputField").addEventListener("blur", () => {
-      if (this.areInputsValid()) {
-        this.setState({
-          joinGameActive: true
-        });
-      }
-    });
   }
 
   areInputsValid = () => {
-    const userNameInputField = document.getElementById("userNameInputField");
-    const gameIDInputField = document.getElementById("gameIDInputField");
-
-    if (
-      // Checking precondition that the user has entered a username
-      userNameInputField.value === "" ||
-      userNameInputField.value == null ||
-      gameIDInputField.value === "" ||
-      gameIDInputField.value == null
-    ) {
-      userNameInputField.placeholder = "Please enter your username here!";
-      gameIDInputField.placeholder = "Please enter game id here!";
-      return false;
+    let userNameInputField = document.getElementById("userNameInputField");
+    let gameIDInputField= document.getElementById("gameIDInputField");
+    if(userNameInputField.value !== "" && gameIDInputField.value !== ""){
+      this.setState({
+        joinGameActive: true
+      });  
     }
-
-    return true;
   };
 
   handleJoinGameClicked = () => {

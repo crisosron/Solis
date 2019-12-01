@@ -8,7 +8,7 @@ let SERVER_RESPONSES = require("../serverResponses");
 let GAME_ROOM_EVENTS = require("../gameRoomEvents");
 
 const PORT_NUM = 8000;
-const GAME_ID_LEN = 24;
+const GAME_ID_LEN = 5;
 let numClientsConnected = 0;
 let allPlayers = [];
 
