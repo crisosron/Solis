@@ -8,7 +8,8 @@ let GAME_ROOM_EVENTS = {
     RESPONSES: {
         PLAYER_JOINED: "player-joined",
         PLAYER_CHANGED_USER_NAME: "player-changed-user-name",
-        PLAYER_CHANGED_COLOR: "player-changed-color"
+        PLAYER_CHANGED_COLOR: "player-changed-color",
+        RENDER_WITH_NEW_STATE: "render-with-new-state"
     },
 
 }

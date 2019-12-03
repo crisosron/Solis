@@ -26,8 +26,7 @@ export default class GameCreationMenu extends Component {
     };
   }
 
-  initServerResponseListening(){
-    
+  initServerResponseListening() {
     // Handles the event fired from server that indicates that a player has joined this game room
     socket.on(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, data => {
       let connectedPlayersUserNames = this.state.connectedPlayersUserNames;
@@ -37,9 +36,8 @@ export default class GameCreationMenu extends Component {
       });
 
       // If it's not the game creator joining the game room to trigger this entire block, send updates to the server
-      if(connectedPlayersUserNames.length !== 1) this.sendUpdateToServer();
+      if (connectedPlayersUserNames.length !== 1) this.sendUpdateToServer();
     });
-
   }
 
   componentDidMount() {
@@ -112,12 +110,12 @@ export default class GameCreationMenu extends Component {
       gameID: gameID,
       maxPlayers: maxPlayers,
       startingResources: startingResources,
-      startingFleetSize: startingFleetSize,
+      startingFleetSize: startingFleetSize
     });
   }
 
   // This method should be called whenever updates to the state needs to be sent to all subscribers of the game room
-  sendUpdateToServer(){
+  sendUpdateToServer() {
     socket.emit(GAME_ROOM_EVENTS.REQUESTS.UPDATE_STATE, {
       newState: this.state
     });
@@ -197,49 +195,6 @@ export default class GameCreationMenu extends Component {
               min="0"
               max="500"
             />
-
-            <button
-              id="confirmSettingsButton"
-              className={
-                this.state.confirmPressed ? "disabledButton" : "generalButton"
-              }
-              onClick={this.handleConfirmSettingsPressed}
-            >
-              Confirm Settings
-            </button>
-          </div>
-
-          {/*Subdivision of options div - Displays all available colors for the user to select from */}
-          <div id="colorSelectorDiv">
-            <h3>Color Selection</h3>
-            <div id="colorSelectorDivOptions">
-              {this.state.colorSelectionActive && // Only render color options if settings have been confirmed
-                this.state.colorOptions.map(colorOption => {
-                  return (
-                    <ColorOption
-                      colorValue={colorOption}
-                      key={colorOption}
-                      id={`ColorOption ${colorOption}`}
-                    />
-                  );
-                })}
-            </div>
-          </div>
-
-          {/*Subdivision of options div - Displays all registered user names - Names are colored by the user's selection*/}
-          <div id="registeredUsersDiv">
-            <h3>Connected Players</h3>
-            {this.state.connectedPlayersUserNames.length !== 0 && // cond && statement makes it so that the map array function only executes if there are connected users at all!
-              this.state.connectedPlayersUserNames.map(playerUserName => {
-                return (
-                  <UserName
-                    playerName={playerUserName}
-                    playerColor="#ffffff"
-                    key={playerUserName + " #ffffff"}
-                    thisPlayer={this}
-                  />
-                );
-              })}
           </div>
         </div>
 
@@ -247,8 +202,8 @@ export default class GameCreationMenu extends Component {
         <Link to="/">
           <button className="returnButton">Return</button>
         </Link>
-        <Link to="/game">
-          <button className="affirmativeButton">Play</button>
+        <Link to="/lobby">
+          <button className="affirmativeButton">Create Game</button>
         </Link>
       </div>
     );

@@ -41,7 +41,7 @@ io.on('connection', (client) => {
     });
 
     client.on(GAME_ROOM_EVENTS.REQUESTS.UPDATE_STATE, data => {
-        console.log("Request to UPDATE_STATE has been received with data: ", data);
+
     });
 
     // TODO: Use sockets join to add associate players to the same game lobby when they try to join a game
@@ -99,8 +99,10 @@ const joinGameRoom = (clientSocket, data) => {
     let joinedGameRoom = getGameRoomByGameID(data.gameID);
 
     // Checks if the userName supplied by the joining player is already in use by another player inside the game room being joined
-    if(joinedGameRoom.hasDuplicateUserName(data.userName)){
-        clientSocket.emit(SERVER_RESPONSES.DUPLICATE_USER_NAME, {message: `${data.userName} has already been claimed by another player in the game room!`});
+    if (joinedGameRoom.hasDuplicateUserName(data.userName)) {
+        clientSocket.emit(SERVER_RESPONSES.DUPLICATE_USER_NAME, {
+            message: `${data.userName} has already been claimed by another player in the game room!`
+        });
         return;
     }
 
