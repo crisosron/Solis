@@ -40,6 +40,10 @@ io.on('connection', (client) => {
         joinGameRoom(client, data);
     });
 
+    client.on(GAME_ROOM_EVENTS.REQUESTS.UPDATE_STATE, data => {
+        console.log("Request to UPDATE_STATE has been received with data: ", data);
+    });
+
     // TODO: Use sockets join to add associate players to the same game lobby when they try to join a game
     io.on('disconnect', () => {
         console.log('Client disconnected');
@@ -111,6 +115,7 @@ const joinGameRoom = (clientSocket, data) => {
         joinedPlayerUserName: joiningPlayer.userName,
     });
 
+    // Enables redirecting in JoinGameMenu component
     clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED);
 }
 

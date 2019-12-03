@@ -35,6 +35,9 @@ export default class GameCreationMenu extends Component {
       this.setState({
         connectedPlayersUserNames: connectedPlayersUserNames
       });
+
+      // If it's not the game creator joining the game room to trigger this entire block, send updates to the server
+      if(connectedPlayersUserNames.length !== 1) this.sendUpdateToServer();
     });
 
   }
@@ -110,6 +113,13 @@ export default class GameCreationMenu extends Component {
       maxPlayers: maxPlayers,
       startingResources: startingResources,
       startingFleetSize: startingFleetSize,
+    });
+  }
+
+  // This method should be called whenever updates to the state needs to be sent to all subscribers of the game room
+  sendUpdateToServer(){
+    socket.emit(GAME_ROOM_EVENTS.REQUESTS.UPDATE_STATE, {
+      newState: this.state
     });
   }
 

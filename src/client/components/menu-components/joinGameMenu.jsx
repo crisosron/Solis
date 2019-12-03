@@ -75,7 +75,7 @@ export default class JoinGameMenu extends Component {
     //    1. Less LOC and more intuitive code wise
     //    2. Makes the error alert messages render on this component. Previously, the alert would appear on the linked page
     //      since clicking the join game button would instantly link to the desired component before the alert could be processed)
-    if(this.state.redirectToGame) return <Redirect push to="/" />
+    if(this.state.redirectToGame) return <Redirect push to="create-game-menu" />
 
     return (
       <div className="centerStyle">
