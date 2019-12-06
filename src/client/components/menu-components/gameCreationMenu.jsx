@@ -137,6 +137,16 @@ export default class GameCreationMenu extends Component {
 
         <h3>Starting Fleet Size</h3>
         <input type="number" id="startingFleetSizeInput" className="quarterInput" placeholder="Enter Value" defaultValue="10" min="0" max="500"/>
+        <br/>
+        <br/>
+        
+        {/*Buttons to navigate away from this component*/}
+        <Link to="/">
+          <button className="returnButton">Return</button>
+        </Link>
+        <Link to="/lobby">
+          <button className="affirmativeButton">Create Game</button>
+        </Link>
       </div>
     );
   }
