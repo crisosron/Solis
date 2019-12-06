@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./menuComponents.css";
-import ColorOption from "./colorOption";
-import UserName from "./userName";
+import "./gameCreationMenu.css";
+import "./inputs.css";
 import { Link } from "react-router-dom";
 import CLIENT_REQUESTS from "../../../clientRequests";
 import SERVER_RESPONSES from "../../../serverResponses";
@@ -41,9 +41,9 @@ export default class GameCreationMenu extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener("keydown", this.registerUserName); // When the enter key is pressed, try to register the name
-    this.userNameInputField = document.getElementById("userNameInputField");
-    this.userNameInputField.addEventListener("blur", this.registerUserName); // When the input field is made out of focus, try to register name
+    // document.addEventListener("keydown", this.registerUserName); // When the enter key is pressed, try to register the name
+    // this.userNameInputField = document.getElementById("userNameInputField");
+    // this.userNameInputField.addEventListener("blur", this.registerUserName); // When the input field is made out of focus, try to register name
   }
 
   registerUserName = e => {
@@ -122,89 +122,21 @@ export default class GameCreationMenu extends Component {
   }
 
   render() {
-    return (
+    return(
       <div className="centerStyle">
-        <h1 id="createGameTitle">Create Game</h1>
-        <h3>Game ID</h3>
-        <h2 className="backgroundHighlight">
-          {this.state.confirmPressed
-            ? this.state.gameID
-            : "Confirm settings to generate game code"}
-        </h2>
-        <br />
-        <input
-          type="text"
-          id="userNameInputField"
-          placeholder="Enter username"
-          maxLength="15"
-        />
-        <div className="centerStyle optionsDiv">
-          <div id="attributeOptionsDiv">
-            <h3>Settings</h3>
-            <input
-              type="text"
-              className="optionsDivInputLabel"
-              placeholder="Players connected: #/#"
-              readOnly
-            />
-            <input
-              type="text"
-              className="optionsDivSmallInputLabel"
-              placeholder="Max Players:"
-              readOnly
-            />
+        <h1 className="title">Create Game</h1>
 
-            <select id="maxPlayersOptions">
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-            </select>
+        <h3>Username</h3>
+        <input type="text" id="userNameInputField" className="quarterInput" placeholder="Enter your username" maxLength="15"/>
 
-            <input
-              type="text"
-              className="optionsDivSmallInputLabel"
-              placeholder="Starting Resources:"
-              readOnly
-            />
+        <h3>Maximum Number of Players</h3>
+        <input type="number" id="maxPlayersInputField" className="quarterInput" placeholder="Enter maximum number of players" defaultValue="2" min="2" max="6" />
 
-            <input
-              type="number"
-              id="startingResourcesInput"
-              className="optionsDivSmallInput"
-              placeholder="Enter Value"
-              defaultValue="300"
-              min="50"
-              max="1000"
-            />
+        <h3>Starting Resources Amount</h3>
+        <input type="number" id="startingResourcesInput" className="quarterInput" placeholder="Enter Value" defaultValue="300" min="50" max="1000"/>
 
-            <input
-              type="text"
-              className="optionsDivSmallInputLabel"
-              placeholder="Starting Fleet Size:"
-              readOnly
-            />
-
-            <input
-              type="number"
-              id="startingFleetSizeInput"
-              className="optionsDivSmallInput"
-              placeholder="Enter Value"
-              defaultValue="10"
-              min="0"
-              max="500"
-            />
-          </div>
-        </div>
-
-        {/*Buttons to navigate away from this component*/}
-        <Link to="/">
-          <button className="returnButton">Return</button>
-        </Link>
-        <Link to="/lobby">
-          <button className="affirmativeButton">Create Game</button>
-        </Link>
+        <h3>Starting Fleet Size</h3>
+        <input type="number" id="startingFleetSizeInput" className="quarterInput" placeholder="Enter Value" defaultValue="10" min="0" max="500"/>
       </div>
     );
   }

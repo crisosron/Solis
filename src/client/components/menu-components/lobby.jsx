@@ -22,6 +22,7 @@ export default class Lobby extends Component {
         <h1>Lobby</h1>
         <h2>GameID goes here</h2>
         <div className="centerStyle optionsDiv">
+
           {/*Color selection rendering*/}
           <div id="colorSelectorDiv">
             <h3>Color Selection</h3>
@@ -38,7 +39,8 @@ export default class Lobby extends Component {
                 })}
             </div>
           </div>
-
+            
+          {/*Username rendering*/}
           <div id="connectedPlayersDiv">
             <h3>Connected Players</h3>
             {this.state.connectedPlayersUserNames.length !== 0 && // cond && statement makes it so that the map array function only executes if there are connected users at all!
