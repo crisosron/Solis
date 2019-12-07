@@ -23,12 +23,8 @@ io.on('connection', (client) => {
     console.log("Number of clients connected so far: ", numClientsConnected);
 
     // ---- Client requests ---- //
-    client.on(CLIENT_REQUESTS.CREATE_GAME_ID, data => {
-        createGameID(client, data);
-    });
-
-    client.on(CLIENT_REQUESTS.STORE_GAME_ATTRIBUTES, data => {
-        storeGameAttributes(data.gameID, data);
+    client.on(CLIENT_REQUESTS.CREATE_GAME, data => {
+        createGame(client, data);
     });
 
     // Leaving and joining rooms
@@ -40,11 +36,6 @@ io.on('connection', (client) => {
         joinGameRoom(client, data);
     });
 
-    client.on(GAME_ROOM_EVENTS.REQUESTS.UPDATE_STATE, data => {
-
-    });
-
-    // TODO: Use sockets join to add associate players to the same game lobby when they try to join a game
     io.on('disconnect', () => {
         console.log('Client disconnected');
         numClientsConnected--;
@@ -52,33 +43,22 @@ io.on('connection', (client) => {
 });
 
 // --------------- CLIENT REQUEST HANDLING FUNCTIONS --------------- //
-const createGameID = (clientSocket, data) => {
-    const gameID = generateGameID();
-    let creatorUserName = data.creatorUserName == null || data.creatorUserName === "" ? "Anon" : data.creatorUserName;
-    let player = new Player(clientSocket.id, creatorUserName);
-    allPlayers.push(player);
+const createGame = (clientSocket, gameAttributes) => {
 
-    let gameRoom = new GameRoom(gameID, player);
-    gameRooms.push(gameRoom);
-    clientSocket.join(gameID); // Creates a room and subscribes the game generating player to that room
-    //console.log(gameRoom.colorOptions);
-
-    // Sends the generated game id back to the client that requested it
-    clientSocket.emit(SERVER_RESPONSES.GAME_ID_DELIVERY, {
-        gameID: gameID,
-        colorOptions: gameRoom.playerColorOptions
-    });
-
-    // Triggers an event to all sockets in the newly created room (only the game generating player will be in it when this event is trigerred)
-    io.to(gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, {
-        joinedPlayerUserName: player.userName,
-    });
-
-}
-
-const storeGameAttributes = (gameID, gameAttributes) => {
-    let gameRoom = getGameRoomByGameID(gameID);
+    // Creating a new game room and creating the player that created that game room
+    let creatorUserName = gameAttributes.creatorUserName;
+    let gameCreator = new Player(clientSocket.id, creatorUserName);
+    let gameRoom = new GameRoom(generateGameID(), gameCreator);
     gameRoom.gameAttributes = gameAttributes;
+    allPlayers.push(gameCreator);
+    gameRooms.push(gameRoom);
+
+    // Creates the room and subscribes clientSocket to the room
+    clientSocket.join(gameRoom.gameID);
+
+    // Replying to client with game id
+    clientSocket.emit(SERVER_RESPONSES.STORE_GAME_ATTRIBUTES_ACCEPTED, {gameID: gameRoom.gameID});
+
 }
 
 /**

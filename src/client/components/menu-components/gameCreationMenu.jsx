@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import "./menuComponents.css";
 import "./inputs.css";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import CLIENT_REQUESTS from "../../../clientRequests";
 import SERVER_RESPONSES from "../../../serverResponses";
-import GAME_ROOM_EVENTS from "../../../gameRoomEvents";
 import socket from "../../../index.js";
 
 export default class GameCreationMenu extends Component {
@@ -12,12 +11,25 @@ export default class GameCreationMenu extends Component {
     super(props);
     this.ENTER_KEY = 13;
     this.userNameInputField = null;
+    this.initServerListening();
 
     this.state = {
       confirmPressed: false,
       currentUserName: "", // Displayed for 'this' client only
-      createGameButtonActive: false
+      createGameButtonActive: false,
+      redirectToLobby: false,
+      gameID: null
     };
+  }
+
+  initServerListening(){
+    socket.on(SERVER_RESPONSES.STORE_GAME_ATTRIBUTES_ACCEPTED, data => {
+      console.log(`Allowed to redirect to lobby/${data.gameID}`);
+      this.setState({
+        gameID: data.gameID,
+        redirectToLobby: true
+      });
+    });
   }
 
   componentDidMount() {
@@ -33,25 +45,24 @@ export default class GameCreationMenu extends Component {
     else this.setState({createGameButtonActive: true});
   };
 
-  sendSettingsToServer(gameID) {
+  requestGameCreation = () => {
     if(!this.state.createGameButtonActive) return;
 
-    // Obtain selected settings options
-    const maxPlayersSelectElem = document.getElementById("maxPlayersOptions");
+    // Obtaining selected options and inputs from input fields
+    const maxPlayersInput = document.getElementById("maxPlayersInputField");
     const startingResourcesInput = document.getElementById(
-      "startingResourcesInput"
+      "startingResourcesInputField"
     );
     const startingFleetSizeInput = document.getElementById(
-      "startingFleetSizeInput"
+      "startingFleetSizeInputField"
     );
-    const maxPlayers =
-      maxPlayersSelectElem.options[maxPlayersSelectElem.selectedIndex].value;
+    const maxPlayers = maxPlayersInput.value;
     const startingResources = startingResourcesInput.value;
     const startingFleetSize = startingFleetSizeInput.value;
 
     // Sends the selected settings options to the server
     socket.emit(CLIENT_REQUESTS.STORE_GAME_ATTRIBUTES, {
-      gameID: gameID,
+      creatorUserName: this.userNameInputField.value,
       maxPlayers: maxPlayers,
       startingResources: startingResources,
       startingFleetSize: startingFleetSize
@@ -59,13 +70,9 @@ export default class GameCreationMenu extends Component {
   }
 
   render() {
-    let createGameButton = null;
 
-    // Conditionally rendering a Link element that wraps around the create game button depending if the button is active or not
-    // 'active' nature of the create game button depends solely on whether or not there is text inside this.userNameInputField
-    if(this.state.createGameButtonActive)
-      createGameButton = <Link to="/lobby"><button className="affirmativeButton" onClick={this.sendSettingsToServer}>Create Game</button></Link>
-    else createGameButton = <button className="disabledButton">Create Game</button>
+    // Redirects to lobby when the game attributes have been stored by the server (see initServerListening)
+    if(this.state.redirectToLobby) return <Redirect push to={`/lobby/${this.state.gameID}`}/>;
     
     return(
       <div className="centerStyle">
@@ -78,10 +85,10 @@ export default class GameCreationMenu extends Component {
         <input type="number" id="maxPlayersInputField" className="quarterInput" placeholder="Enter maximum number of players" defaultValue="2" min="2" max="6" />
 
         <h3>Starting Resources Amount</h3>
-        <input type="number" id="startingResourcesInput" className="quarterInput" placeholder="Enter Value" defaultValue="300" min="50" max="1000"/>
+        <input type="number" id="startingResourcesInputField" className="quarterInput" placeholder="Enter Value" defaultValue="300" min="50" max="1000"/>
 
         <h3>Starting Fleet Size</h3>
-        <input type="number" id="startingFleetSizeInput" className="quarterInput" placeholder="Enter Value" defaultValue="10" min="0" max="500"/>
+        <input type="number" id="startingFleetSizeInputField" className="quarterInput" placeholder="Enter Value" defaultValue="10" min="0" max="500"/>
         <br/>
         <br/>
 
@@ -89,7 +96,9 @@ export default class GameCreationMenu extends Component {
         <Link to="/">
           <button className="returnButton">Return</button>
         </Link>
-        {createGameButton}
+        
+        <button className={this.state.createGameButtonActive ? "affirmativeButton" : "disabledButton"} onClick={this.requestGameCreation}>Create Game</button>
+
       </div>
     );
   }
