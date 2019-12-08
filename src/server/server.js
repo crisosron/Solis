@@ -57,7 +57,7 @@ const createGame = (clientSocket, gameAttributes) => {
     clientSocket.join(gameRoom.gameID);
 
     // Replying to client with game id
-    clientSocket.emit(SERVER_RESPONSES.STORE_GAME_ATTRIBUTES_ACCEPTED, {gameID: gameRoom.gameID});
+    clientSocket.emit(SERVER_RESPONSES.STORE_GAME_ATTRIBUTES_ACCEPTED, {gameID: gameRoom.gameID, gameRoom: gameRoom});
 
 }
 

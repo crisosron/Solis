@@ -128,8 +128,9 @@ h1 {
     /*Allows the elements of the same class to be added side-by-side*/
     display: inline-block;
     width: 20%;
-    height: 20%;
-    margin-right: 5px;
+    height: 17%;
+    margin-right: 2.5px;
+    margin-left: 2.5px;
     transition-duration: 0.4s;
 }
 

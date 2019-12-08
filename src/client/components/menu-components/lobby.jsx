@@ -8,18 +8,13 @@ import "./menuComponents.css"
 export default class Lobby extends Component {
   constructor(props) {
     super(props);
-    let gameID = null;
-    console.log(this.props.match);
     this.state = {
-      colorOptions: [],
-      connectedPlayersUserNames: []
+      colorOptions: this.props.location.state.colorOptions,
+      connectedPlayersUserNames: this.props.location.state.connectedPlayersUserNames
     };
   }
 
-  componentDidMount() {}
-
   render() {
-    console.log("About to render lobby");
     return (
       <div className="centerStyle">
         <h1 className="title">Lobby</h1>
@@ -28,22 +23,30 @@ export default class Lobby extends Component {
 
         <div className="centerStyle optionsDiv">
 
+          {/*Rendering of color options*/}
           <div id="colorSelectorDiv">
             <h3>Select A Color</h3>
+            {this.state.colorOptions.map(colorOption => {
+              return <ColorOption colorValue={colorOption} key={colorOption} id={`ColorOption: ${colorOption}`} />
+            })}
           </div>
-
+          
+          {/*Rendering of connected players user names*/}
           <div id="connectedPlayersDiv">
             <h3>Connected Players</h3>
+            {this.state.connectedPlayersUserNames.map(userName => {
+              return <UserName playerName={userName} playerColor="#ffffff" key={userName + " #ffffff"}/>
+            })}
           </div>
 
         </div>
 
         <br />
         <br />
-        <Link>
+        <Link to="/gameCreationMenu">
           <button className="returnButton">Return</button>
         </Link>
-        <Link>
+        <Link to="/game">
           <button className="affirmativeButton">Play</button>
         </Link>
       </div>

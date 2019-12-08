@@ -67,7 +67,6 @@ class GameRoom{
      * @returns True of the userName parameter matches the username of a player
     */
     hasDuplicateUserName(userName){
-        console.log("Checking for duplicates");
         for(let i = 0; i < this._players.length; i++){
             let player = this._players[i];
             if(player.userName === userName) return true;

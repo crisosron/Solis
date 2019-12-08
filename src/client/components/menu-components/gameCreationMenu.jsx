@@ -18,15 +18,17 @@ export default class GameCreationMenu extends Component {
       currentUserName: "", // Displayed for 'this' client only
       createGameButtonActive: false,
       redirectToLobby: false,
-      gameID: null
+      gameID: null,
+      gameRoom: null
     };
   }
 
   initServerListening(){
     socket.on(SERVER_RESPONSES.STORE_GAME_ATTRIBUTES_ACCEPTED, data => {
-      console.log(`Allowed to redirect to lobby/${data.gameID}`);
+      //console.log(`Allowed to redirect to lobby/${data.gameRoom}`);
       this.setState({
         gameID: data.gameID,
+        gameRoom: data.gameRoom,
         redirectToLobby: true
       });
     });
@@ -72,7 +74,19 @@ export default class GameCreationMenu extends Component {
   render() {
 
     // Redirects to lobby when the game attributes have been stored by the server (see initServerListening)
-    if(this.state.redirectToLobby) return <Redirect push to={`/lobby/${this.state.gameID}`}/>;
+    if(this.state.redirectToLobby) return <Redirect push to={{
+      pathname: `/lobby/${this.state.gameID}`,
+      state: {
+
+        // TODO: Determine why accessing getters of ES6 classes here returns undefined. Could it be due to the context of this?
+        // IMPORTANT NOTE: Until the TODO outlined above is resolved, we need to access the private properties of classes directly to make this work! (which is bad)
+        colorOptions: this.state.gameRoom._playerColorOptions,
+        connectedPlayersUserNames: this.state.gameRoom._players.map(player => {
+          return player._userName
+        })
+        
+      }
+    }} />
     
     return(
       <div className="centerStyle">
