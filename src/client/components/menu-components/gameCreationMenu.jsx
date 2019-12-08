@@ -78,13 +78,13 @@ export default class GameCreationMenu extends Component {
       pathname: `/lobby/${this.state.gameID}`,
       state: {
 
-        // TODO: Determine why accessing getters of ES6 classes here returns undefined. Could it be due to the context of this?
+        // TODO: Determine why accessing getters of ES6 classes here returns undefined. Could it be due to the context of this? See issue #6
         // IMPORTANT NOTE: Until the TODO outlined above is resolved, we need to access the private properties of classes directly to make this work! (which is bad)
         colorOptions: this.state.gameRoom._playerColorOptions,
         connectedPlayersUserNames: this.state.gameRoom._players.map(player => {
           return player._userName
         })
-        
+
       }
     }} />
     

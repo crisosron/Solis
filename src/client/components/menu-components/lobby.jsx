@@ -3,15 +3,26 @@ import { Link } from "react-router-dom";
 import UserName from "./userName";
 import ColorOption from "./colorOption";
 import socket from "../../../index.js";
+import GAME_ROOM_EVENTS from "../../../gameRoomEvents";
 import "./menuComponents.css"
 
 export default class Lobby extends Component {
   constructor(props) {
     super(props);
+    this.initServerListening();
     this.state = {
       colorOptions: this.props.location.state.colorOptions,
       connectedPlayersUserNames: this.props.location.state.connectedPlayersUserNames
     };
+  }
+
+  initServerListening(){
+    socket.on(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, data => {
+      let newConnectedPlayersUserNames = this.state.connectedPlayersUserNames.concat(data.joinedPlayerUserName);
+      this.setState({
+        connectedPlayersUserNames: newConnectedPlayersUserNames
+      });
+    });
   }
 
   render() {
@@ -43,6 +54,7 @@ export default class Lobby extends Component {
 
         <br />
         <br />
+        
         <Link to="/gameCreationMenu">
           <button className="returnButton">Return</button>
         </Link>

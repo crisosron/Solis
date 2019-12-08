@@ -86,6 +86,14 @@ const joinGameRoom = (clientSocket, data) => {
         return;
     }
 
+    // Checks if the maximum number of players for the game room has been reached
+    if(joinedGameRoom.hasMaxPlayers()){
+        clientSocket.emit(SERVER_RESPONSES.MAX_PLAYERS_REACHED, {
+            message: `The game room ${data.gameID} has no more room for new players!`
+        });
+        return;
+    }
+
     // Subscribes the joining client to the room with the supplied gameID
     clientSocket.join(data.gameID);
     let joiningPlayer = new Player(clientSocket.id, data.userName);
@@ -98,7 +106,12 @@ const joinGameRoom = (clientSocket, data) => {
     });
 
     // Enables redirecting in JoinGameMenu component
-    clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED);
+    clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED, {
+        colorOptions: joinedGameRoom.playerColorOptions,
+        connectedPlayersUserNames: joinedGameRoom.players.map(player => {
+            return player.userName;
+        })
+    });
 }
 
 // --------------- HELPER FUNCTIONS --------------- //

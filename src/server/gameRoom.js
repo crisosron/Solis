@@ -74,6 +74,12 @@ class GameRoom{
         return false;
     }
 
+    hasMaxPlayers(){
+    
+        // + 1 because this method is used to check whether or not this game room can accommodate another player trying to join
+        return this._gameAttributes.maxPlayers < this._players.length + 1;
+    }
+
     get gameID(){
         return this._gameID;
     }

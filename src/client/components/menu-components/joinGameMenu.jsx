@@ -4,7 +4,6 @@ import "./menuComponents.css";
 import SERVER_RESPONSES from "../../../serverResponses";
 import GAME_ROOM_EVENTS from "../../../gameRoomEvents";
 import socket from "../../../index.js";
-import { type } from "os";
 
 export default class JoinGameMenu extends Component {
   constructor(props) {
@@ -12,19 +11,25 @@ export default class JoinGameMenu extends Component {
     this.initServerResponseListening();
     this.state = {
       joinGameActive: false,
-      redirectToGame: false
+      redirectToGame: false,
+      targetGameRoomColorOptions: null,
+      targetGameRoomConnectedPlayersUserNames: null
     };
   }
 
   initServerResponseListening(){
 
     // Handling event when the request to join the game room has been accepted
-    socket.on(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED, () => {
-      console.log("Join game request has been accepted");
-      this.setState({redirectToGame: true});
+    socket.on(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED, data => {
+      this.setState({
+        redirectToGame: true, 
+        targetGameRoomColorOptions: data.colorOptions, 
+        targetGameRoomConnectedPlayersUserNames: data.connectedPlayersUserNames
+      });
     });
 
     // TODO: Do something fancier, instead of just an alert
+    // TODO: Determine why the data.message is not appearing in alerts (they are probably undefined)
     // Listening for event when entered game id is not found by the server
     socket.on(SERVER_RESPONSES.INVALID_GAME_ID_ENTERED, data => {
       alert("Invalid Game-ID: ", data.message);
@@ -39,6 +44,12 @@ export default class JoinGameMenu extends Component {
       this.setState({joinGameActive: false})
     });
 
+    // Listening for event when the game room being joined by the player had reached its maximum number of players
+    socket.on(SERVER_RESPONSES.MAX_PLAYERS_REACHED, data => {
+      alert("Maximum Players Reached: ", data.message);
+      document.getElementById("gameIDInputField").value = "";
+      this.setState({joinGameActive: false})    
+    });
   }
 
   componentDidMount() {
@@ -75,7 +86,13 @@ export default class JoinGameMenu extends Component {
     //    1. Less LOC and more intuitive code wise
     //    2. Makes the error alert messages render on this component. Previously, the alert would appear on the linked page
     //      since clicking the join game button would instantly link to the desired component before the alert could be processed)
-    if(this.state.redirectToGame) return <Redirect push to="create-game-menu" />
+    if(this.state.redirectToGame) return <Redirect push to={{
+      pathname: `/lobby/${document.getElementById("gameIDInputField").value}`,
+      state: {
+        colorOptions: this.state.targetGameRoomColorOptions,
+        connectedPlayersUserNames: this.state.targetGameRoomConnectedPlayersUserNames
+      }
+    }} />
 
     return (
       <div className="centerStyle">
