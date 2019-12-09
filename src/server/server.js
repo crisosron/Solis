@@ -36,6 +36,10 @@ io.on('connection', (client) => {
         joinGameRoom(client, data);
     });
 
+    client.on(GAME_ROOM_EVENTS.REQUESTS.SELECT_COLOR_OPTION, data => {
+        selectColorOption(client, data);
+    });
+
     io.on('disconnect', () => {
         console.log('Client disconnected');
         numClientsConnected--;
@@ -59,6 +63,19 @@ const createGame = (clientSocket, gameAttributes) => {
     // Replying to client with game id
     clientSocket.emit(SERVER_RESPONSES.STORE_GAME_ATTRIBUTES_ACCEPTED, {gameID: gameRoom.gameID, gameRoom: gameRoom});
 
+}
+
+const selectColorOption = (clientSocket, data) => {
+    console.log("Inside selectColorOption method in server");
+    console.log("Selecting player: ", clientSocket.id);
+    let gameRoom = getGameRoomByGameID(data.gameID);
+    let selectingPlayer = gameRoom.getPlayer(clientSocket.id);
+    selectingPlayer.color = data.colorOption;
+    console.log(selectingPlayer);
+    io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.COLOR_OPTION_SELECTED, {
+        userName: selectingPlayer.userName,
+        color: selectingPlayer.color
+    });
 }
 
 /**
@@ -102,14 +119,20 @@ const joinGameRoom = (clientSocket, data) => {
 
     // TODO: Explore if theres a way to make a template of the data argument required
     io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, {
-        joinedPlayerUserName: joiningPlayer.userName,
+        joiningPlayerUserNameColorMap: {
+            userName: joiningPlayer.userName,
+            color: joiningPlayer.color // Should have the value #fffffff at this instant
+        }
     });
 
     // Enables redirecting in JoinGameMenu component
     clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED, {
         colorOptions: joinedGameRoom.playerColorOptions,
-        connectedPlayersUserNames: joinedGameRoom.players.map(player => {
-            return player.userName;
+        userNameColorMap: joinedGameRoom.players.map(player => {
+            return {
+                userName: player.userName,
+                color: player.color
+            }
         })
     });
 }

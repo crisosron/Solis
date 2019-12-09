@@ -80,6 +80,12 @@ class GameRoom{
         return this._gameAttributes.maxPlayers < this._players.length + 1;
     }
 
+    getPlayer(playerSocketID){
+        for(let i = 0; i < this._players.length; i++){
+            if(this._players[i].socketID === playerSocketID) return this._players[i];
+        }
+    }
+
     get gameID(){
         return this._gameID;
     }
