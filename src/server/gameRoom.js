@@ -89,6 +89,16 @@ class GameRoom{
         }
     }
 
+    updateSelectedForColor(color, selectedValue){
+        for(let i = 0; i < this._playerColorOptions.length; i++){
+            let colorOption = this._playerColorOptions[i];
+            if(colorOption.color === color) {
+                colorOption.selected = selectedValue;
+                return;
+            }
+        }
+    }
+
     get gameID(){
         return this._gameID;
     }

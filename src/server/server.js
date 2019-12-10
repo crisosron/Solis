@@ -66,12 +66,15 @@ const createGame = (clientSocket, gameAttributes) => {
 }
 
 const selectColorOption = (clientSocket, data) => {
-    console.log("Inside selectColorOption method in server");
-    console.log("Selecting player: ", clientSocket.id);
     let gameRoom = getGameRoomByGameID(data.gameID);
     let selectingPlayer = gameRoom.getPlayer(clientSocket.id);
-    selectingPlayer.color = data.colorOption;
-    console.log(selectingPlayer);
+    selectingPlayer.color = data.selectedColor;
+
+    // Updates the select status of the selected color of the game room for the server POV
+    // This is important as it ensures that when joining players request the color options for the game room,
+    // the selection status of the color options in this game room persist for newly joined players
+    gameRoom.updateSelectedForColor(data.selectedColor, true);
+    
     io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.COLOR_OPTION_SELECTED, {
         userName: selectingPlayer.userName,
         color: selectingPlayer.color
