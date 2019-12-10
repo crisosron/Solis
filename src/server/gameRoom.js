@@ -26,7 +26,7 @@ class GameRoom{
         // Populating a collection of randomly generated colors
         let randomlyGeneratedColors = [];
         for (let i = 0; i < numColorsAvailable; i++) {
-            let randomColor = this.createRandomColor();
+            let randomColor = this.createRandomColorOption();
 
             // Check if random color is already in the array of randomly generated colors
             if (randomlyGeneratedColors.includes(randomColor)) {
@@ -44,12 +44,15 @@ class GameRoom{
      * Creates a string that represents a single color in hexadecimal format
      * @returns A string that represents a single color in hexadecimal format
     */
-    createRandomColor() {
+    createRandomColorOption() {
         const characters = "0123456789ABCDEF";
         let randomColor = "#";
         for (let i = 0; i < 6; i++)
         randomColor += characters[Math.floor(Math.random() * characters.length)];
-        return randomColor;
+        return {
+            color: randomColor,
+            selected: false
+        };
     };
 
     /**
