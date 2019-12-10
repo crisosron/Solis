@@ -25,7 +25,7 @@ export default class Lobby extends Component {
     });
 
     socket.on(GAME_ROOM_EVENTS.RESPONSES.COLOR_OPTION_SELECTED, data => {
-      
+
       // Shallow copy okay here since the mapping objects are only used for their values and not their identity
       let newUserNameColorMap = [...this.state.userNameColorMap];
       let newColorOptions = [...this.state.colorOptions];
@@ -61,13 +61,13 @@ export default class Lobby extends Component {
             <h3>Select A Color</h3>
             
             {this.state.colorOptions.map(colorOption => {  
-              //TODO: Ideally, we pass classNames as props, and depending on colorOption.selected, we either pass in "colorOption" or "colorOption selectedColorOption"
               return <ColorOption 
-              colorValue={colorOption.selected ? "#000000" : colorOption.color} 
+              colorValue={colorOption.color}
               key={colorOption.color} 
               id={`ColorOption: ${colorOption.color}`} 
               gameID={this.props.match.params.id} 
               selected={colorOption.selected}
+              classes = {colorOption.selected ? "colorOption selectedColorOption" : "colorOption"}
               />
             })}
           </div>
