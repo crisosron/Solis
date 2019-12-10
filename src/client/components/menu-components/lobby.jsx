@@ -25,27 +25,20 @@ export default class Lobby extends Component {
     });
 
     socket.on(GAME_ROOM_EVENTS.RESPONSES.COLOR_OPTION_SELECTED, data => {
-      console.log("For all clients, receieved COLOR_OPTION_SELECTED with data: ", data);
-      let newUserNameColorMap = [...this.state.userNameColorMap]; // Shallow copy okay here since the mapping objects are only used for their values and not their identity
+      
+      // Shallow copy okay here since the mapping objects are only used for their values and not their identity
+      let newUserNameColorMap = [...this.state.userNameColorMap];
       let newColorOptions = [...this.state.colorOptions];
 
-      console.log("About to loop through color options");
       for(let i = 0; i < newColorOptions.length; i++){
         let colorOption = newColorOptions[i]
-        if(colorOption.color === data.color) {
-          console.log("Correct color option found!");
-          colorOption.selected = true
-        }
+        if(colorOption.color === data.color)colorOption.selected = true
       }
 
       for(let i = 0; i < newUserNameColorMap.length; i++){
         let mapping = newUserNameColorMap[i];
         if(mapping.userName === data.userName) mapping.color = data.color;
       }
-
-      console.log("Final print: ");
-      console.log(newColorOptions);
-      console.log(newUserNameColorMap);
 
       this.setState({
         colorOptions: newColorOptions,
@@ -66,13 +59,15 @@ export default class Lobby extends Component {
           {/*Rendering of color options*/}
           <div id="colorSelectorDiv">
             <h3>Select A Color</h3>
-            {this.state.colorOptions.map(colorOption => {
+            
+            {this.state.colorOptions.map(colorOption => {  
+              //TODO: Ideally, we pass classNames as props, and depending on colorOption.selected, we either pass in "colorOption" or "colorOption selectedColorOption"
               return <ColorOption 
               colorValue={colorOption.selected ? "#000000" : colorOption.color} 
               key={colorOption.color} 
               id={`ColorOption: ${colorOption.color}`} 
               gameID={this.props.match.params.id} 
-              selected={colorOption.selected} 
+              selected={colorOption.selected}
               />
             })}
           </div>
