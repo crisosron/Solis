@@ -21,6 +21,7 @@ export default class Lobby extends Component {
   }
 
   initServerListening(){
+    // TODO: Should a lot of these logic be happening in the serverside?
     socket.on(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, data => {
       let newUserNameColorMap = this.state.userNameColorMap.concat(data.joiningPlayerUserNameColorMap);
       this.setState({
@@ -28,6 +29,7 @@ export default class Lobby extends Component {
       });
     });
 
+    // TODO: Should a lot of these logic be happening in the serverside?
     socket.on(GAME_ROOM_EVENTS.RESPONSES.COLOR_OPTION_SELECTED, data => {
 
       // Shallow copy okay here since the mapping objects are only used for their values and not their identity
@@ -75,6 +77,7 @@ export default class Lobby extends Component {
     });
   }
 
+  // TODO: Should messages be added and stored inside gameRoom objects instead of client side?
   addMessage = (senderUsername, senderColor, message) => {
     let messagesCopy = [...this.state.messages];
 
@@ -133,7 +136,7 @@ export default class Lobby extends Component {
                 senderUsername={message.senderUsername} 
                 senderColor={message.senderColor} 
                 message={message.message}
-                key={message.sender + ":" + message.senderColor + ":" + message.message}
+                key={message.sender + ":" + message.senderColor + ":" + message.message} //TODO: Need a better ID
                 />
               })}
             </div>
