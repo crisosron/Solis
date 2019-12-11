@@ -9,6 +9,7 @@ let GAME_ROOM_EVENTS = {
     RESPONSES: {
         PLAYER_JOINED: "player-joined",
         COLOR_OPTION_SELECTED: "color-option-selected",
+        COLOR_OPTION_SELECTION_REJECTED: "color-option-selection-rejected"
     },
 
 }

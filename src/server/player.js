@@ -8,6 +8,7 @@ class Player {
         this._fleets = new Array(0);
         this._ownedNodes = new Array(0);
         this._userName = userName;
+        this._hasSelectedColor = false
     }
 
     // Add a resource card to the players hand
@@ -34,6 +35,14 @@ class Player {
 
     set userName(userName){
         this._userName = userName;
+    }
+
+    get hasSelectedColor(){
+        return this._hasSelectedColor;
+    }
+
+    set hasSelectedColor(hasSelectedColor){
+        this._hasSelectedColor = hasSelectedColor;
     }
 }
 

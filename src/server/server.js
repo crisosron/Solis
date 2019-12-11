@@ -68,7 +68,16 @@ const createGame = (clientSocket, gameAttributes) => {
 const selectColorOption = (clientSocket, data) => {
     let gameRoom = getGameRoomByGameID(data.gameID);
     let selectingPlayer = gameRoom.getPlayer(clientSocket.id);
+
+    // Player is not allowed to change colors, so if they already selected one, a request to select a color
+    // should be rejected
+    if(selectingPlayer.hasSelectedColor) {
+        clientSocket.emit(GAME_ROOM_EVENTS.COLOR_OPTION_SELECTION_REJECTED)
+        return;
+    }
+
     selectingPlayer.color = data.selectedColor;
+    selectingPlayer.hasSelectedColor = true;
 
     // Updates the select status of the selected color of the game room for the server POV
     // This is important as it ensures that when joining players request the color options for the game room,
