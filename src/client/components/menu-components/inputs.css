@@ -23,6 +23,16 @@ input[type="number"] {
     background-color: #18181c;
 }
 
+.chatInput{
+    width: 99%;
+    font-size: 12px;
+    margin-bottom: 0px;
+}
+
+.wholeInput{
+    width: 100%
+}
+
 .halfInput{
     width: 50%;
 }

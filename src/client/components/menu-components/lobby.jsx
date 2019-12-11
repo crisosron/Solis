@@ -5,6 +5,7 @@ import ColorOption from "./colorOption";
 import socket from "../../../index.js";
 import GAME_ROOM_EVENTS from "../../../gameRoomEvents";
 import "./menuComponents.css"
+import "./inputs.css"
 
 export default class Lobby extends Component {
   constructor(props) {
@@ -63,9 +64,9 @@ export default class Lobby extends Component {
             {this.state.colorOptions.map(colorOption => {  
               return <ColorOption 
               colorValue={colorOption.color}
-              key={colorOption.color} 
-              id={`ColorOption: ${colorOption.color}`} 
-              gameID={this.props.match.params.id} 
+              key={colorOption.color}
+              id={`ColorOption: ${colorOption.color}`}
+              gameID={this.props.match.params.id}
               selected={colorOption.selected}
               classes = {colorOption.selected ? "colorOption selectedColorOption" : "colorOption"}
               />
@@ -79,6 +80,16 @@ export default class Lobby extends Component {
               return <UserName playerName={mapping.userName} playerColor={mapping.color} key={mapping.userName + " " + mapping.color}/>
             })}
           </div>
+
+          {/* Rendering the chat window for this Lobby */}
+          <div id="lobbyChatWindow">
+            <h3>Chat</h3>
+            <div id="lobbyChatOutput">
+              <p>Test: test</p>
+            </div>
+            <input type="text" className="chatInput" placeholder="Type here" id="lobbyChatInput"/>
+          </div>
+
         </div>
 
         <br />
