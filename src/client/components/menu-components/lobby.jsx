@@ -54,6 +54,8 @@ export default class Lobby extends Component {
 
     socket.on(GAME_ROOM_EVENTS.RESPONSES.DISPLAY_MESSAGE, data => {
       this.addMessage(data.senderUserName, data.senderColor, data.message);
+      let chatOutputDiv = document.getElementById("lobbyChatOutput");
+      chatOutputDiv.scrollTop = chatOutputDiv.scrollHeight;
     });
   }
   
