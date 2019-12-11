@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import UserName from "./userName";
 import ColorOption from "./colorOption";
+import Message from "./message"
 import socket from "../../../index.js";
 import GAME_ROOM_EVENTS from "../../../gameRoomEvents";
 import "./menuComponents.css"
@@ -10,10 +11,12 @@ import "./inputs.css"
 export default class Lobby extends Component {
   constructor(props) {
     super(props);
+    this.ENTER_KEY = 13;
     this.initServerListening();
     this.state = {
       colorOptions: this.props.location.state.colorOptions, // Note that colorOptions is already a map. It contains elements -> {color: "some color", selected: false}
       userNameColorMap: this.props.location.state.userNameColorMap,
+      messages: []
     };
   }
 
@@ -46,6 +49,46 @@ export default class Lobby extends Component {
         userNameColorMap: newUserNameColorMap
       });
     });
+
+    socket.on(GAME_ROOM_EVENTS.RESPONSES.DISPLAY_MESSAGE, data => {
+      this.addMessage(data.senderUserName, data.senderColor, data.message);
+    });
+  }
+  
+  componentDidMount(){
+    const lobbyChatInputField = document.getElementById("lobbyChatInputField");
+    lobbyChatInputField.addEventListener("keydown", e => {
+      if(e.keyCode === this.ENTER_KEY){
+
+        // Making sure that an empty message is not sent
+        if(lobbyChatInputField.value === "") return;
+
+        // Sending request to send the message to all clients in the game room
+        socket.emit(GAME_ROOM_EVENTS.REQUESTS.SEND_MESSAGE, {
+          message: lobbyChatInputField.value,
+          gameID: this.props.match.params.id
+        });
+
+        // Clearing chat input field
+        lobbyChatInputField.value = "";
+      }
+    });
+  }
+
+  addMessage = (senderUsername, senderColor, message) => {
+    let messagesCopy = [...this.state.messages];
+
+    messagesCopy.push({
+      senderUsername: senderUsername,
+      senderColor: senderColor,
+      message: message
+    });
+
+    this.setState({
+      messages: messagesCopy
+    });
+
+    // TODO: Should there be a limit placed on the number of messages that is stored on the client side?
   }
 
   render() {
@@ -85,9 +128,16 @@ export default class Lobby extends Component {
           <div id="lobbyChatWindow">
             <h3>Chat</h3>
             <div id="lobbyChatOutput">
-              <p>Test: test</p>
+              {this.state.messages.map(message => {
+                return <Message 
+                senderUsername={message.senderUsername} 
+                senderColor={message.senderColor} 
+                message={message.message}
+                key={message.sender + ":" + message.senderColor + ":" + message.message}
+                />
+              })}
             </div>
-            <input type="text" className="chatInput" placeholder="Type here" id="lobbyChatInput"/>
+            <input type="text" className="chatInput" placeholder="Type here" id="lobbyChatInputField"/>
           </div>
 
         </div>

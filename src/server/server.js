@@ -40,6 +40,10 @@ io.on('connection', (client) => {
         selectColorOption(client, data);
     });
 
+    client.on(GAME_ROOM_EVENTS.REQUESTS.SEND_MESSAGE, data => {
+        sendMessage(client, data);
+    });
+
     io.on('disconnect', () => {
         console.log('Client disconnected');
         numClientsConnected--;
@@ -63,6 +67,17 @@ const createGame = (clientSocket, gameAttributes) => {
     // Replying to client with game id
     clientSocket.emit(SERVER_RESPONSES.STORE_GAME_ATTRIBUTES_ACCEPTED, {gameID: gameRoom.gameID, gameRoom: gameRoom});
 
+}
+
+const sendMessage = (clientSocket, data) => {
+    let gameRoom = getGameRoomByGameID(data.gameID);
+    let sendingPlayer = gameRoom.getPlayer(clientSocket.id);
+    
+    io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.DISPLAY_MESSAGE, {
+        senderUserName: sendingPlayer.userName,
+        senderColor: sendingPlayer.color,
+        message: data.message
+    });
 }
 
 const selectColorOption = (clientSocket, data) => {
