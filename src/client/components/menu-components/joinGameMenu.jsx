@@ -13,7 +13,8 @@ export default class JoinGameMenu extends Component {
       joinGameActive: false,
       redirectToGame: false,
       targetGameRoomColorOptions: null,
-      targetGameRoomUserNameColorMap: null
+      targetGameRoomUserNameColorMap: null,
+      targetGameRoomMessages: null
     };
   }
 
@@ -24,7 +25,8 @@ export default class JoinGameMenu extends Component {
       this.setState({
         redirectToGame: true, 
         targetGameRoomColorOptions: data.colorOptions, 
-        targetGameRoomUserNameColorMap: data.userNameColorMap
+        targetGameRoomUserNameColorMap: data.userNameColorMap,
+        targetGameRoomMessages: data.messages
       });
     });
 
@@ -90,7 +92,8 @@ export default class JoinGameMenu extends Component {
       pathname: `/lobby/${document.getElementById("gameIDInputField").value}`,
       state: {
         colorOptions: this.state.targetGameRoomColorOptions,
-        userNameColorMap: this.state.targetGameRoomUserNameColorMap
+        userNameColorMap: this.state.targetGameRoomUserNameColorMap,
+        messages: this.state.targetGameRoomMessages
       }
     }} />
 

@@ -16,7 +16,7 @@ export default class Lobby extends Component {
     this.state = {
       colorOptions: this.props.location.state.colorOptions, // Note that colorOptions is already a map. It contains elements -> {color: "some color", selected: false}
       userNameColorMap: this.props.location.state.userNameColorMap,
-      messages: []
+      messages: this.props.location.state.messages
     };
   }
 

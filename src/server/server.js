@@ -65,7 +65,7 @@ const createGame = (clientSocket, gameAttributes) => {
     clientSocket.join(gameRoom.gameID);
 
     // Replying to client with game id
-    clientSocket.emit(SERVER_RESPONSES.STORE_GAME_ATTRIBUTES_ACCEPTED, {gameID: gameRoom.gameID, colorOptions: gameRoom.playerColorOptions, userNameColorMap: gameRoom.userNameColorMap});
+    clientSocket.emit(SERVER_RESPONSES.STORE_GAME_ATTRIBUTES_ACCEPTED, {gameID: gameRoom.gameID, colorOptions: gameRoom.playerColorOptions, userNameColorMap: gameRoom.userNameColorMap, messages: gameRoom.messages});
 
 }
 
@@ -156,7 +156,8 @@ const joinGameRoom = (clientSocket, data) => {
     // Enables redirecting in JoinGameMenu component
     clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED, {
         colorOptions: joinedGameRoom.playerColorOptions,
-        userNameColorMap: joinedGameRoom.userNameColorMap
+        userNameColorMap: joinedGameRoom.userNameColorMap,
+        messages: joinedGameRoom.messages
     });
 }
 

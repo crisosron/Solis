@@ -18,7 +18,6 @@ export default class GameCreationMenu extends Component {
       createGameButtonActive: false,
       redirectToLobby: false,
       gameID: null,
-      gameRoom: null,
       userNameColorMap: null
     };
   }
@@ -29,6 +28,7 @@ export default class GameCreationMenu extends Component {
         gameID: data.gameID,
         colorOptions: data.colorOptions,
         userNameColorMap: data.userNameColorMap,
+        messages: data.messages,
         redirectToLobby: true
       });
     });
@@ -77,7 +77,8 @@ export default class GameCreationMenu extends Component {
       pathname: `/lobby/${this.state.gameID}`,
       state: {
         colorOptions: this.state.colorOptions,
-        userNameColorMap: this.state.userNameColorMap
+        userNameColorMap: this.state.userNameColorMap,
+        messages: this.state.messages
       }
     }} />
     

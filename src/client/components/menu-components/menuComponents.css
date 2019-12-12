@@ -123,8 +123,6 @@ h1 {
     border-radius: 0px;
 }
 
-/*TODO: Investigate why long text does not trigger horizontal scroll bar properly
-Further investigate how to make text wrap. Horizontal scroll bar is not ideal!*/
 #lobbyChatOutput{ 
     width: 98%;
     height: 65%;
