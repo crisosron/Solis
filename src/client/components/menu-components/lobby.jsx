@@ -21,42 +21,29 @@ export default class Lobby extends Component {
   }
 
   initServerListening(){
-    // TODO: Should a lot of these logic be happening in the serverside?
     socket.on(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, data => {
-      let newUserNameColorMap = this.state.userNameColorMap.concat(data.joiningPlayerUserNameColorMap);
       this.setState({
-        userNameColorMap: newUserNameColorMap
+        userNameColorMap: data.userNameColorMap
       });
     });
 
-    // TODO: Should a lot of these logic be happening in the serverside?
     socket.on(GAME_ROOM_EVENTS.RESPONSES.COLOR_OPTION_SELECTED, data => {
-
-      // Shallow copy okay here since the mapping objects are only used for their values and not their identity
-      let newUserNameColorMap = [...this.state.userNameColorMap];
-      let newColorOptions = [...this.state.colorOptions];
-
-      for(let i = 0; i < newColorOptions.length; i++){
-        let colorOption = newColorOptions[i]
-        if(colorOption.color === data.color)colorOption.selected = true
-      }
-
-      for(let i = 0; i < newUserNameColorMap.length; i++){
-        let mapping = newUserNameColorMap[i];
-        if(mapping.userName === data.userName) mapping.color = data.color;
-      }
-
       this.setState({
-        colorOptions: newColorOptions,
-        userNameColorMap: newUserNameColorMap
+        colorOptions: data.updatedColorOptions,
+        userNameColorMap: data.updatedUserNameColorMap
       });
     });
 
     socket.on(GAME_ROOM_EVENTS.RESPONSES.DISPLAY_MESSAGE, data => {
-      this.addMessage(data.senderUserName, data.senderColor, data.message);
+      this.setState({
+        messages: data.messages
+      });
+
+      // Sets the scrollbar to the bottom everytime a message is displayed
       let chatOutputDiv = document.getElementById("lobbyChatOutput");
       chatOutputDiv.scrollTop = chatOutputDiv.scrollHeight;
     });
+
   }
   
   componentDidMount(){
@@ -77,23 +64,6 @@ export default class Lobby extends Component {
         lobbyChatInputField.value = "";
       }
     });
-  }
-
-  // TODO: Should messages be added and stored inside gameRoom objects instead of client side?
-  addMessage = (senderUsername, senderColor, message) => {
-    let messagesCopy = [...this.state.messages];
-
-    messagesCopy.push({
-      senderUsername: senderUsername,
-      senderColor: senderColor,
-      message: message
-    });
-
-    this.setState({
-      messages: messagesCopy
-    });
-
-    // TODO: Should there be a limit placed on the number of messages that is stored on the client side?
   }
 
   render() {

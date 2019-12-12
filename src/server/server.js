@@ -65,18 +65,21 @@ const createGame = (clientSocket, gameAttributes) => {
     clientSocket.join(gameRoom.gameID);
 
     // Replying to client with game id
-    clientSocket.emit(SERVER_RESPONSES.STORE_GAME_ATTRIBUTES_ACCEPTED, {gameID: gameRoom.gameID, gameRoom: gameRoom});
+    clientSocket.emit(SERVER_RESPONSES.STORE_GAME_ATTRIBUTES_ACCEPTED, {gameID: gameRoom.gameID, colorOptions: gameRoom.playerColorOptions, userNameColorMap: gameRoom.userNameColorMap});
 
 }
 
 const sendMessage = (clientSocket, data) => {
     let gameRoom = getGameRoomByGameID(data.gameID);
     let sendingPlayer = gameRoom.getPlayer(clientSocket.id);
-    
-    io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.DISPLAY_MESSAGE, {
-        senderUserName: sendingPlayer.userName,
+    gameRoom.addMessage({
+        senderUsername: sendingPlayer.userName,
         senderColor: sendingPlayer.color,
         message: data.message
+    });
+
+    io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.DISPLAY_MESSAGE, {
+        messages: gameRoom.messages
     });
 }
 
@@ -91,8 +94,10 @@ const selectColorOption = (clientSocket, data) => {
         return;
     }
 
+    // Updating the players color and the recorded mapping inside the GameRoom object the player is associated with
     selectingPlayer.color = data.selectedColor;
     selectingPlayer.hasSelectedColor = true;
+    gameRoom.updateUserNameColorMapping(selectingPlayer.userName, selectingPlayer.color) // TODO: Should this be invoked inside the player class everytime the setter for color is called?
 
     // Updates the select status of the selected color of the game room for the server POV
     // This is important as it ensures that when joining players request the color options for the game room,
@@ -100,8 +105,8 @@ const selectColorOption = (clientSocket, data) => {
     gameRoom.updateSelectedForColor(data.selectedColor, true);
     
     io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.COLOR_OPTION_SELECTED, {
-        userName: selectingPlayer.userName,
-        color: selectingPlayer.color
+        updatedColorOptions: gameRoom.playerColorOptions,
+        updatedUserNameColorMap: gameRoom.userNameColorMap
     });
 }
 
@@ -144,23 +149,14 @@ const joinGameRoom = (clientSocket, data) => {
     joinedGameRoom.addPlayer(joiningPlayer);
     console.log(`A player joined a GameRoom: ${joinedGameRoom.gameID}, num players in room: ${joinedGameRoom.players.length}`);
 
-    // TODO: Explore if theres a way to make a template of the data argument required
     io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, {
-        joiningPlayerUserNameColorMap: {
-            userName: joiningPlayer.userName,
-            color: joiningPlayer.color // Should have the value #fffffff at this instant
-        }
+        userNameColorMap: joinedGameRoom.userNameColorMap
     });
 
     // Enables redirecting in JoinGameMenu component
     clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED, {
         colorOptions: joinedGameRoom.playerColorOptions,
-        userNameColorMap: joinedGameRoom.players.map(player => {
-            return {
-                userName: player.userName,
-                color: player.color
-            }
-        })
+        userNameColorMap: joinedGameRoom.userNameColorMap
     });
 }
 

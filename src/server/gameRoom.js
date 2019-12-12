@@ -14,6 +14,14 @@ class GameRoom{
         this._players = [gameCreator];
         this._gameAttributes = null;
         this._playerColorOptions =  this.generateRandomColors();
+        this._userNameColorMap = [];
+        this._messages = [];
+
+        // Username color mapping is initialized with the game creator
+        this._userNameColorMap = [{
+            userName: gameCreator.userName,
+            color: gameCreator.color // When the player object is created, their color property is set to #fff as the default color
+        }];
     }
 
     /**
@@ -56,11 +64,20 @@ class GameRoom{
     };
 
     /**
-     * Adds a player to this GameRoom
+     * Adds a player to this GameRoom while also creating a color mapping to the player's user name
      * @param {Player} player - Player object to add to this GameRoom
     */
     addPlayer(player){
         this._players.push(player);
+        this._userNameColorMap.push({
+            userName: player.userName,
+            color: player.color // Should be #fff at this instant since the player parameter is new
+        });
+    }
+
+    addMessage(message){
+        // TODO: Should there be a limit placed on the number of messages that is stored on the client side?
+        this._messages.push(message);   
     }
 
     /**
@@ -89,7 +106,19 @@ class GameRoom{
         }
     }
 
+    updateUserNameColorMapping(userName, color){
+        // TODO: Observe immutability?
+        for(let i = 0; i < this._userNameColorMap.length; i++){
+            let mapping = this._userNameColorMap[i];
+            if(mapping.userName === userName){
+                mapping.color = color;
+                return;
+            }
+        }
+    }
+
     updateSelectedForColor(color, selectedValue){
+        // TODO: Observe immutability?
         for(let i = 0; i < this._playerColorOptions.length; i++){
             let colorOption = this._playerColorOptions[i];
             if(colorOption.color === color) {
@@ -117,6 +146,22 @@ class GameRoom{
 
     set gameAttributes(gameAttributes){
         this._gameAttributes = gameAttributes;
+    }
+
+    get messages(){
+        return this._messages;
+    }
+
+    set messages(messages){
+        this._messages = messages;
+    }
+
+    get userNameColorMap(){
+        return this._userNameColorMap;
+    }
+
+    set userNameColorMap(userNameColorMap){
+        this._userNameColorMap = userNameColorMap;
     }
 }
 
