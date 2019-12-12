@@ -13,7 +13,14 @@ class GameRoom{
         this._gameID = gameID;
         this._players = [gameCreator];
         this._gameAttributes = null;
-        this._playerColorOptions =  this.generateRandomColors();
+        this._colors = [
+            "#FF7979", "#E84B4B", "#D91F1F", "#AC0F0F", // Reds
+            "#AEE96f", "#8ED244", "#74C51C", "#579B0E", // Greens
+            "#5D7CB0", "#3B5E9A", "#204A90", "#143772", // Blues
+            "#FFF879", "#E8DF4B", "#D9CF1F", "#ACA30F" // Yellows
+        ];
+        this._playerColorOptions = this.setupColorOptions();
+
         this._userNameColorMap = [];
         this._messages = [];
 
@@ -24,44 +31,16 @@ class GameRoom{
         }];
     }
 
-    /**
-     * Creates random color options that players in this GameRoom can choose from
-     * @returns An array of strings that represent colors in hexadecimal format
-    */
-    generateRandomColors() {
-        const numColorsAvailable = 16;
-
-        // Populating a collection of randomly generated colors
-        let randomlyGeneratedColors = [];
-        for (let i = 0; i < numColorsAvailable; i++) {
-            let randomColor = this.createRandomColorOption();
-
-            // Check if random color is already in the array of randomly generated colors
-            if (randomlyGeneratedColors.includes(randomColor)) {
-                i--;
-                continue;
-            }
-
-            randomlyGeneratedColors.push(randomColor);
-        }
-
-        return randomlyGeneratedColors;
-    };
-
-    /**
-     * Creates a string that represents a single color in hexadecimal format
-     * @returns A string that represents a single color in hexadecimal format
-    */
-    createRandomColorOption() {
-        const characters = "0123456789ABCDEF";
-        let randomColor = "#";
-        for (let i = 0; i < 6; i++)
-        randomColor += characters[Math.floor(Math.random() * characters.length)];
-        return {
-            color: randomColor,
-            selected: false
-        };
-    };
+    setupColorOptions(){
+        let colorOptions = [];
+        this._colors.forEach(color => {
+            colorOptions.push({
+                color: color,
+                selected: false
+            });
+        });
+        return colorOptions;
+    }
 
     /**
      * Adds a player to this GameRoom while also creating a color mapping to the player's user name
