@@ -6,6 +6,7 @@ let GameRoom = require('./gameRoom.js');
 let CLIENT_REQUESTS = require("../clientRequests");
 let SERVER_RESPONSES = require("../serverResponses");
 let GAME_ROOM_EVENTS = require("../gameRoomEvents");
+let EXCEPTIONS = require("./exceptions");
 
 const PORT_NUM = 8000;
 const GAME_ID_LEN = 5;
@@ -120,6 +121,7 @@ const joinGameRoom = (clientSocket, data) => {
     // Precondition that checks the validity of the gameID supplied to this request
     if (!existingGameID(data.gameID)) {
         clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_REJECTED, {
+            exception: EXCEPTIONS.INVALID_GAME_ID,
             message: "Game ID of " + data.gameID + " does not exist!"
         });
         return;
@@ -130,6 +132,7 @@ const joinGameRoom = (clientSocket, data) => {
     // Checks if the userName supplied by the joining player is already in use by another player inside the game room being joined
     if (joinedGameRoom.hasDuplicateUserName(data.userName)) {
         clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_REJECTED, {
+            exception: EXCEPTIONS.DUPLICATE_USER_NAME,
             message: `${data.userName} has already been claimed by another player in the game room!`
         });
         return;
@@ -138,6 +141,7 @@ const joinGameRoom = (clientSocket, data) => {
     // Checks if the maximum number of players for the game room has been reached
     if(joinedGameRoom.hasMaxPlayers()){
         clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_REJECTED, {
+            exception: EXCEPTIONS.MAX_PLAYERS_REACHED,
             message: `The game room ${data.gameID} has no more room for new players!`
         });
         return;

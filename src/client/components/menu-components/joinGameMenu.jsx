@@ -4,6 +4,7 @@ import "./menuComponents.css";
 import SERVER_RESPONSES from "../../../serverResponses";
 import GAME_ROOM_EVENTS from "../../../gameRoomEvents";
 import socket from "../../../index.js";
+import EXCEPTIONS from "../../../server/exceptions"
 
 export default class JoinGameMenu extends Component {
   constructor(props) {
@@ -31,9 +32,11 @@ export default class JoinGameMenu extends Component {
     });
 
     // TODO: Do something fancier, instead of just an alert
+    // TODO: Might be a good idea to also pass in an error enum to tell us what kind of error occured. That way, we can handle them in different ways
     socket.on(SERVER_RESPONSES.JOIN_GAME_REQUEST_REJECTED, data => {
       alert(`${data.message}`);
-      document.getElementById("gameIDInputField").value = "";
+      if(data.exception === EXCEPTIONS.INVALID_GAME_ID || data.exception === EXCEPTIONS.MAX_PLAYERS_REACHED) document.getElementById("gameIDInputField").value = "";
+      else document.getElementById("userNameInputField").value = "";
       this.setState({joinGameActive: false});
     });
   }
