@@ -31,25 +31,10 @@ export default class JoinGameMenu extends Component {
     });
 
     // TODO: Do something fancier, instead of just an alert
-    // Listening for event when entered game id is not found by the server
-    socket.on(SERVER_RESPONSES.INVALID_GAME_ID_ENTERED, data => {
-      alert(`Invalid Game-ID: ${data.message}`);
+    socket.on(SERVER_RESPONSES.JOIN_GAME_REQUEST_REJECTED, data => {
+      alert(`${data.message}`);
       document.getElementById("gameIDInputField").value = "";
       this.setState({joinGameActive: false});
-    });
-
-    // Listening for event when the entered username is already in use by a player in the game room being joined
-    socket.on(SERVER_RESPONSES.DUPLICATE_USER_NAME, data => {
-      alert(`Duplicate Username: ${data.message}`);
-      document.getElementById("userNameInputField").value = "";
-      this.setState({joinGameActive: false})
-    });
-
-    // Listening for event when the game room being joined by the player had reached its maximum number of players
-    socket.on(SERVER_RESPONSES.MAX_PLAYERS_REACHED, data => {
-      alert(`Maximum Players Reached: ${data.message}`);
-      document.getElementById("gameIDInputField").value = "";
-      this.setState({joinGameActive: false})    
     });
   }
 

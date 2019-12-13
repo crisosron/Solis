@@ -119,7 +119,7 @@ const joinGameRoom = (clientSocket, data) => {
     //if(inGameRoom(getPlayerFromSocket(client))) return; // Precondition that checks if the player is already in a room, cancel the operation
     // Precondition that checks the validity of the gameID supplied to this request
     if (!existingGameID(data.gameID)) {
-        clientSocket.emit(SERVER_RESPONSES.INVALID_GAME_ID_ENTERED, {
+        clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_REJECTED, {
             message: "Game ID of " + data.gameID + " does not exist!"
         });
         return;
@@ -129,7 +129,7 @@ const joinGameRoom = (clientSocket, data) => {
 
     // Checks if the userName supplied by the joining player is already in use by another player inside the game room being joined
     if (joinedGameRoom.hasDuplicateUserName(data.userName)) {
-        clientSocket.emit(SERVER_RESPONSES.DUPLICATE_USER_NAME, {
+        clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_REJECTED, {
             message: `${data.userName} has already been claimed by another player in the game room!`
         });
         return;
@@ -137,7 +137,7 @@ const joinGameRoom = (clientSocket, data) => {
 
     // Checks if the maximum number of players for the game room has been reached
     if(joinedGameRoom.hasMaxPlayers()){
-        clientSocket.emit(SERVER_RESPONSES.MAX_PLAYERS_REACHED, {
+        clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_REJECTED, {
             message: `The game room ${data.gameID} has no more room for new players!`
         });
         return;
