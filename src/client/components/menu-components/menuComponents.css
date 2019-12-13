@@ -32,6 +32,11 @@ button:hover {
     filter: brightness(120%);
 }
 
+.redAttention{
+    box-shadow: 0px 0px 10px red;
+    border: none;
+}
+
 .optionsDiv {
     width: 60%;
     height: 300px;

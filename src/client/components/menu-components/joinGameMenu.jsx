@@ -15,7 +15,9 @@ export default class JoinGameMenu extends Component {
       redirectToGame: false,
       targetGameRoomColorOptions: null,
       targetGameRoomUserNameColorMap: null,
-      targetGameRoomMessages: null
+      targetGameRoomMessages: null,
+      gameIDAttention: false,
+      userNameAttention: false
     };
   }
 
@@ -32,11 +34,26 @@ export default class JoinGameMenu extends Component {
     });
 
     // TODO: Do something fancier, instead of just an alert
-    // TODO: Might be a good idea to also pass in an error enum to tell us what kind of error occured. That way, we can handle them in different ways
     socket.on(SERVER_RESPONSES.JOIN_GAME_REQUEST_REJECTED, data => {
       alert(`${data.message}`);
-      if(data.exception === EXCEPTIONS.INVALID_GAME_ID || data.exception === EXCEPTIONS.MAX_PLAYERS_REACHED) document.getElementById("gameIDInputField").value = "";
-      else document.getElementById("userNameInputField").value = "";
+      if(data.exception === EXCEPTIONS.INVALID_GAME_ID || data.exception === EXCEPTIONS.MAX_PLAYERS_REACHED) {
+        document.getElementById("gameIDInputField").value = ""
+        this.setState({
+          joinGameActive: false,
+          gameIDAttention: true,
+          userNameAttention: false
+        });
+
+      } else{
+        document.getElementById("userNameInputField").value = "";
+        this.setState({
+          joinGameActive: false,
+          gameIDAttention: false,
+          userNameAttention: true
+        });
+
+      }
+
       this.setState({joinGameActive: false});
     });
   }
@@ -87,14 +104,9 @@ export default class JoinGameMenu extends Component {
     return (
       <div className="centerStyle">
         <h1>Join Game</h1>
-        <input type="text" id="gameIDInputField" placeholder="Enter game ID"/>
+        <input type="text" className={this.state.gameIDAttention ? "redAttention" : ""} id="gameIDInputField" placeholder="Enter game ID"/>
         <br />
-        <input
-          type="text"
-          id="userNameInputField"
-          placeholder="Enter username"
-          maxLength="15"
-        />
+        <input type="text" className={this.state.userNameAttention ? "redAttention" : ""} id="userNameInputField" placeholder="Enter username" maxLength="15" />
         <br />
         <Link to="/">
           <button className="returnButton">Return</button>
