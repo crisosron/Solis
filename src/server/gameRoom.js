@@ -81,17 +81,9 @@ class GameRoom{
     }
 
     getPlayer(playerSocketID){
-        console.log("Inside getPlayer method in gameRoom, seraching for socketID: ", playerSocketID);
         for(let i = 0; i < this._players.length; i++){
             let player = this._players[i];
-            console.log(`player: ${player}`)
-            console.log(`player: ${player.socket.id}`)
-            if(player.socket.id === playerSocketID) {
-                console.log("Match found!");
-                return player;
-            }
-
-            //if(this._players[i].socket.id === playerSocketID) return this._players[i];
+            if(player.socket.id === playerSocketID) return player;
         }
     }
 
