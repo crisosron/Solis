@@ -92,7 +92,6 @@ export default class Lobby extends Component {
   }
 
   handleReadyPressed = () => {
-    console.log("Ready pressed");
     if(this.state.readyPressed || this.state.totalNumPlayers < 2) return;
     socket.emit(GAME_ROOM_EVENTS.REQUESTS.READY_UP, {
       gameID: this.props.match.params.id
@@ -104,7 +103,6 @@ export default class Lobby extends Component {
   }
 
   render() {
-    console.log(this.state.renderPlayButton);
     return (
       <div className="centerStyle">
         <h1 className="title">Lobby</h1>
@@ -164,7 +162,7 @@ export default class Lobby extends Component {
         <br />
         
             
-        <h3>Number of players connected: {this.state.totalNumPlayers}</h3>
+        <h3>Number of players connected: {this.state.totalNumPlayers + "/" + this.props.location.state.maxPlayers}</h3>
 
         <Link to="/gameCreationMenu">
           <button className="returnButton">Return</button>

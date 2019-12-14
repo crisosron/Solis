@@ -174,7 +174,8 @@ const joinGameRoom = (clientSocket, data) => {
         colorOptions: joinedGameRoom.playerColorOptions,
         userNameColorMap: joinedGameRoom.userNameColorMap,
         messages: joinedGameRoom.messages,
-        totalNumPlayers: joinedGameRoom.players.length // This is for enabling the newly joining player to have the correct total number of players in the client side
+        totalNumPlayers: joinedGameRoom.players.length, // This is for enabling the newly joining player to have the correct total number of players in the client side
+        maxPlayers: joinedGameRoom.gameAttributes.maxPlayers
     });
 }
 

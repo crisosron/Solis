@@ -18,6 +18,7 @@ export default class JoinGameMenu extends Component {
       targetGameRoomUserNameColorMap: null,
       targetGameRoomMessages: null,
       targetGameRoomTotalNumPlayers: null,
+      targetGameRoomMaxPlayers: null,
       gameIDAttention: false,
       userNameAttention: false
     };
@@ -32,7 +33,8 @@ export default class JoinGameMenu extends Component {
         targetGameRoomColorOptions: data.colorOptions, 
         targetGameRoomUserNameColorMap: data.userNameColorMap,
         targetGameRoomMessages: data.messages,
-        targetGameRoomTotalNumPlayers: data.totalNumPlayers
+        targetGameRoomTotalNumPlayers: data.totalNumPlayers,
+        targetGameRoomMaxPlayers: data.maxPlayers
       });
     });
 
@@ -101,7 +103,8 @@ export default class JoinGameMenu extends Component {
         colorOptions: this.state.targetGameRoomColorOptions,
         userNameColorMap: this.state.targetGameRoomUserNameColorMap,
         messages: this.state.targetGameRoomMessages,
-        totalNumPlayers: this.state.targetGameRoomTotalNumPlayers
+        totalNumPlayers: this.state.targetGameRoomTotalNumPlayers,
+        maxPlayers: this.state.targetGameRoomMaxPlayers
       }
     }} />
 
