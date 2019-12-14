@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./menuComponents.css";
 import "./inputs.css";
+import "./buttons.css"
 import { Link, Redirect } from "react-router-dom";
 import CLIENT_REQUESTS from "../../../clientRequests";
 import SERVER_RESPONSES from "../../../serverResponses";
@@ -78,7 +79,8 @@ export default class GameCreationMenu extends Component {
       state: {
         colorOptions: this.state.colorOptions,
         userNameColorMap: this.state.userNameColorMap,
-        messages: this.state.messages
+        messages: this.state.messages,
+        totalNumPlayers: 1
       }
     }} />
     

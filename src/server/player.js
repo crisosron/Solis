@@ -1,8 +1,8 @@
 // Represents a player within the game
 class Player {
-    constructor(socketID, userName = "Anon"){
+    constructor(socket, userName = "Anon"){
         this._color = "#ffffff";
-        this._socketID = socketID;
+        this._socket = socket;
         this._hand = new Array(0);
         this._eventHand = new Array(0);
         this._fleets = new Array(0);
@@ -16,11 +16,10 @@ class Player {
         this.hand.push(resourceType);
     }
 
-    get socketID(){
-        return this._socketID;
+    get socket(){
+        return this._socket;
     }
 
-    // TODO: Investigate why using get syntax for es6 returns undefined - See Issue #2
     get color(){
         return this._color;
     }

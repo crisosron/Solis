@@ -5,7 +5,10 @@ import ColorOption from "./colorOption";
 import Message from "./message"
 import socket from "../../../index.js";
 import GAME_ROOM_EVENTS from "../../../gameRoomEvents";
+import CLIENT_REQUESTS from "../../../clientRequests";
+import SERVER_RESPONSES from "../../../serverResponses";
 import "./menuComponents.css"
+import "./buttons.css"
 import "./inputs.css"
 
 export default class Lobby extends Component {
@@ -13,17 +16,26 @@ export default class Lobby extends Component {
     super(props);
     this.ENTER_KEY = 13;
     this.initServerListening();
+    socket.emit(CLIENT_REQUESTS.GET_CREATOR_SOCKET_ID, {
+      gameID: this.props.match.params.id
+    });
+
     this.state = {
       colorOptions: this.props.location.state.colorOptions, // Note that colorOptions is already a map. It contains elements -> {color: "some color", selected: false}
       userNameColorMap: this.props.location.state.userNameColorMap,
-      messages: this.props.location.state.messages
+      messages: this.props.location.state.messages,
+      totalNumPlayers: this.props.location.state.totalNumPlayers, // Used to activate the ready button (there must be at least 2 players in the game!)
+
+      allPlayersReady: false,
+      readyPressed: false,
     };
   }
 
   initServerListening(){
     socket.on(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, data => {
       this.setState({
-        userNameColorMap: data.userNameColorMap
+        userNameColorMap: data.userNameColorMap,
+        totalNumPlayers: data.totalNumPlayers
       });
     });
 
@@ -42,6 +54,19 @@ export default class Lobby extends Component {
       // Sets the scrollbar to the bottom everytime a message is displayed
       let chatOutputDiv = document.getElementById("lobbyChatOutput");
       chatOutputDiv.scrollTop = chatOutputDiv.scrollHeight;
+    });
+
+    socket.on(GAME_ROOM_EVENTS.RESPONSES.READY_UP_CONFIRMED, data => {
+      console.log("READY_UP_CONFIRMED response received (this client should be the game creator)");
+      this.setState({
+        allPlayersReady: data.allPlayersReady
+      });
+    });
+
+    socket.on(SERVER_RESPONSES.CREATOR_SOCKET_ID_DELIVERY, data => {
+      this.setState({
+        renderPlayButton: data.creatorSocketID === socket.id
+      });
     });
 
   }
@@ -66,7 +91,20 @@ export default class Lobby extends Component {
     });
   }
 
+  handleReadyPressed = () => {
+    console.log("Ready pressed");
+    if(this.state.readyPressed || this.state.totalNumPlayers < 2) return;
+    socket.emit(GAME_ROOM_EVENTS.REQUESTS.READY_UP, {
+      gameID: this.props.match.params.id
+    });
+
+    this.setState({
+      readyPressed: true
+    });
+  }
+
   render() {
+    console.log(this.state.renderPlayButton);
     return (
       <div className="centerStyle">
         <h1 className="title">Lobby</h1>
@@ -94,9 +132,14 @@ export default class Lobby extends Component {
           {/*Rendering of connected players user names*/}
           <div id="connectedPlayersDiv">
             <h3>Connected Players</h3>
-            {this.state.userNameColorMap.map(mapping => {
-              return <UserName playerName={mapping.userName} playerColor={mapping.color} key={mapping.userName + " " + mapping.color}/>
-            })}
+              <div id="renderedUserNamesDiv">
+                {this.state.userNameColorMap.map(mapping => {
+                  return <UserName playerName={mapping.userName} playerColor={mapping.color} key={mapping.userName + " " + mapping.color}/>
+                })}
+              
+              </div>
+              <button id="readyButton" className={this.state.readyPressed || this.state.totalNumPlayers < 2 ? "disabledButton" : "generalButton"} onClick={this.handleReadyPressed}>Ready</button>
+
           </div>
 
           {/* Rendering the chat window for this Lobby */}
@@ -120,12 +163,18 @@ export default class Lobby extends Component {
         <br />
         <br />
         
+            
+        <h3>Number of players connected: {this.state.totalNumPlayers}</h3>
+
         <Link to="/gameCreationMenu">
           <button className="returnButton">Return</button>
         </Link>
-        <Link to="/game">
-          <button className="affirmativeButton">Play</button>
-        </Link>
+        
+        { this.state.renderPlayButton && // Only renders the play button if this client is the creator
+          <Link to="/game">
+            <button className={this.state.allPlayersReady ? "affirmativeButton" : "disabledButton"}>Play</button>
+          </Link>
+        }
       </div>
     );
   }

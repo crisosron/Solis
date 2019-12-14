@@ -1,0 +1,46 @@
+button {
+    margin: 0 auto;
+    width: 200px;
+    height: 100px;
+    font-size: 20px;
+    color: white;
+    border: none;
+    transition-duration: 0.4s;
+}
+
+/*Button Classes*/
+.affirmativeButton {
+    background-color: green;
+}
+
+.generalButton {
+    background-color: #d4af6a;
+}
+
+.returnButton {
+    background-color: #303360
+}
+
+.disabledButton {
+    filter: brightness(50%);
+}
+
+.disabledButton:hover {
+    filter: brightness(50%);
+}
+
+.title{
+    margin-top: 5%;
+}
+
+#readyButton{
+    width: 100%;
+    height: 44px;
+    font-size: 15px;
+    margin-bottom: 0px;
+}
+
+button:hover {
+    filter: brightness(120%);
+}
+

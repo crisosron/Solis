@@ -45,6 +45,17 @@ io.on('connection', (client) => {
         sendMessage(client, data);
     });
 
+    client.on(GAME_ROOM_EVENTS.REQUESTS.READY_UP, data => {
+        readyUp(data);
+    });
+
+    client.on(CLIENT_REQUESTS.GET_CREATOR_SOCKET_ID, data => {
+        let gameRoom = getGameRoomByGameID(data.gameID);
+        client.emit(SERVER_RESPONSES.CREATOR_SOCKET_ID_DELIVERY, {
+            creatorSocketID: gameRoom.gameCreator.socket.id
+        });
+    })
+
     io.on('disconnect', () => {
         console.log('Client disconnected');
         numClientsConnected--;
@@ -56,7 +67,7 @@ const createGame = (clientSocket, gameAttributes) => {
 
     // Creating a new game room and creating the player that created that game room
     let creatorUserName = gameAttributes.creatorUserName;
-    let gameCreator = new Player(clientSocket.id, creatorUserName);
+    let gameCreator = new Player(clientSocket, creatorUserName);
     let gameRoom = new GameRoom(generateGameID(), gameCreator);
     gameRoom.gameAttributes = gameAttributes;
     allPlayers.push(gameCreator);
@@ -149,20 +160,35 @@ const joinGameRoom = (clientSocket, data) => {
 
     // Subscribes the joining client to the room with the supplied gameID
     clientSocket.join(data.gameID);
-    let joiningPlayer = new Player(clientSocket.id, data.userName);
+    let joiningPlayer = new Player(clientSocket, data.userName);
     joinedGameRoom.addPlayer(joiningPlayer);
     console.log(`A player joined a GameRoom: ${joinedGameRoom.gameID}, num players in room: ${joinedGameRoom.players.length}`);
 
     io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, {
-        userNameColorMap: joinedGameRoom.userNameColorMap
+        userNameColorMap: joinedGameRoom.userNameColorMap,
+        totalNumPlayers: joinedGameRoom.players.length
     });
 
     // Enables redirecting in JoinGameMenu component
     clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED, {
         colorOptions: joinedGameRoom.playerColorOptions,
         userNameColorMap: joinedGameRoom.userNameColorMap,
-        messages: joinedGameRoom.messages
+        messages: joinedGameRoom.messages,
+        totalNumPlayers: joinedGameRoom.players.length // This is for enabling the newly joining player to have the correct total number of players in the client side
     });
+}
+
+const readyUp = data => {
+    // TODO: Perform ready-up precondition checks (ie should check if the client has selected a color)
+    let gameRoom = getGameRoomByGameID(data.gameID);
+    gameRoom.numPlayersReady = gameRoom.numPlayersReady + 1;
+    // TODO: Should only emit the information on whether or not all players have readied up to the creator of the game
+    
+    let gameCreator = gameRoom.gameCreator;
+    gameCreator.socket.emit(GAME_ROOM_EVENTS.RESPONSES.READY_UP_CONFIRMED, {
+        allPlayersReady: gameRoom.players.count === gameRoom.numPlayersReady
+    });
+
 }
 
 // --------------- HELPER FUNCTIONS --------------- //

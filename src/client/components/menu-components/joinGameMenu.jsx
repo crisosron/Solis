@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import "./menuComponents.css";
+import "./buttons.css"
 import SERVER_RESPONSES from "../../../serverResponses";
 import GAME_ROOM_EVENTS from "../../../gameRoomEvents";
 import socket from "../../../index.js";
@@ -16,6 +17,7 @@ export default class JoinGameMenu extends Component {
       targetGameRoomColorOptions: null,
       targetGameRoomUserNameColorMap: null,
       targetGameRoomMessages: null,
+      targetGameRoomTotalNumPlayers: null,
       gameIDAttention: false,
       userNameAttention: false
     };
@@ -29,7 +31,8 @@ export default class JoinGameMenu extends Component {
         redirectToGame: true, 
         targetGameRoomColorOptions: data.colorOptions, 
         targetGameRoomUserNameColorMap: data.userNameColorMap,
-        targetGameRoomMessages: data.messages
+        targetGameRoomMessages: data.messages,
+        targetGameRoomTotalNumPlayers: data.totalNumPlayers
       });
     });
 
@@ -97,7 +100,8 @@ export default class JoinGameMenu extends Component {
       state: {
         colorOptions: this.state.targetGameRoomColorOptions,
         userNameColorMap: this.state.targetGameRoomUserNameColorMap,
-        messages: this.state.targetGameRoomMessages
+        messages: this.state.targetGameRoomMessages,
+        totalNumPlayers: this.state.targetGameRoomTotalNumPlayers
       }
     }} />
 

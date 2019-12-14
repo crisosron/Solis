@@ -11,6 +11,7 @@ class GameRoom{
     */
     constructor(gameID, gameCreator){
         this._gameID = gameID;
+        this._gameCreator = gameCreator;
         this._players = [gameCreator];
         this._gameAttributes = null;
         this._colors = [
@@ -20,9 +21,9 @@ class GameRoom{
             "#FFF879", "#E8DF4B", "#D9CF1F", "#ACA30F" // Yellows
         ];
         this._playerColorOptions = this.setupColorOptions();
-
         this._userNameColorMap = [];
         this._messages = [];
+        this._numPlayersReady = 0;
 
         // Username color mapping is initialized with the game creator
         this._userNameColorMap = [{
@@ -80,8 +81,17 @@ class GameRoom{
     }
 
     getPlayer(playerSocketID){
+        console.log("Inside getPlayer method in gameRoom, seraching for socketID: ", playerSocketID);
         for(let i = 0; i < this._players.length; i++){
-            if(this._players[i].socketID === playerSocketID) return this._players[i];
+            let player = this._players[i];
+            console.log(`player: ${player}`)
+            console.log(`player: ${player.socket.id}`)
+            if(player.socket.id === playerSocketID) {
+                console.log("Match found!");
+                return player;
+            }
+
+            //if(this._players[i].socket.id === playerSocketID) return this._players[i];
         }
     }
 
@@ -115,6 +125,10 @@ class GameRoom{
         return this._players;
     }
 
+    get gameCreator(){
+        return this._gameCreator;
+    }
+
     get gameAttributes(){
         return this._gameAttributes;
     }
@@ -141,6 +155,14 @@ class GameRoom{
 
     set userNameColorMap(userNameColorMap){
         this._userNameColorMap = userNameColorMap;
+    }
+
+    get numPlayersReady(){
+        return this._numPlayersReady;
+    }
+
+    set numPlayersReady(numPlayersReady){
+        this._numPlayersReady = numPlayersReady;
     }
 }
 

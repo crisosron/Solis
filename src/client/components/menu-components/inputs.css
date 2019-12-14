@@ -27,6 +27,7 @@ input[type="number"] {
     width: 99%;
     font-size: 12px;
     margin-bottom: 0px;
+    border-bottom: none;
 }
 
 .wholeInput{
