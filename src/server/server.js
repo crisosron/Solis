@@ -186,7 +186,7 @@ const readyUp = data => {
     
     let gameCreator = gameRoom.gameCreator;
     gameCreator.socket.emit(GAME_ROOM_EVENTS.RESPONSES.READY_UP_CONFIRMED, {
-        allPlayersReady: gameRoom.players.count === gameRoom.numPlayersReady
+        allPlayersReady: gameRoom.players.length === gameRoom.numPlayersReady
     });
 
 }
