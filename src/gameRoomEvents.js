@@ -13,7 +13,8 @@ let GAME_ROOM_EVENTS = {
         COLOR_OPTION_SELECTED: "color-option-selected",
         COLOR_OPTION_SELECTION_REJECTED: "color-option-selection-rejected",
         DISPLAY_MESSAGE: "display-message",
-        READY_UP_CONFIRMED: "ready-up-confirmed"
+        READY_UP_CONFIRMED: "ready-up-confirmed",
+        INCREMENT_READY_COUNT: "increment-ready-count"
     },
 
 }

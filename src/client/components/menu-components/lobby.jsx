@@ -25,6 +25,7 @@ export default class Lobby extends Component {
       userNameColorMap: this.props.location.state.userNameColorMap,
       messages: this.props.location.state.messages,
       totalNumPlayers: this.props.location.state.totalNumPlayers, // Used to activate the ready button (there must be at least 2 players in the game!)
+      numberOfPlayersReady: 0,
 
       allPlayersReady: false,
       readyPressed: false,
@@ -57,11 +58,17 @@ export default class Lobby extends Component {
     });
 
     socket.on(GAME_ROOM_EVENTS.RESPONSES.READY_UP_CONFIRMED, data => {
-      console.log("READY_UP_CONFIRMED response received (this client should be the game creator)");
       this.setState({
-        allPlayersReady: data.allPlayersReady
+        allPlayersReady: data.allPlayersReady,
       });
     });
+
+    socket.on(GAME_ROOM_EVENTS.RESPONSES.INCREMENT_READY_COUNT, () => {
+      this.setState({
+        numberOfPlayersReady: this.state.numberOfPlayersReady + 1
+      });
+    });
+
 
     socket.on(SERVER_RESPONSES.CREATOR_SOCKET_ID_DELIVERY, data => {
       this.setState({
@@ -155,15 +162,13 @@ export default class Lobby extends Component {
             </div>
             <input type="text" className="chatInput" placeholder="Type here" id="lobbyChatInputField"/>
           </div>
-
         </div>
+
+        <h3>Number of players ready: {this.state.numberOfPlayersReady + "/" + this.state.totalNumPlayers}</h3>
 
         <br />
         <br />
         
-            
-        <h3>Number of players connected: {this.state.totalNumPlayers + "/" + this.props.location.state.maxPlayers}</h3>
-
         <Link to="/gameCreationMenu">
           <button className="returnButton">Return</button>
         </Link>
@@ -173,6 +178,9 @@ export default class Lobby extends Component {
             <button className={this.state.allPlayersReady ? "affirmativeButton" : "disabledButton"}>Play</button>
           </Link>
         }
+
+        <h3 id="numPlayersConnectedIndicator">Number of players connected: {this.state.totalNumPlayers + "/" + this.props.location.state.maxPlayers}</h3>
+
       </div>
     );
   }
