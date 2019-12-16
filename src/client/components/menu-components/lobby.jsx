@@ -26,7 +26,7 @@ export default class Lobby extends Component {
       messages: this.props.location.state.messages,
       totalNumPlayers: this.props.location.state.totalNumPlayers, // Used to activate the ready button (there must be at least 2 players in the game!)
       numberOfPlayersReady: 0,
-
+      hasClientSelectedColor: false,
       allPlayersReady: false,
       readyPressed: false,
     };
@@ -46,6 +46,12 @@ export default class Lobby extends Component {
         userNameColorMap: data.updatedUserNameColorMap
       });
     });
+
+    socket.on(GAME_ROOM_EVENTS.RESPONSES.SET_CLIENT_HAS_SELECTED_COLOR, () => {
+      this.setState({
+        hasClientSelectedColor: true
+      });
+    })
 
     socket.on(GAME_ROOM_EVENTS.RESPONSES.DISPLAY_MESSAGE, data => {
       this.setState({
@@ -99,7 +105,7 @@ export default class Lobby extends Component {
   }
 
   handleReadyPressed = () => {
-    if(this.state.readyPressed || this.state.totalNumPlayers < 2) return;
+    if(this.state.readyPressed || this.state.totalNumPlayers < 2 || !this.state.hasClientSelectedColor) return;
     socket.emit(GAME_ROOM_EVENTS.REQUESTS.READY_UP, {
       gameID: this.props.match.params.id
     });
@@ -143,7 +149,7 @@ export default class Lobby extends Component {
                 })}
               
               </div>
-              <button id="readyButton" className={this.state.readyPressed || this.state.totalNumPlayers < 2 ? "disabledButton" : "generalButton"} onClick={this.handleReadyPressed}>Ready</button>
+              <button id="readyButton" className={this.state.readyPressed || this.state.totalNumPlayers < 2 || !this.state.hasClientSelectedColor ? "disabledButton" : "generalButton"} onClick={this.handleReadyPressed}>Ready</button>
 
           </div>
 

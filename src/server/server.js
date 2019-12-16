@@ -46,7 +46,7 @@ io.on('connection', (client) => {
     });
 
     client.on(GAME_ROOM_EVENTS.REQUESTS.READY_UP, data => {
-        readyUp(data);
+        readyUp(client, data);
     });
 
     client.on(CLIENT_REQUESTS.GET_CREATOR_SOCKET_ID, data => {
@@ -120,6 +120,8 @@ const selectColorOption = (clientSocket, data) => {
         updatedColorOptions: gameRoom.playerColorOptions,
         updatedUserNameColorMap: gameRoom.userNameColorMap
     });
+
+    clientSocket.emit(GAME_ROOM_EVENTS.RESPONSES.SET_CLIENT_HAS_SELECTED_COLOR);
 }
 
 /**
@@ -179,11 +181,9 @@ const joinGameRoom = (clientSocket, data) => {
     });
 }
 
-const readyUp = data => {
-    // TODO: Perform ready-up precondition checks (ie should check if the client has selected a color)
+const readyUp = (clientSocket, data) => {
     let gameRoom = getGameRoomByGameID(data.gameID);
     gameRoom.numPlayersReady = gameRoom.numPlayersReady + 1;
-    // TODO: Should only emit the information on whether or not all players have readied up to the creator of the game
     
     let gameCreator = gameRoom.gameCreator;
     gameCreator.socket.emit(GAME_ROOM_EVENTS.RESPONSES.READY_UP_CONFIRMED, {
@@ -191,8 +191,6 @@ const readyUp = data => {
     });
     
     io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.INCREMENT_READY_COUNT);
-    //client.emit(GAME_ROOM_EVENTS.RESPONSES.INCREMENT_READY_COUNT);
-
 }
 
 // --------------- HELPER FUNCTIONS --------------- //

@@ -14,7 +14,8 @@ let GAME_ROOM_EVENTS = {
         COLOR_OPTION_SELECTION_REJECTED: "color-option-selection-rejected",
         DISPLAY_MESSAGE: "display-message",
         READY_UP_CONFIRMED: "ready-up-confirmed",
-        INCREMENT_READY_COUNT: "increment-ready-count"
+        INCREMENT_READY_COUNT: "increment-ready-count",
+        SET_CLIENT_HAS_SELECTED_COLOR: "set-client-has-selected-color"
     },
 
 }
