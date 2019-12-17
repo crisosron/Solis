@@ -31,6 +31,7 @@ export default class JoinGameMenu extends Component {
     socket.on(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED, data => {
       this.setState({
         redirectToGame: true, 
+        // TODO: Should we just pass in game room instance here instead of its individual properties? Think about encapsulation and safety
         targetGameRoomColorOptions: data.colorOptions, 
         targetGameRoomUserNameColorMap: data.userNameColorMap,
         targetGameRoomMessages: data.messages,

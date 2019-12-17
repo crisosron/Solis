@@ -30,7 +30,7 @@ io.on('connection', (client) => {
 
     // Leaving and joining rooms
     client.on(GAME_ROOM_EVENTS.REQUESTS.LEAVE_GAME_ROOM, data => {
-        client.leave(data.gameID);
+        leaveGameRoom(client, data);
     });
 
     client.on(GAME_ROOM_EVENTS.REQUESTS.JOIN_GAME_ROOM, data => {
@@ -46,7 +46,7 @@ io.on('connection', (client) => {
     });
 
     client.on(GAME_ROOM_EVENTS.REQUESTS.READY_UP, data => {
-        readyUp(data);
+        readyUp(client, data);
     });
 
     client.on(CLIENT_REQUESTS.GET_CREATOR_SOCKET_ID, data => {
@@ -171,20 +171,42 @@ const joinGameRoom = (clientSocket, data) => {
         totalNumPlayers: joinedGameRoom.players.length
     });
 
-    // Enables redirecting in JoinGameMenu component
+    // At this instant, the joining player should still be in the JoinGameMenu component
+    // This event will make it so that the joining player can redirect from the JoinGameMenu component
+    // to the Lobby component that corresponds to the GameRoom they want to join.
+    // The data being passed contains info about the current state of the GameRoom being joined and is
+    // needed for the joining player so that their Lobby will look the same as all the other player's in the GameRoom
     clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED, {
         colorOptions: joinedGameRoom.playerColorOptions,
         userNameColorMap: joinedGameRoom.userNameColorMap,
         messages: joinedGameRoom.messages,
-        totalNumPlayers: joinedGameRoom.players.length, // This is for enabling the newly joining player to have the correct total number of players in the client side
+        totalNumPlayers: joinedGameRoom.players.length,
         numPlayersReady: joinedGameRoom.numPlayersReady,
         maxPlayers: joinedGameRoom.gameAttributes.maxPlayers
     });
 }
 
-const readyUp = data => {
+const leaveGameRoom = (clientSocket, data) => {
     let gameRoom = getGameRoomByGameID(data.gameID);
-    gameRoom.numPlayersReady = gameRoom.numPlayersReady + 1;
+    let playerToRemove = gameRoom.getPlayer(clientSocket.id);
+    gameRoom.removePlayer(playerToRemove);
+    gameRoom.updateNumPlayersReady();
+    clientSocket.leave(data.gameID);
+
+    io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_LEFT, {
+        userNameColorMap: gameRoom.userNameColorMap,
+        totalNumPlayers: gameRoom.players.length,
+        numPlayersReady: gameRoom.numPlayersReady
+    });
+}
+
+const readyUp = (clientSocket, data) => {
+    let gameRoom = getGameRoomByGameID(data.gameID);
+    let player = gameRoom.getPlayer(clientSocket.id);
+    player.hasReadiedUp = true;
+    gameRoom.updateNumPlayersReady();
+
+    //gameRoom.numPlayersReady = gameRoom.numPlayersReady + 1;
     
     let gameCreator = gameRoom.gameCreator;
     gameCreator.socket.emit(GAME_ROOM_EVENTS.RESPONSES.READY_UP_CONFIRMED, {

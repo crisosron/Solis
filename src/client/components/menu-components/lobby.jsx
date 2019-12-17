@@ -82,6 +82,17 @@ export default class Lobby extends Component {
       });
     });
 
+    socket.on(GAME_ROOM_EVENTS.RESPONSES.PLAYER_LEFT, data => {
+      console.log("In Lobby component handling of PLAYER_LEFT");
+      console.log(data);
+      this.setState({
+        userNameColorMap: data.userNameColorMap,
+        totalNumPlayers: data.totalNumPlayers,
+        numPlayersReady: data.numPlayersReady
+      });
+    });
+
+
   }
   
   componentDidMount(){
@@ -101,6 +112,13 @@ export default class Lobby extends Component {
         // Clearing chat input field
         lobbyChatInputField.value = "";
       }
+    });
+  }
+
+  componentWillUnmount(){
+    // Handle the client leaving the lobby
+    socket.emit(GAME_ROOM_EVENTS.REQUESTS.LEAVE_GAME_ROOM, {
+      gameID: this.props.match.params.id,
     });
   }
 

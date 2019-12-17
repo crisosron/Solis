@@ -48,11 +48,57 @@ class GameRoom{
      * @param {Player} player - Player object to add to this GameRoom
     */
     addPlayer(player){
+        // TODO: Observe immutability?
         this._players.push(player);
         this._userNameColorMap.push({
             userName: player.userName,
             color: player.color // Should be #fff at this instant since the player parameter is new
         });
+    }
+
+    /**
+     * Removes the given player from this GameRoom
+     * @param {Player} player - Player object to remove from this GameRoom
+    */
+    removePlayer(player){
+        let playerToRemoveIndex = -1;
+
+        // Looping through the players to determine which one matches the player to remove
+        for(let i = 0; i < this._players.length; i++){
+            let playerIter = this._players[i];
+            if(playerIter.socket.id === player.socket.id){
+                playerToRemoveIndex = i;
+                break;
+            } 
+        }
+
+        if(playerToRemoveIndex === -1){
+            // TODO: Throw error
+            console.log("Failed to remove player - Player not found in game room");
+            return;
+        }
+
+        // Removing player from players array
+        this._players.splice(playerToRemoveIndex, 1);
+
+        // Looping through mappings to see determine the index of the mapping to remove
+        let mappingToRemoveIndex = -1;
+        for(let i = 0; i < this._userNameColorMap.length; i++){
+            let mapping = this._userNameColorMap[i];
+            if(mapping.userName === player.userName){ // TODO: Do we need to use socket id to uniquely identify a player in a game room when the names alone should be unique?!?!?!
+                mappingToRemoveIndex = i;
+                break;
+            }
+        }
+
+        if(mappingToRemoveIndex === -1){
+            // TODO: Throw error
+            console.log("Failed to update userNameColorMapping - Player not found in game room");
+            return;
+        }
+
+        // Removing the mapping from userNameColorMap
+        this._userNameColorMap.splice(mappingToRemoveIndex, 1);
     }
 
     addMessage(message){
@@ -109,6 +155,16 @@ class GameRoom{
         }
     }
 
+    updateNumPlayersReady(){
+        let numPlayersReady = 0;
+        for(let i = 0; i < this._players.length; i++){
+            let player = this._players[i];
+            if(player.hasReadiedUp) numPlayersReady++;
+        }
+
+        this._numPlayersReady = numPlayersReady;
+    }
+
     get gameID(){
         return this._gameID;
     }
@@ -150,7 +206,7 @@ class GameRoom{
     }
 
     get numPlayersReady(){
-        return this._numPlayersReady;
+       return this._numPlayersReady;
     }
 
     set numPlayersReady(numPlayersReady){

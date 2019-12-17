@@ -15,7 +15,8 @@ let GAME_ROOM_EVENTS = {
         DISPLAY_MESSAGE: "display-message",
         READY_UP_CONFIRMED: "ready-up-confirmed",
         UPDATE_READY_COUNT: "increment-ready-count",
-        SET_CLIENT_HAS_SELECTED_COLOR: "set-client-has-selected-color"
+        SET_CLIENT_HAS_SELECTED_COLOR: "set-client-has-selected-color",
+        PLAYER_LEFT: "player-left"
     },
 
 }
