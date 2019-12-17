@@ -46,7 +46,7 @@ io.on('connection', (client) => {
     });
 
     client.on(GAME_ROOM_EVENTS.REQUESTS.READY_UP, data => {
-        readyUp(client, data);
+        readyUp(data);
     });
 
     client.on(CLIENT_REQUESTS.GET_CREATOR_SOCKET_ID, data => {
@@ -177,11 +177,12 @@ const joinGameRoom = (clientSocket, data) => {
         userNameColorMap: joinedGameRoom.userNameColorMap,
         messages: joinedGameRoom.messages,
         totalNumPlayers: joinedGameRoom.players.length, // This is for enabling the newly joining player to have the correct total number of players in the client side
+        numPlayersReady: joinedGameRoom.numPlayersReady,
         maxPlayers: joinedGameRoom.gameAttributes.maxPlayers
     });
 }
 
-const readyUp = (clientSocket, data) => {
+const readyUp = data => {
     let gameRoom = getGameRoomByGameID(data.gameID);
     gameRoom.numPlayersReady = gameRoom.numPlayersReady + 1;
     
@@ -190,7 +191,9 @@ const readyUp = (clientSocket, data) => {
         allPlayersReady: gameRoom.players.length === gameRoom.numPlayersReady
     });
     
-    io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.INCREMENT_READY_COUNT);
+    io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.UPDATE_READY_COUNT, {
+        numPlayersReady: gameRoom.numPlayersReady
+    });
 }
 
 // --------------- HELPER FUNCTIONS --------------- //

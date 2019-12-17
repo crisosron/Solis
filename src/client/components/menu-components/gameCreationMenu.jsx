@@ -81,6 +81,7 @@ export default class GameCreationMenu extends Component {
         userNameColorMap: this.state.userNameColorMap,
         messages: this.state.messages,
         totalNumPlayers: 1,
+        numPlayersReady: 0,
         maxPlayers: document.getElementById("maxPlayersInputField").value
       }
     }} />

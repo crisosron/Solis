@@ -25,7 +25,7 @@ export default class Lobby extends Component {
       userNameColorMap: this.props.location.state.userNameColorMap,
       messages: this.props.location.state.messages,
       totalNumPlayers: this.props.location.state.totalNumPlayers, // Used to activate the ready button (there must be at least 2 players in the game!)
-      numberOfPlayersReady: 0,
+      numPlayersReady: this.props.location.state.numPlayersReady,
       hasClientSelectedColor: false,
       allPlayersReady: false,
       readyPressed: false,
@@ -36,7 +36,8 @@ export default class Lobby extends Component {
     socket.on(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, data => {
       this.setState({
         userNameColorMap: data.userNameColorMap,
-        totalNumPlayers: data.totalNumPlayers
+        totalNumPlayers: data.totalNumPlayers,
+        allPlayersReady: false
       });
     });
 
@@ -69,12 +70,11 @@ export default class Lobby extends Component {
       });
     });
 
-    socket.on(GAME_ROOM_EVENTS.RESPONSES.INCREMENT_READY_COUNT, () => {
+    socket.on(GAME_ROOM_EVENTS.RESPONSES.UPDATE_READY_COUNT, data => {
       this.setState({
-        numberOfPlayersReady: this.state.numberOfPlayersReady + 1
+        numPlayersReady: data.numPlayersReady
       });
     });
-
 
     socket.on(SERVER_RESPONSES.CREATOR_SOCKET_ID_DELIVERY, data => {
       this.setState({
@@ -170,7 +170,7 @@ export default class Lobby extends Component {
           </div>
         </div>
 
-        <h3>Number of players ready: {this.state.numberOfPlayersReady + "/" + this.state.totalNumPlayers}</h3>
+        <h3>Number of players ready: {this.state.numPlayersReady + "/" + this.state.totalNumPlayers}</h3>
 
         <br />
         <br />
