@@ -8,7 +8,7 @@ class LobbyOperations{
         console.log(serverInstance._gameRooms);
         //if(inGameRoom(getPlayerFromSocket(client))) return; // Precondition that checks if the player is already in a room, cancel the operation
         // Precondition that checks the validity of the gameID supplied to this request
-        if (serverInstance.existingGameID(data.gameID)) {
+        if (!serverInstance.existingGameID(data.gameID)) {
             clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_REJECTED, {
                 exception: EXCEPTIONS.INVALID_GAME_ID,
                 message: "Game ID of " + data.gameID + " does not exist!"
