@@ -1,17 +1,14 @@
 let GAME_ROOM_EVENTS = require("../gameRoomEvents");
 let SERVER_RESPONSES = require("../serverResponses");
 let EXCEPTIONS = require("./exceptions");
-//let {existingGameID, getGameRoomByGameID, io} = require("./server");
-let server = require("./server");
 let Player = require("./player")
 
 class LobbyOperations{
-    static joinGameRoom(clientSocket, data){
-        console.log(server);
-        console.log(Player);
+    static joinGameRoom(clientSocket, data, serverInstance){
+        console.log(serverInstance._gameRooms);
         //if(inGameRoom(getPlayerFromSocket(client))) return; // Precondition that checks if the player is already in a room, cancel the operation
         // Precondition that checks the validity of the gameID supplied to this request
-        if (!server.existingGameID(data.gameID)) {
+        if (serverInstance.existingGameID(data.gameID)) {
             clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_REJECTED, {
                 exception: EXCEPTIONS.INVALID_GAME_ID,
                 message: "Game ID of " + data.gameID + " does not exist!"
@@ -19,7 +16,7 @@ class LobbyOperations{
             return;
         }
 
-        let joinedGameRoom = server.getGameRoomByGameID(data.gameID);
+        let joinedGameRoom = serverInstance.getGameRoomByGameID(data.gameID);
 
         // Checks if the userName supplied by the joining player is already in use by another player inside the game room being joined
         if (joinedGameRoom.hasDuplicateUserName(data.userName)) {
@@ -45,7 +42,7 @@ class LobbyOperations{
         joinedGameRoom.addPlayer(joiningPlayer);
         console.log(`A player joined a GameRoom: ${joinedGameRoom.gameID}, num players in room: ${joinedGameRoom.players.length}`);
 
-        server.io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, {
+        serverInstance.serverIO.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, {
             userNameColorMap: joinedGameRoom.userNameColorMap,
             totalNumPlayers: joinedGameRoom.players.length
         });
@@ -65,23 +62,23 @@ class LobbyOperations{
         });
     }
 
-    static leaveGameRoom(clientSocket, data){
-        let gameRoom = server.getGameRoomByGameID(data.gameID);
+    static leaveGameRoom(clientSocket, data, serverInstance){
+        let gameRoom = serverInstance.getGameRoomByGameID(data.gameID);
         let playerToRemove = gameRoom.getPlayer(clientSocket.id);
         gameRoom.removePlayer(playerToRemove);
         gameRoom.updateNumPlayersReady();
         clientSocket.leave(data.gameID);
 
-        server.io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_LEFT, {
+        serverInstance.serverIO.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_LEFT, {
             userNameColorMap: gameRoom.userNameColorMap,
             totalNumPlayers: gameRoom.players.length,
             numPlayersReady: gameRoom.numPlayersReady
         });
     }
 
-    static selectColorOption(clientSocket, data){
+    static selectColorOption(clientSocket, data, serverInstance){
 
-        let gameRoom = server.getGameRoomByGameID(data.gameID);
+        let gameRoom = serverInstance.getGameRoomByGameID(data.gameID);
         let selectingPlayer = gameRoom.getPlayer(clientSocket.id);
 
         // Player is not allowed to change colors, so if they already selected one, a request to select a color
@@ -101,7 +98,7 @@ class LobbyOperations{
         // the selection status of the color options in this game room persist for newly joined players
         gameRoom.updateSelectedForColor(data.selectedColor, true);
         
-        server.io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.COLOR_OPTION_SELECTED, {
+        serverInstance.serverIO.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.COLOR_OPTION_SELECTED, {
             updatedColorOptions: gameRoom.playerColorOptions,
             updatedUserNameColorMap: gameRoom.userNameColorMap
         });
@@ -110,8 +107,8 @@ class LobbyOperations{
 
     }
 
-    static sendMessage(clientSocket, data){
-        let gameRoom = server.getGameRoomByGameID(data.gameID);
+    static sendMessage(clientSocket, data, serverInstance){
+        let gameRoom = serverInstance.getGameRoomByGameID(data.gameID);
         let sendingPlayer = gameRoom.getPlayer(clientSocket.id);
         gameRoom.addMessage({
             senderUsername: sendingPlayer.userName,
@@ -119,14 +116,14 @@ class LobbyOperations{
             message: data.message
         });
     
-        server.io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.DISPLAY_MESSAGE, {
+        serverInstance.serverIO.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.DISPLAY_MESSAGE, {
             messages: gameRoom.messages
         });
 
     }
 
-    static readyUp(clientSocket, data){
-        let gameRoom = server.getGameRoomByGameID(data.gameID);
+    static readyUp(clientSocket, data, serverInstance){
+        let gameRoom = serverInstance.getGameRoomByGameID(data.gameID);
         let player = gameRoom.getPlayer(clientSocket.id);
         player.hasReadiedUp = true;
         gameRoom.updateNumPlayersReady();
@@ -136,7 +133,7 @@ class LobbyOperations{
             allPlayersReady: gameRoom.players.length === gameRoom.numPlayersReady
         });
         
-        server.io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.UPDATE_READY_COUNT, {
+        serverInstance.serverIO.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.UPDATE_READY_COUNT, {
             numPlayersReady: gameRoom.numPlayersReady
         });
         
