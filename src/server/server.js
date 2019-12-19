@@ -8,6 +8,8 @@ let SERVER_RESPONSES = require("../serverResponses");
 let GAME_ROOM_EVENTS = require("../gameRoomEvents");
 let EXCEPTIONS = require("./exceptions");
 
+let LobbyOperations = require("./lobbyOperations");
+
 const PORT_NUM = 8000;
 const GAME_ID_LEN = 5;
 let numClientsConnected = 0;
@@ -18,6 +20,21 @@ console.log("Listening for connections on port ", PORT_NUM);
 
 // A single GameRoom represents the current sessions that exist within the root namespa ce
 let gameRooms = [];
+
+let serverHelper = {
+    existingGameID: function(gameID){
+        for (let i = 0; i < gameRooms.length; i++) {
+            if (gameRooms[i].gameID === gameID) return true;
+        }
+        return false;
+    },
+
+    getGameRoomByGameID: function(gameID){
+        for (let i = 0; i < gameRooms.length; i++) {
+            if (gameRooms[i].gameID === gameID) return gameRooms[i];
+        }
+    }    
+}
 
 io.on('connection', (client) => {
     numClientsConnected++;
@@ -30,23 +47,23 @@ io.on('connection', (client) => {
 
     // Leaving and joining rooms
     client.on(GAME_ROOM_EVENTS.REQUESTS.LEAVE_GAME_ROOM, data => {
-        leaveGameRoom(client, data);
+        LobbyOperations.leaveGameRoom(client, data);
     });
 
     client.on(GAME_ROOM_EVENTS.REQUESTS.JOIN_GAME_ROOM, data => {
-        joinGameRoom(client, data);
+        LobbyOperations.joinGameRoom(client, data);
     });
 
     client.on(GAME_ROOM_EVENTS.REQUESTS.SELECT_COLOR_OPTION, data => {
-        selectColorOption(client, data);
+        LobbyOperations.selectColorOption(client, data);
     });
 
     client.on(GAME_ROOM_EVENTS.REQUESTS.SEND_MESSAGE, data => {
-        sendMessage(client, data);
+        LobbyOperations.sendMessage(client, data);
     });
 
     client.on(GAME_ROOM_EVENTS.REQUESTS.READY_UP, data => {
-        readyUp(client, data);
+        LobbyOperations.readyUp(client, data);
     });
 
     client.on(CLIENT_REQUESTS.GET_CREATOR_SOCKET_ID, data => {
@@ -81,143 +98,6 @@ const createGame = (clientSocket, gameAttributes) => {
 
 }
 
-const sendMessage = (clientSocket, data) => {
-    let gameRoom = getGameRoomByGameID(data.gameID);
-    let sendingPlayer = gameRoom.getPlayer(clientSocket.id);
-    gameRoom.addMessage({
-        senderUsername: sendingPlayer.userName,
-        senderColor: sendingPlayer.color,
-        message: data.message
-    });
-
-    io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.DISPLAY_MESSAGE, {
-        messages: gameRoom.messages
-    });
-}
-
-const selectColorOption = (clientSocket, data) => {
-    let gameRoom = getGameRoomByGameID(data.gameID);
-    let selectingPlayer = gameRoom.getPlayer(clientSocket.id);
-
-    // Player is not allowed to change colors, so if they already selected one, a request to select a color
-    // should be rejected
-    if(selectingPlayer.hasSelectedColor) {
-        clientSocket.emit(GAME_ROOM_EVENTS.COLOR_OPTION_SELECTION_REJECTED)
-        return;
-    }
-
-    // Updating the players color and the recorded mapping inside the GameRoom object the player is associated with
-    selectingPlayer.color = data.selectedColor;
-    selectingPlayer.hasSelectedColor = true;
-    gameRoom.updateUserNameColorMapping(selectingPlayer.userName, selectingPlayer.color) // TODO: Should this be invoked inside the player class everytime the setter for color is called?
-
-    // Updates the select status of the selected color of the game room for the server POV
-    // This is important as it ensures that when joining players request the color options for the game room,
-    // the selection status of the color options in this game room persist for newly joined players
-    gameRoom.updateSelectedForColor(data.selectedColor, true);
-    
-    io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.COLOR_OPTION_SELECTED, {
-        updatedColorOptions: gameRoom.playerColorOptions,
-        updatedUserNameColorMap: gameRoom.userNameColorMap
-    });
-
-    clientSocket.emit(GAME_ROOM_EVENTS.RESPONSES.SET_CLIENT_HAS_SELECTED_COLOR);
-}
-
-/**
- * Function that processes the logic behind a player joining a game room
- * @param {object} clientSocket - The socket of the joining player
- * @param {object} data - Data received by the server to be processed. Data in this case should contain gameID to join, and userName of the joining player
- */
-const joinGameRoom = (clientSocket, data) => {
-    //if(inGameRoom(getPlayerFromSocket(client))) return; // Precondition that checks if the player is already in a room, cancel the operation
-    // Precondition that checks the validity of the gameID supplied to this request
-    if (!existingGameID(data.gameID)) {
-        clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_REJECTED, {
-            exception: EXCEPTIONS.INVALID_GAME_ID,
-            message: "Game ID of " + data.gameID + " does not exist!"
-        });
-        return;
-    }
-
-    let joinedGameRoom = getGameRoomByGameID(data.gameID);
-
-    // Checks if the userName supplied by the joining player is already in use by another player inside the game room being joined
-    if (joinedGameRoom.hasDuplicateUserName(data.userName)) {
-        clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_REJECTED, {
-            exception: EXCEPTIONS.DUPLICATE_USER_NAME,
-            message: `${data.userName} has already been claimed by another player in the game room!`
-        });
-        return;
-    }
-
-    // Checks if the maximum number of players for the game room has been reached
-    if(joinedGameRoom.hasMaxPlayers()){
-        clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_REJECTED, {
-            exception: EXCEPTIONS.MAX_PLAYERS_REACHED,
-            message: `The game room ${data.gameID} has no more room for new players!`
-        });
-        return;
-    }
-
-    // Subscribes the joining client to the room with the supplied gameID
-    clientSocket.join(data.gameID);
-    let joiningPlayer = new Player(clientSocket, data.userName);
-    joinedGameRoom.addPlayer(joiningPlayer);
-    console.log(`A player joined a GameRoom: ${joinedGameRoom.gameID}, num players in room: ${joinedGameRoom.players.length}`);
-
-    io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, {
-        userNameColorMap: joinedGameRoom.userNameColorMap,
-        totalNumPlayers: joinedGameRoom.players.length
-    });
-
-    // At this instant, the joining player should still be in the JoinGameMenu component
-    // This event will make it so that the joining player can redirect from the JoinGameMenu component
-    // to the Lobby component that corresponds to the GameRoom they want to join.
-    // The data being passed contains info about the current state of the GameRoom being joined and is
-    // needed for the joining player so that their Lobby will look the same as all the other player's in the GameRoom
-    clientSocket.emit(SERVER_RESPONSES.JOIN_GAME_REQUEST_ACCEPTED, {
-        colorOptions: joinedGameRoom.playerColorOptions,
-        userNameColorMap: joinedGameRoom.userNameColorMap,
-        messages: joinedGameRoom.messages,
-        totalNumPlayers: joinedGameRoom.players.length,
-        numPlayersReady: joinedGameRoom.numPlayersReady,
-        maxPlayers: joinedGameRoom.gameAttributes.maxPlayers
-    });
-}
-
-const leaveGameRoom = (clientSocket, data) => {
-    let gameRoom = getGameRoomByGameID(data.gameID);
-    let playerToRemove = gameRoom.getPlayer(clientSocket.id);
-    gameRoom.removePlayer(playerToRemove);
-    gameRoom.updateNumPlayersReady();
-    clientSocket.leave(data.gameID);
-
-    io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_LEFT, {
-        userNameColorMap: gameRoom.userNameColorMap,
-        totalNumPlayers: gameRoom.players.length,
-        numPlayersReady: gameRoom.numPlayersReady
-    });
-}
-
-const readyUp = (clientSocket, data) => {
-    let gameRoom = getGameRoomByGameID(data.gameID);
-    let player = gameRoom.getPlayer(clientSocket.id);
-    player.hasReadiedUp = true;
-    gameRoom.updateNumPlayersReady();
-
-    //gameRoom.numPlayersReady = gameRoom.numPlayersReady + 1;
-    
-    let gameCreator = gameRoom.gameCreator;
-    gameCreator.socket.emit(GAME_ROOM_EVENTS.RESPONSES.READY_UP_CONFIRMED, {
-        allPlayersReady: gameRoom.players.length === gameRoom.numPlayersReady
-    });
-    
-    io.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.UPDATE_READY_COUNT, {
-        numPlayersReady: gameRoom.numPlayersReady
-    });
-}
-
 // --------------- HELPER FUNCTIONS --------------- //
 const inGameRoom = player => {
     for (let i = 0; i < gameRooms.length; i++) {
@@ -227,12 +107,12 @@ const inGameRoom = player => {
     return false;
 }
 
-const existingGameID = gameID => {
-    for (let i = 0; i < gameRooms.length; i++) {
-        if (gameRooms[i].gameID === gameID) return true;
-    }
-    return false;
-}
+// function existingGameID(gameID){
+//     for (let i = 0; i < gameRooms.length; i++) {
+//         if (gameRooms[i].gameID === gameID) return true;
+//     }
+//     return false;
+// }
 
 const getPlayerFromSocket = playerSocket => {
     for (let i = 0; i < allPlayers.length; i++) {
@@ -240,14 +120,19 @@ const getPlayerFromSocket = playerSocket => {
     }
 }
 
-const getGameRoomByGameID = gameID => {
+function getGameRoomByGameID(gameID){
     for (let i = 0; i < gameRooms.length; i++) {
         if (gameRooms[i].gameID === gameID) return gameRooms[i];
     }
 }
 
-const generateGameID = () => {
+function generateGameID() {
     let gameID = "";
     for (let i = 0; i < GAME_ID_LEN; i++) gameID += Math.floor(Math.random() * 10);
     return gameID;
 }
+
+module.exports = {
+    serverHelper,
+    io
+};

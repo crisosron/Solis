@@ -83,16 +83,12 @@ export default class Lobby extends Component {
     });
 
     socket.on(GAME_ROOM_EVENTS.RESPONSES.PLAYER_LEFT, data => {
-      console.log("In Lobby component handling of PLAYER_LEFT");
-      console.log(data);
       this.setState({
         userNameColorMap: data.userNameColorMap,
         totalNumPlayers: data.totalNumPlayers,
         numPlayersReady: data.numPlayersReady
       });
     });
-
-
   }
   
   componentDidMount(){

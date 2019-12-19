@@ -1,6 +1,6 @@
 // Represents a player within the game
 class Player {
-    constructor(socket, userName = "Anon"){
+    constructor(socket, userName){
         this._color = "#ffffff";
         this._socket = socket;
         this._hand = new Array(0);
