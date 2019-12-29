@@ -4,8 +4,14 @@ let EXCEPTIONS = require("./exceptions");
 let Player = require("./player")
 
 class LobbyOperations{
+
+    /**
+     * Processes the player joining a game room
+     * @param {Object} clientSocket - Socket object of the client thats joining the game room
+     * @param {Object} data - Information passed via socket io event
+     * @param {Server} serverInstance - The {@link Server} instance that the game room being joined is associated with
+    */
     static joinGameRoom(clientSocket, data, serverInstance){
-        console.log(serverInstance._gameRooms);
         //if(inGameRoom(getPlayerFromSocket(client))) return; // Precondition that checks if the player is already in a room, cancel the operation
         // Precondition that checks the validity of the gameID supplied to this request
         if (!serverInstance.existingGameID(data.gameID)) {
@@ -62,6 +68,12 @@ class LobbyOperations{
         });
     }
 
+    /**
+     * Performs logic that need to be performed when a client leaves a game room
+     * @param {Object} clientSocket - Socket object of the leaving client
+     * @param {Object} data - Information passed via socket io event. Should contain gameID of the {@link GameRoom} being left by the client
+     * @param {Server} serverInstance - The {@link Server} instance that the game room being left is associated with
+    */
     static leaveGameRoom(clientSocket, data, serverInstance){
         let gameRoom = serverInstance.getGameRoomByGameID(data.gameID);
         let playerToRemove = gameRoom.getPlayer(clientSocket.id);
@@ -76,6 +88,12 @@ class LobbyOperations{
         });
     }
 
+    /**
+     * Performs server side logic when a client selects a color option
+     * @param {Object} clientSocket - Socket object of the selecting client
+     * @param {Object} data - Information passed via socket io event. Should containt gameID of the gameRoom that fired SELECT_COLOR_OPTION, and selectedColor
+     * @param {Server} serverInstance - The {@link Server} instance relevant to the game room that fired the SELECT_COLOR_OPTION event
+    */
     static selectColorOption(clientSocket, data, serverInstance){
 
         let gameRoom = serverInstance.getGameRoomByGameID(data.gameID);
@@ -107,6 +125,12 @@ class LobbyOperations{
 
     }
 
+    /**
+     * Performs the server side logic when a client sends a message to lobby chat
+     * @param {Object} clientSocket - Socket object of the client sending the message
+     * @param {Object} data - Information sent via socket io event. Should contain gameID of the {@link GameRoom} instance that is relevant to the sent message
+     * @param {Server} serverInstance - The {@link Server} instance relevant to the {@link GameRoom} that is involved with the sent message
+    */
     static sendMessage(clientSocket, data, serverInstance){
         let gameRoom = serverInstance.getGameRoomByGameID(data.gameID);
         let sendingPlayer = gameRoom.getPlayer(clientSocket.id);
@@ -122,6 +146,12 @@ class LobbyOperations{
 
     }
 
+    /**
+     * 'Ready up' a player in a lobby. This method is trigerred when the client clicks the ready button in the {@link Lobby}
+     * @param {Object} clientSocket - Socket object of the client readying up
+     * @param {Object} data - Information sent via socket io event. Should contain gameID of the {@link GameRoom} instance that is relevant to the ready up event
+     * @param {Server} serverInstance - The {@link Server} instance relevant to the {@link GameRoom} that is involved with the ready up event
+    */
     static readyUp(clientSocket, data, serverInstance){
         let gameRoom = serverInstance.getGameRoomByGameID(data.gameID);
         let player = gameRoom.getPlayer(clientSocket.id);

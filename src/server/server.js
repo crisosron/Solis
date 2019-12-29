@@ -6,7 +6,6 @@ let GameRoom = require('./gameRoom.js');
 let CLIENT_REQUESTS = require("../clientRequests");
 let SERVER_RESPONSES = require("../serverResponses");
 let GAME_ROOM_EVENTS = require("../gameRoomEvents");
-let EXCEPTIONS = require("./exceptions");
 let LobbyOperations = require("./lobbyOperations");
 
 const PORT_NUM = 8000;
