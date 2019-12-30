@@ -120,12 +120,20 @@ class GameRoom{
         return false;
     }
 
+    /**
+     * Determines if the maximum number of players for this GameRoom has been reached
+     * @returns true if this GameRoom has reached the maximum number of players
+    */
     hasMaxPlayers(){
     
         // + 1 because this method is used to check whether or not this game room can accommodate another player trying to join
         return this._gameAttributes.maxPlayers < this._players.length + 1;
     }
 
+    /**
+     * Obtains a {@link Player} object in this GameRoom from the socket id parameter
+     * @param {string} playerSocketID - Socket id of the player to obtain
+    */
     getPlayer(playerSocketID){
         for(let i = 0; i < this._players.length; i++){
             let player = this._players[i];
@@ -133,6 +141,11 @@ class GameRoom{
         }
     }
 
+    /**
+     * Updates the user name - color mapping for supplied user name and color
+     * @param {string} userName - Username of the player whos color mapping needs to be updated
+     * @param {string} color - New hexadecimal color value to map to the username
+    */
     updateUserNameColorMapping(userName, color){
         // TODO: Observe immutability?
         for(let i = 0; i < this._userNameColorMap.length; i++){
@@ -144,6 +157,11 @@ class GameRoom{
         }
     }
 
+    /**
+     * Updates the selected status of the color for this GameRoom
+     * @param {string} color - Color that was selected in hexadecimal
+     * @param {boolean} selectedValue - Select status to set for the color
+    */
     updateSelectedForColor(color, selectedValue){
         // TODO: Observe immutability?
         for(let i = 0; i < this._playerColorOptions.length; i++){
@@ -155,6 +173,9 @@ class GameRoom{
         }
     }
 
+    /**
+     * Updates the number of players that have readied up in this GameRoom
+    */
     updateNumPlayersReady(){
         let numPlayersReady = 0;
         for(let i = 0; i < this._players.length; i++){

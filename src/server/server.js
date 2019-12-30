@@ -1,4 +1,3 @@
-//const io = require('socket.io')();
 let Player = require('./player.js');
 let GameRoom = require('./gameRoom.js');
 
@@ -64,13 +63,21 @@ class Server{
         });
     }
 
-    // --------------- HELPER FUNCTIONS --------------- //
+    /**
+     * Creates and returns a  random gameID
+     * @returns A randomly generated string that represents a game id for a game room
+    */
     generateGameID(){
         let gameID = "";
         for (let i = 0; i < GAME_ID_LEN; i++) gameID += Math.floor(Math.random() * 10);
         return gameID;
     }
 
+    /**
+     * Creates a {@link GameRoom}
+     * @param {Object} clientSocket - Socket object of the client creating the {@link GameRoom}
+     * @param {Object} gameAttributes - Settings of the {@link GameRoom} instance to be created
+    */
     createGame(clientSocket, gameAttributes){
         // Creating a new game room and creating the player that created that game room
         let creatorUserName = gameAttributes.creatorUserName;
@@ -88,6 +95,10 @@ class Server{
 
     }
 
+    /**
+     * Checks if the gameID parameter is already in use by another {@link GameRoom} instance
+     *  @param {string} gameID - gameID to check
+    */
     existingGameID(gameID){
         for (let i = 0; i < this._gameRooms.length; i++) {
             if (this._gameRooms[i].gameID === gameID) return true;
@@ -95,6 +106,10 @@ class Server{
         return false;
     }
 
+    /**
+     * Obtains a {@link GameRoom} instance based on the gameID parameter
+     * @param {string} gameID - gameID of the {@link GameRoom} instance to get
+    */
     getGameRoomByGameID(gameID){
         for (let i = 0; i < this._gameRooms.length; i++) {
             if (this._gameRooms[i].gameID === gameID) return this._gameRooms[i];
