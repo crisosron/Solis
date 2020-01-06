@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import UserName from "./userName";
 import ColorOption from "./colorOption";
 import Message from "./message"
@@ -29,6 +29,7 @@ export default class Lobby extends Component {
       hasClientSelectedColor: false,
       allPlayersReady: false,
       readyPressed: false,
+      playButtonPressed: false
     };
   }
 
@@ -113,6 +114,7 @@ export default class Lobby extends Component {
 
   componentWillUnmount(){
     // Handle the client leaving the lobby
+    if(this.state.playButtonPressed) return;
     socket.emit(GAME_ROOM_EVENTS.REQUESTS.LEAVE_GAME_ROOM, {
       gameID: this.props.match.params.id,
     });
@@ -129,7 +131,21 @@ export default class Lobby extends Component {
     });
   }
 
+  handlePlayButtonPressed = () => {
+    this.setState({
+      playButtonPressed: true
+    });
+  }
+
   render() {
+
+    // Redirects the player to the game if the game creator has clicked the play button
+    if(this.state.playButtonPressed){
+      return (<Redirect push to={{
+        pathname: `/game/${this.props.match.params.id}`
+      }}/>);
+    }
+
     return (
       <div className="centerStyle">
         <h1 className="title">Lobby</h1>
@@ -189,14 +205,13 @@ export default class Lobby extends Component {
         <br />
         <br />
         
+        {/* TODO: Return button should return player to either join game menu or gameCreationMenu */}
         <Link to="/gameCreationMenu">
           <button className="returnButton">Return</button>
         </Link>
         
         { this.state.renderPlayButton && // Only renders the play button if this client is the creator
-          <Link to="/game">
-            <button className={this.state.allPlayersReady ? "affirmativeButton" : "disabledButton"}>Play</button>
-          </Link>
+          <button className={this.state.allPlayersReady ? "affirmativeButton" : "disabledButton"} onClick={this.handlePlayButtonPressed}>Play</button>
         }
 
         <h3 id="numPlayersConnectedIndicator">Number of players connected: {this.state.totalNumPlayers + "/" + this.props.location.state.maxPlayers}</h3>

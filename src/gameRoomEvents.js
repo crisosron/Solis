@@ -18,7 +18,6 @@ let GAME_ROOM_EVENTS = {
         SET_CLIENT_HAS_SELECTED_COLOR: "set-client-has-selected-color",
         PLAYER_LEFT: "player-left"
     },
-
 }
 
 module.exports = GAME_ROOM_EVENTS;

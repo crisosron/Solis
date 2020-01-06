@@ -12,7 +12,7 @@ function Solis() {
       <BrowserRouter>
         <Switch>
           <Route path="/" exact component={SolisHome} />
-          <Route path="/game" component={Game} />
+          <Route path="/game/:id" component={Game} />
           <Route path="/create-game-menu" component={GameCreationMenu} />
           <Route path="/lobby/:id" exact component={Lobby} />>
           <Route path="/join-game-menu" component={JoinGameMenu} />
