@@ -5,7 +5,9 @@ let GameRoom = require('./gameRoom.js');
 let CLIENT_REQUESTS = require("../clientRequests");
 let SERVER_RESPONSES = require("../serverResponses");
 let GAME_ROOM_EVENTS = require("../gameRoomEvents");
+let GAME_EVENTS = require("../gameEvents");
 let LobbyOperations = require("./lobbyOperations");
+let GameOperations = require("./gameOperations");
 
 const PORT_NUM = 8000;
 const GAME_ID_LEN = 5;
@@ -29,6 +31,8 @@ class Server{
                 this.createGame(client, data, this);
             });
 
+            // *** LOBBY RELATED EVENTS *** //
+            // TODO: Change GAME_ROOM_EVENTS to LOBBY_EVENTS
             client.on(GAME_ROOM_EVENTS.REQUESTS.LEAVE_GAME_ROOM, data => {
                 LobbyOperations.leaveGameRoom(client, data, this);
             });
@@ -57,9 +61,12 @@ class Server{
             })
 
             client.on(GAME_ROOM_EVENTS.REQUESTS.REDIRECT_ALL_CLIENTS_TO_GAME, data => {
-                console.log(`Firing PROCESS_CLIENT_REDIRECTION_TO_GAME event to gameRoom: ${data.gameID}`);
-                this.serverIO.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PROCESS_CLIENT_REDIRECTION_TO_GAME);
+                let gameRoom = this.getGameRoomByGameID(data.gameID);
+                let gameAttributes = gameRoom.gameAttributes;
+                this.serverIO.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PROCESS_CLIENT_REDIRECTION_TO_GAME, {gameAttributes: gameAttributes});
             })
+
+            // *** GAME RELATED EVENTS *** //
 
             this.serverIO.on('disconnect', () => {
                 console.log('Client disconnected');

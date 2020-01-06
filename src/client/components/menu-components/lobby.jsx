@@ -30,6 +30,7 @@ export default class Lobby extends Component {
       allPlayersReady: false,
       readyPressed: false,
       redirectToGame: false
+      
     };
   }
 
@@ -91,9 +92,10 @@ export default class Lobby extends Component {
       });
     });
 
-    socket.on(GAME_ROOM_EVENTS.RESPONSES.PROCESS_CLIENT_REDIRECTION_TO_GAME, () => {
+    socket.on(GAME_ROOM_EVENTS.RESPONSES.PROCESS_CLIENT_REDIRECTION_TO_GAME, data => {
       this.setState({
-        redirectToGame: true
+        redirectToGame: true,
+        gameAttributes: data.gameAttributes
       });
     });
   }
@@ -138,10 +140,6 @@ export default class Lobby extends Component {
   }
 
   handlePlayPressed = () => {
-    this.setState({
-      redirectToGame: true
-    });
-
     socket.emit(GAME_ROOM_EVENTS.REQUESTS.REDIRECT_ALL_CLIENTS_TO_GAME, {
       gameID: this.props.match.params.id
     });
@@ -152,7 +150,10 @@ export default class Lobby extends Component {
     // Redirects the player to the game if the game creator has clicked the play button
     if(this.state.redirectToGame){
       return (<Redirect push to={{
-        pathname: `/game/${this.props.match.params.id}`
+        pathname: `/game/${this.props.match.params.id}`,
+        state: {
+          gameAttributes: this.state.gameAttributes
+        }
       }}/>);
     }
 

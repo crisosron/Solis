@@ -16,7 +16,6 @@ class GameMap extends Component {
   }
 
   handleGameMapClicked = () => {
-    console.log("Game map clicked");
     const ctx = this.obtainCanvasContext();
     ctx.moveTo(0,0);
     ctx.lineTo(200, 200);

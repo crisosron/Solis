@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import GameMap from "./gameMap";
-import PlayerInfo from "./bottomBar";
+import BottomBar from "./bottomBar";
 
 // Node components are rendered onto this component
 class MainContainer extends Component {
@@ -20,9 +20,9 @@ class MainContainer extends Component {
       flex: "2.5"
     };
     return (
-      <div style={style}>
+      <div style={style} id="mainContainerDiv">
         <GameMap />
-        <PlayerInfo />
+        <BottomBar />
       </div>
     );
   }
