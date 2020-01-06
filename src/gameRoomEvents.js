@@ -5,7 +5,8 @@ let GAME_ROOM_EVENTS = {
         UPDATE_STATE: "update-state",
         SELECT_COLOR_OPTION: "select-color-option",
         SEND_MESSAGE: "send-message",
-        READY_UP: "ready-up"
+        READY_UP: "ready-up",
+        REDIRECT_ALL_CLIENTS_TO_GAME: "redirect-all-clients-to-game"
     },
 
     RESPONSES: {
@@ -16,7 +17,8 @@ let GAME_ROOM_EVENTS = {
         READY_UP_CONFIRMED: "ready-up-confirmed",
         UPDATE_READY_COUNT: "increment-ready-count",
         SET_CLIENT_HAS_SELECTED_COLOR: "set-client-has-selected-color",
-        PLAYER_LEFT: "player-left"
+        PLAYER_LEFT: "player-left",
+        PROCESS_CLIENT_REDIRECTION_TO_GAME: "process-client-redirection-to-game"
     },
 }
 

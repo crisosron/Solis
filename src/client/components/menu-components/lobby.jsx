@@ -29,7 +29,7 @@ export default class Lobby extends Component {
       hasClientSelectedColor: false,
       allPlayersReady: false,
       readyPressed: false,
-      playButtonPressed: false
+      redirectToGame: false
     };
   }
 
@@ -90,6 +90,12 @@ export default class Lobby extends Component {
         numPlayersReady: data.numPlayersReady
       });
     });
+
+    socket.on(GAME_ROOM_EVENTS.RESPONSES.PROCESS_CLIENT_REDIRECTION_TO_GAME, () => {
+      this.setState({
+        redirectToGame: true
+      });
+    });
   }
   
   componentDidMount(){
@@ -114,7 +120,7 @@ export default class Lobby extends Component {
 
   componentWillUnmount(){
     // Handle the client leaving the lobby
-    if(this.state.playButtonPressed) return;
+    if(this.state.redirectToGame) return;
     socket.emit(GAME_ROOM_EVENTS.REQUESTS.LEAVE_GAME_ROOM, {
       gameID: this.props.match.params.id,
     });
@@ -131,16 +137,20 @@ export default class Lobby extends Component {
     });
   }
 
-  handlePlayButtonPressed = () => {
+  handlePlayPressed = () => {
     this.setState({
-      playButtonPressed: true
+      redirectToGame: true
+    });
+
+    socket.emit(GAME_ROOM_EVENTS.REQUESTS.REDIRECT_ALL_CLIENTS_TO_GAME, {
+      gameID: this.props.match.params.id
     });
   }
 
   render() {
 
     // Redirects the player to the game if the game creator has clicked the play button
-    if(this.state.playButtonPressed){
+    if(this.state.redirectToGame){
       return (<Redirect push to={{
         pathname: `/game/${this.props.match.params.id}`
       }}/>);
@@ -211,7 +221,7 @@ export default class Lobby extends Component {
         </Link>
         
         { this.state.renderPlayButton && // Only renders the play button if this client is the creator
-          <button className={this.state.allPlayersReady ? "affirmativeButton" : "disabledButton"} onClick={this.handlePlayButtonPressed}>Play</button>
+          <button className={this.state.allPlayersReady ? "affirmativeButton" : "disabledButton"} onClick={this.handlePlayPressed}>Play</button>
         }
 
         <h3 id="numPlayersConnectedIndicator">Number of players connected: {this.state.totalNumPlayers + "/" + this.props.location.state.maxPlayers}</h3>

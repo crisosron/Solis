@@ -56,6 +56,11 @@ class Server{
                 });
             })
 
+            client.on(GAME_ROOM_EVENTS.REQUESTS.REDIRECT_ALL_CLIENTS_TO_GAME, data => {
+                console.log(`Firing PROCESS_CLIENT_REDIRECTION_TO_GAME event to gameRoom: ${data.gameID}`);
+                this.serverIO.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PROCESS_CLIENT_REDIRECTION_TO_GAME);
+            })
+
             this.serverIO.on('disconnect', () => {
                 console.log('Client disconnected');
                 this._numClientsConnected--;

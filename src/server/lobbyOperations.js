@@ -143,7 +143,6 @@ class LobbyOperations{
         serverInstance.serverIO.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.DISPLAY_MESSAGE, {
             messages: gameRoom.messages
         });
-
     }
 
     /**
