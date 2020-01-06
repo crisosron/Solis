@@ -96,6 +96,7 @@ class Server{
         let gameCreator = new Player(clientSocket, creatorUserName);
         let gameRoom = new GameRoom(this.generateGameID(), gameCreator);
         gameRoom.gameAttributes = gameAttributes;
+        gameCreator.setValueForAllResources(gameAttributes.startingResources);
         this._allPlayers.push(gameCreator);
         this._gameRooms.push(gameRoom);
 

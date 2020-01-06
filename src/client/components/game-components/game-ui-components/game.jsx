@@ -29,7 +29,6 @@ class Game extends Component {
   };
 
   render() {
-    console.log(this.state.initialGameSettings);
     const style = {
       fontFamily: "Arial",
       width: window.innerWidth,

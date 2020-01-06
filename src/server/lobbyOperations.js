@@ -46,7 +46,7 @@ class LobbyOperations{
         clientSocket.join(data.gameID);
         let joiningPlayer = new Player(clientSocket, data.userName);
         joinedGameRoom.addPlayer(joiningPlayer);
-        console.log(`A player joined a GameRoom: ${joinedGameRoom.gameID}, num players in room: ${joinedGameRoom.players.length}`);
+        joiningPlayer.setValueForAllResources(joinedGameRoom.gameAttributes.startingResources)
 
         serverInstance.serverIO.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PLAYER_JOINED, {
             userNameColorMap: joinedGameRoom.userNameColorMap,
@@ -165,7 +165,6 @@ class LobbyOperations{
         serverInstance.serverIO.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.UPDATE_READY_COUNT, {
             numPlayersReady: gameRoom.numPlayersReady
         });
-        
     }
 }
 
