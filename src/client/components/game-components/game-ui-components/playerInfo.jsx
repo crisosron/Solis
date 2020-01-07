@@ -19,33 +19,87 @@ class PlayerInfo extends Component {
     return (
       <div>
         <h1>PlayerInfo</h1>
-        <h3>Resources</h3>
-        <table>
+        <table id="outerTable">
           <tr>
-            <td>Minerals:</td>
-            <td>Value</td>
+            <th>Resources</th>
+            <th>Property</th>
+            <th>Fleets</th>
           </tr>
-
           <tr>
-            <td>Manpower</td>
-            <td>Value</td>
-          </tr>
 
-          <tr>
-            <td>Dark Matter</td>
-            <td>Value</td>
-          </tr>
+            {/* Resources sub table */}
+            <td>
+              <table class="childTable">
+                <tr>
+                  <td>Minerals:</td>
+                  <td>Value</td>
+                </tr>
 
-          <tr>
-            <td>Alloys</td>            
-            <td>Value</td>
-          </tr>
+                <tr>
+                  <td>Manpower</td>
+                  <td>Value</td>
+                </tr>
 
-          <tr>
-            <td>Fuel Cells</td>            
-            <td>Value</td>
-          </tr>
+                <tr>
+                  <td>Dark Matter</td>
+                  <td>Value</td>
+                </tr>
 
+                <tr>
+                  <td>Alloys</td>            
+                  <td>Value</td>
+                </tr>
+
+                <tr>
+                  <td>Fuel Cells</td>            
+                  <td>Value</td>
+                </tr>
+
+              </table>
+            </td>
+
+            {/* Property sub table */}
+            <td>
+              <table class="childTable">
+                <tr>
+                  <td>Nodes Owned:</td>
+                  <td>Value</td>
+                </tr>
+
+                <tr>
+                  <td>T1 colonies:</td>
+                  <td>Value</td>
+                </tr>
+                
+                <tr>
+                  <td>T2 colonies:</td>
+                  <td>Value</td>
+                </tr>
+
+                <tr>
+                  <td>T3 colonies:</td>
+                  <td>Value</td>
+                </tr>
+              </table>
+            </td>
+
+            {/* Fleets sub table */}
+            <td>
+              <table class="childTable">
+                  <tr>
+                    <td>Fleets:</td>
+                    <td>Value</td>
+                  </tr>
+
+                  <tr>
+                    <td>Total Size:</td>
+                    <td>Value</td>
+                  </tr>
+                  
+                </table>
+            </td>
+
+          </tr>
         </table>
       </div>
     );
