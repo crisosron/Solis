@@ -57,7 +57,7 @@ class Game extends Component {
 
     return (
       <div style={style}>
-        <MainContainer />
+        <MainContainer thisPlayerInfo={this.state.thisPlayerInfo} otherPlayersInfo={this.state.otherPlayersInfo}/>
         <SideBar />
       </div>
     );

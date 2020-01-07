@@ -5,9 +5,8 @@ class OtherPlayerInfo extends Component {
   state = {};
   render() {
     const style = {
-      backgroundColor: "lightBlue",
-      flex: "1"
-    };
+      borderRight: "none"
+    }
     return (
       <div style={style}>
         <h1>OtherPlayerInfo</h1>

@@ -1,0 +1,19 @@
+#bottomBar{
+    background-color: black;
+    display: flex;
+    flex: 1;
+}
+
+#bottomBar h1{
+    font-size: 28px;
+    margin-top: 5px;
+    text-align: center;
+    color: white;
+    border-bottom: 1px solid white;
+}
+
+#bottomBar div{
+    background-color: black;
+    flex: 1;
+    border-right: 1px solid white;
+}

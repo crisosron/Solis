@@ -22,7 +22,7 @@ class MainContainer extends Component {
     return (
       <div style={style} id="mainContainerDiv">
         <GameMap />
-        <BottomBar />
+        <BottomBar thisPlayerInfo={this.props.thisPlayerInfo} otherPlayersInfo={this.props.otherPlayersInfo}/>
       </div>
     );
   }
