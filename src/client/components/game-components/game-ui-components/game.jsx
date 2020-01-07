@@ -10,7 +10,25 @@ class Game extends Component {
     this.state = {
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
+
+      /*Note: Structure of thisPlayerInfo: (Can be found at getAllInfo method @ player.js)
+        thisPlayerInfo{
+          allInfo{
+            color: val
+            userName: val
+            resources: {
+              minerals: val
+              manpower: val
+              darkMatter: val
+              alloys: val
+              fuelCells: val
+            }
+          }
+        }
+      */
       thisPlayerInfo: this.props.location.state.thisPlayerInfo,
+
+      //Note: Strucutre of otherPlayerInfo is the same thisPlayerInfo, but is an array of these
       otherPlayersInfo: this.props.location.state.otherPlayersInfo
     };
   }
@@ -30,8 +48,6 @@ class Game extends Component {
   };
 
   render() {
-    console.log(`thisPlayerInfo.allInfo.color: ${this.state.thisPlayerInfo.allInfo.color}`);
-    console.log(`otherPlayersInfo: ${this.state.otherPlayersInfo}`);
     const style = {
       fontFamily: "Arial",
       width: window.innerWidth,
