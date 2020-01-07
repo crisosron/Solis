@@ -12,6 +12,19 @@
     border-bottom: 1px solid white;
 }
 
+#bottomBar h3{
+    margin-left: 10px;
+}
+
+#bottomBar p{
+    margin-left: 10px;
+}
+
+#bottomBar table{
+    margin-left: 10px;
+    width: 25%;
+}
+
 #bottomBar div{
     background-color: black;
     flex: 1;
