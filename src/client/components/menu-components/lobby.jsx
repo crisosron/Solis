@@ -95,7 +95,8 @@ export default class Lobby extends Component {
     socket.on(GAME_ROOM_EVENTS.RESPONSES.PROCESS_CLIENT_REDIRECTION_TO_GAME, data => {
       this.setState({
         redirectToGame: true,
-        gameAttributes: data.gameAttributes
+        thisPlayerInfo: data.thisPlayerInfo,
+        otherPlayersInfo: data.otherPlayersInfo
       });
     });
   }
@@ -146,13 +147,13 @@ export default class Lobby extends Component {
   }
 
   render() {
-
     // Redirects the player to the game if the game creator has clicked the play button
     if(this.state.redirectToGame){
       return (<Redirect push to={{
         pathname: `/game/${this.props.match.params.id}`,
         state: {
-          gameAttributes: this.state.gameAttributes
+          thisPlayerInfo: this.state.thisPlayerInfo,
+          otherPlayersInfo: this.state.otherPlayersInfo
         }
       }}/>);
     }

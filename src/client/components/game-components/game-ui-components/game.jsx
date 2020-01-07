@@ -10,7 +10,8 @@ class Game extends Component {
     this.state = {
       windowWidth: window.innerWidth,
       windowHeight: window.innerHeight,
-      initialGameSettings: this.props.location.state.gameAttributes
+      thisPlayerInfo: this.props.location.state.thisPlayerInfo,
+      otherPlayersInfo: this.props.location.state.otherPlayersInfo
     };
   }
 
@@ -29,6 +30,8 @@ class Game extends Component {
   };
 
   render() {
+    console.log(`thisPlayerInfo.allInfo.color: ${this.state.thisPlayerInfo.allInfo.color}`);
+    console.log(`otherPlayersInfo: ${this.state.otherPlayersInfo}`);
     const style = {
       fontFamily: "Arial",
       width: window.innerWidth,

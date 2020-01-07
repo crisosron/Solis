@@ -166,6 +166,34 @@ class LobbyOperations{
             numPlayersReady: gameRoom.numPlayersReady
         });
     }
+
+    static redirectAllClientsToGame(data, serverInstance){
+        let gameRoom = serverInstance.getGameRoomByGameID(data.gameID);
+        let socketRoom = serverInstance.serverIO.sockets.adapter.rooms[data.gameID];
+        
+        // For every client, emit to the client their info, as well as the info for all the other players so that it can be loaded into the Game component
+        // Every game room is going to have 6 players at most, so O(n^2) isn't too bad here....
+        for(let clientID in socketRoom.sockets){
+            console.log("==============================================");
+            let player = gameRoom.getPlayer(clientID);
+            let thisPlayerInfo = {
+                allInfo: player.getAllInfo()
+            }
+            
+            let allOtherPlayersInfo = [];
+
+            // Nested loop to obtain the information of all player other than the player in iteration in the outer loop
+            for(let otherClientID in socketRoom.sockets){
+                if(otherClientID === clientID) continue;
+                let otherPlayer = gameRoom.getPlayer(otherClientID);
+                allOtherPlayersInfo.push({
+                    allInfo: otherPlayer.getAllInfo()
+                });
+            }
+
+            player.socket.emit(GAME_ROOM_EVENTS.RESPONSES.PROCESS_CLIENT_REDIRECTION_TO_GAME, {thisPlayerInfo: thisPlayerInfo, otherPlayersInfo: allOtherPlayersInfo});
+        }
+    }
 }
 
 module.exports = LobbyOperations;

@@ -3,13 +3,14 @@ class Player {
     constructor(socket, userName){
         this._color = "#ffffff"; // Default color is white
         this._socket = socket;
-        this._hand = new Array(0);
-        this._eventHand = new Array(0);
-        this._fleets = new Array(0);
-        this._ownedNodes = new Array(0);
+        this._hand = [];
+        this._eventHand = [];
+        this._fleets = [];
+        this._ownedNodes = [];
         this._userName = userName;
         this._hasSelectedColor = false
         this._hasReadiedUp = false;
+
         this._resources = {
             minerals: 0,
             manpower: 0,
@@ -38,6 +39,16 @@ class Player {
             darkMatter: value,
             alloys: value,
             fuelCells: value
+        }
+    }
+
+    getAllInfo(){
+        return {
+            color: this._color,
+            userName: this._userName,
+            resources: this._resources,
+            fleets: this._fleets,
+            ownedNodes: this._ownedNodes
         }
     }
 

@@ -61,9 +61,7 @@ class Server{
             })
 
             client.on(GAME_ROOM_EVENTS.REQUESTS.REDIRECT_ALL_CLIENTS_TO_GAME, data => {
-                let gameRoom = this.getGameRoomByGameID(data.gameID);
-                let gameAttributes = gameRoom.gameAttributes;
-                this.serverIO.to(data.gameID).emit(GAME_ROOM_EVENTS.RESPONSES.PROCESS_CLIENT_REDIRECTION_TO_GAME, {gameAttributes: gameAttributes});
+                LobbyOperations.redirectAllClientsToGame(data, this);
             })
 
             // *** GAME RELATED EVENTS *** //
