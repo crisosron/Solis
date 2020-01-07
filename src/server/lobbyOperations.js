@@ -167,6 +167,12 @@ class LobbyOperations{
         });
     }
 
+
+    /**
+     * Emits an event to all clients of a game room that will redirect them to a game
+     * @param data - Information sent via socket io event. Should contain the gameID of the {@link GameRoom} instance whose players have to be redirected from the {@link Lobby} to the {@link Game}
+     * @param serverInstance - The {@link Server} instance that is tied to the relevant {@link GameRoom}
+    */
     static redirectAllClientsToGame(data, serverInstance){
         let gameRoom = serverInstance.getGameRoomByGameID(data.gameID);
         let socketRoom = serverInstance.serverIO.sockets.adapter.rooms[data.gameID];
